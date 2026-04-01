@@ -149,22 +149,7 @@
   counters.forEach(el=> obs.observe(el));
 })();
 
-/* ── 3D Card Tilt Effect ─────────────────────────────────── */
-(function(){
-  if(window.matchMedia('(pointer: coarse)').matches) return; // skip on touch
-  const cards = document.querySelectorAll('.athlete-card, .system-card, .metric-card, .quote-card');
-  cards.forEach(card=>{
-    card.addEventListener('mousemove', e=>{
-      const rect = card.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
-      card.style.transform = 'perspective(800px) rotateY('+x*6+'deg) rotateX('+(-y*6)+'deg) translateY(-4px)';
-    });
-    card.addEventListener('mouseleave', ()=>{
-      card.style.transform = '';
-    });
-  });
-})();
+/* ── 3D Card Tilt Effect (base — enhanced version loaded later) ── */
 
 /* ── Data Arrays (preserved exactly from original) ───────── */
 const playerPhotos = {
@@ -927,4 +912,144 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   window.addEventListener('resize', function(){
     if(window.innerWidth > 980) closeMenu();
   });
+})();
+
+/* ── Cursor Glow Effect ─────────────────────────────────── */
+(function(){
+  if(window.matchMedia('(pointer: coarse)').matches) return;
+  var glow = document.getElementById('cursor-glow');
+  if(!glow) return;
+  var mx = 0, my = 0, cx = 0, cy = 0;
+  var active = false;
+
+  document.addEventListener('mousemove', function(e){
+    mx = e.clientX; my = e.clientY;
+    if(!active){ active = true; glow.classList.add('active'); }
+  });
+  document.addEventListener('mouseleave', function(){
+    active = false; glow.classList.remove('active');
+  });
+
+  function animate(){
+    cx += (mx - cx) * 0.08;
+    cy += (my - cy) * 0.08;
+    glow.style.left = cx + 'px';
+    glow.style.top = cy + 'px';
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
+/* ── Magnetic Button Effect ─────────────────────────────── */
+(function(){
+  if(window.matchMedia('(pointer: coarse)').matches) return;
+  var btns = document.querySelectorAll('.btn, .tab-btn, .social-icon');
+  btns.forEach(function(btn){
+    btn.addEventListener('mousemove', function(e){
+      var rect = btn.getBoundingClientRect();
+      var x = e.clientX - rect.left - rect.width / 2;
+      var y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = 'translate(' + x * 0.15 + 'px,' + y * 0.15 + 'px) translateY(-3px)';
+    });
+    btn.addEventListener('mouseleave', function(){
+      btn.style.transform = '';
+    });
+  });
+})();
+
+/* ── Smooth Parallax on Hero Elements ───────────────────── */
+(function(){
+  if(window.matchMedia('(pointer: coarse)').matches) return;
+  var hero = document.querySelector('.hero');
+  var heroTitle = document.querySelector('.hero-title');
+  var heroCard = document.querySelector('.hero-card');
+  var statsGrid = document.querySelector('.stats-grid');
+  if(!hero) return;
+
+  var ticking = false;
+  window.addEventListener('scroll', function(){
+    if(!ticking){
+      requestAnimationFrame(function(){
+        var y = window.scrollY;
+        if(y < window.innerHeight * 1.2){
+          if(heroTitle) heroTitle.style.transform = 'translateY(' + y * 0.04 + 'px)';
+          if(heroCard) heroCard.style.transform = 'translateY(' + y * -0.02 + 'px)';
+          if(statsGrid) statsGrid.style.transform = 'translateY(' + y * 0.015 + 'px)';
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, {passive:true});
+})();
+
+/* ── Enhanced 3D Card Tilt ──────────────────────────────── */
+(function(){
+  if(window.matchMedia('(pointer: coarse)').matches) return;
+  var cards = document.querySelectorAll('.athlete-card, .system-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card');
+  cards.forEach(function(card){
+    card.addEventListener('mousemove', function(e){
+      var rect = card.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = 'perspective(900px) rotateY(' + x * 5 + 'deg) rotateX(' + (-y * 5) + 'deg) translateY(-5px)';
+    });
+    card.addEventListener('mouseleave', function(){
+      card.style.transform = '';
+      card.style.transition = 'transform .5s cubic-bezier(0.16,1,0.3,1)';
+      setTimeout(function(){ card.style.transition = ''; }, 500);
+    });
+  });
+})();
+
+/* ── Animated Counter Enhancement ───────────────────────── */
+(function(){
+  var stats = document.querySelectorAll('.stat strong');
+  stats.forEach(function(el){
+    el.style.fontVariantNumeric = 'tabular-nums';
+  });
+})();
+
+/* ── Tab Panel Smooth Transition ────────────────────────── */
+(function(){
+  var panels = document.querySelectorAll('.tab-panel');
+  panels.forEach(function(panel){
+    panel.style.transition = 'opacity .35s cubic-bezier(0.16,1,0.3,1)';
+  });
+  
+  document.querySelectorAll('.tab-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      panels.forEach(function(panel){
+        if(!panel.classList.contains('hidden')){
+          panel.style.opacity = '1';
+        }
+      });
+    });
+  });
+})();
+
+/* ── Ticker Number Flip Animation ───────────────────────── */
+(function(){
+  var units = document.querySelectorAll('.ticker-unit strong');
+  units.forEach(function(el){
+    var observer = new MutationObserver(function(){
+      el.style.transition = 'none';
+      el.style.transform = 'translateY(-2px)';
+      el.style.opacity = '0.7';
+      requestAnimationFrame(function(){
+        el.style.transition = 'transform .3s cubic-bezier(0.16,1,0.3,1), opacity .3s cubic-bezier(0.16,1,0.3,1)';
+        el.style.transform = 'translateY(0)';
+        el.style.opacity = '1';
+      });
+    });
+    observer.observe(el, { childList: true, characterData: true, subtree: true });
+  });
+})();
+
+/* ── Particle Canvas Enhancement ────────────────────────── */
+(function(){
+  var canvas = document.getElementById('particle-canvas');
+  if(!canvas) return;
+  // Increase particle visibility slightly
+  canvas.style.opacity = '0.4';
 })();
