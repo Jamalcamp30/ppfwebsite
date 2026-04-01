@@ -78,7 +78,7 @@ ul,ol{list-style:none}
 
 /* ── Particle Canvas ─────────────────────────────────────── */
 #particle-canvas{
-  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.5;
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.45;
 }
 
 /* ── Layout ──────────────────────────────────────────────── */
@@ -110,7 +110,6 @@ ul,ol{list-style:none}
   letter-spacing:-.045em;max-width:980px;
 }
 .section-sub{margin:0;max-width:840px;color:var(--muted);line-height:1.85;font-size:18px}
-.accent{color:var(--orange)}
 .kicker{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#ffd8b9;font-weight:800}
 
 /* ── Navigation ──────────────────────────────────────────── */
@@ -512,7 +511,7 @@ ul,ol{list-style:none}
 }
 .metric-card:hover::after{opacity:.6}
 .metric-card .label{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:#ffd8b9;font-weight:800}
-.metric-card strong{display:block;margin-top:16px;font-size:52px;line-height:.88;letter-spacing:-.05em;
+.metric-card strong{display:block;margin-top:16px;font-size:52px;line-height:.88;letter-spacing:-.05em;color:#fff;
   background:linear-gradient(180deg,#fff,rgba(255,255,255,.8));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .metric-card em{display:block;margin-top:10px;font-style:normal;color:#fff;font-weight:800}
@@ -754,6 +753,7 @@ textarea{min-height:140px;resize:vertical}
 #recovery{scroll-margin-top:148px}
 
 /* ── Custom Scrollbar ────────────────────────────────────── */
+html{scrollbar-color:rgba(255,106,0,.35) #0a0a0a;scrollbar-width:thin}
 ::-webkit-scrollbar{width:8px}
 ::-webkit-scrollbar-track{background:#0a0a0a}
 ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(255,106,0,.35),rgba(255,106,0,.2));border-radius:8px}
@@ -889,7 +889,7 @@ table th{color:var(--orange2)!important;font-weight:900}
 .measure-pill:hover{
   transform:translateY(-2px);border-color:rgba(255,106,0,.18);
 }
-.measure-pill strong{
+.measure-pill strong{color:#fff;
   background:linear-gradient(135deg,#fff,var(--orange2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 

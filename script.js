@@ -1050,6 +1050,5 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
 (function(){
   var canvas = document.getElementById('particle-canvas');
   if(!canvas) return;
-  // Increase particle visibility slightly
-  canvas.style.opacity = '0.4';
+  canvas.style.opacity = '0.45';
 })();
