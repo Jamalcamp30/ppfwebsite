@@ -656,26 +656,37 @@ const roomBoard = [
 
 /* ── Card Rendering ──────────────────────────────────────── */
 function initials(name){
-  return name.split(' ').slice(0,2).map(function(part){ return part[0]; }).join('');
+  return name.split(' ').filter(function(p){ return p.length > 0; }).slice(0,2).map(function(part){ return part[0]; }).join('');
+}
+
+function esc(str){
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(str || ''));
+  return d.innerHTML;
 }
 
 function makeCard(item){
   var div = document.createElement('article');
   div.className = 'directory-item';
+  var safeName = esc(item.name);
+  var safePos = esc(item.position);
+  var safeSchool = esc(item.school);
+  var safeTeam = esc(item.team);
+  var safePhoto = esc(item.photo);
   var thumb = item.photo
-    ? '<div class="directory-thumb"><img src="' + item.photo + '" alt="' + item.name + '"></div>'
+    ? '<div class="directory-thumb"><img src="' + safePhoto + '" alt="' + safeName + '"></div>'
     : '<div class="directory-thumb"><div class="avatar">' + initials(item.name) + '</div></div>';
   var title = item.link
-    ? '<h4><a class="inline hot" href="' + item.link + '" target="_blank" rel="noopener noreferrer">' + item.name + '</a></h4>'
-    : '<h4>' + item.name + '</h4>';
+    ? '<h4><a class="inline hot" href="' + esc(item.link) + '" target="_blank" rel="noopener noreferrer">' + safeName + '</a></h4>'
+    : '<h4>' + safeName + '</h4>';
   div.innerHTML =
     thumb +
     '<div class="directory-copy">' +
       title +
-      '<p>' + (item.position ? item.position + ' \u2022 ' : '') + (item.school || '\u2014') + '<br>' + (item.team || '') + '</p>' +
+      '<p>' + (item.position ? safePos + ' \u2022 ' : '') + (safeSchool || '\u2014') + '<br>' + (safeTeam || '') + '</p>' +
       '<div class="badges">' +
-        (item.position ? '<span class="badge">' + item.position + '</span>' : '') +
-        (item.school && item.school !== '\u2014' ? '<span class="badge">' + item.school + '</span>' : '') +
+        (item.position ? '<span class="badge">' + safePos + '</span>' : '') +
+        (item.school && item.school !== '\u2014' ? '<span class="badge">' + safeSchool + '</span>' : '') +
       '</div>' +
     '</div>';
   return div;
