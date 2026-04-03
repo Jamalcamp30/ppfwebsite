@@ -3,25 +3,25 @@
    script.js
    ═══════════════════════════════════════════════════════════ */
 
-/* ── Preloader ───────────────────────────────────────────── */
+/* ── Cinematic Intro ──────────────────────────────────────── */
 (function(){
-  const preloader = document.querySelector('.preloader');
-  const bar = document.querySelector('.preloader-bar span');
-  if(!preloader) return;
+  const intro = document.querySelector('.cinematic-intro');
+  const bar = document.querySelector('.intro-bar span');
+  if(!intro) return;
   let progress = 0;
   const tick = setInterval(()=>{
-    progress += Math.random()*18 + 8;
+    progress += Math.random()*14 + 6;
     if(progress > 100) progress = 100;
     if(bar) bar.style.width = progress + '%';
     if(progress >= 100){
       clearInterval(tick);
-      setTimeout(()=> preloader.classList.add('done'), 300);
+      setTimeout(()=> intro.classList.add('done'), 600);
     }
-  },120);
+  },140);
   window.addEventListener('load',()=>{
     progress = 100;
     if(bar) bar.style.width = '100%';
-    setTimeout(()=> preloader.classList.add('done'), 400);
+    setTimeout(()=> intro.classList.add('done'), 800);
   });
 })();
 
@@ -1051,4 +1051,284 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   var canvas = document.getElementById('particle-canvas');
   if(!canvas) return;
   canvas.style.opacity = '0.45';
+})();
+
+/* ══════════════════════════════════════════════════════════
+   NEW INTERACTIVE FEATURES
+   ══════════════════════════════════════════════════════════ */
+
+/* ── RAS Bar Scroll Animation ────────────────────────────── */
+(function(){
+  var bars = document.querySelectorAll('.ras-bar');
+  if(!bars.length) return;
+  bars.forEach(function(bar){
+    var score = parseFloat(bar.getAttribute('data-score')) || 0;
+    bar.style.setProperty('--ras-pct', Math.min(score * 10, 100));
+  });
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('animated');
+        obs.unobserve(entry.target);
+      }
+    });
+  },{threshold:0.3});
+  bars.forEach(function(bar){ obs.observe(bar); });
+})();
+
+/* ── Position Filter Buttons ─────────────────────────────── */
+(function(){
+  function setupFilter(containerId, data, gridId, searchId){
+    var container = document.getElementById(containerId);
+    if(!container) return;
+    var btns = container.querySelectorAll('.filter-btn');
+    btns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        btns.forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        var filter = btn.getAttribute('data-filter');
+        var searchInput = document.getElementById(searchId);
+        var q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        var filtered = data.filter(function(item){
+          var matchFilter = filter === 'all' || item.position === filter;
+          var matchSearch = !q || [item.name,item.position,item.school,item.team].join(' ').toLowerCase().includes(q);
+          return matchFilter && matchSearch;
+        });
+        renderGrid(filtered, gridId);
+      });
+    });
+  }
+  setupFilter('alumniFilters', alumni, 'alumniGrid', 'alumniSearch');
+  setupFilter('roomFilters', roomBoard, 'roomGrid', 'roomSearch');
+})();
+
+/* ── Multi-Step Onboarding Form ──────────────────────────── */
+(function(){
+  var form = document.getElementById('contactForm');
+  if(!form) return;
+  var steps = form.querySelectorAll('.form-step');
+  var progressSteps = document.querySelectorAll('.progress-step');
+  var currentStep = 1;
+
+  function showStep(n){
+    steps.forEach(function(s){ s.classList.remove('active'); });
+    var target = document.getElementById('form-step-' + n);
+    if(target) target.classList.add('active');
+    progressSteps.forEach(function(ps){
+      var sn = parseInt(ps.getAttribute('data-step'));
+      ps.classList.remove('active','completed');
+      if(sn === n) ps.classList.add('active');
+      else if(sn < n) ps.classList.add('completed');
+    });
+    currentStep = n;
+    if(n === 4) buildReview();
+  }
+
+  function buildReview(){
+    var summary = document.getElementById('review-summary');
+    if(!summary) return;
+    var path = document.getElementById('form-selected-path');
+    var name = document.getElementById('form-name');
+    var email = document.getElementById('form-email');
+    var phone = document.getElementById('form-phone');
+    var level = document.getElementById('form-level');
+    var focus = document.getElementById('form-focus');
+    var msg = document.getElementById('form-message');
+    summary.innerHTML =
+      '<div class="review-row"><strong>Path</strong><span>' + (path ? path.value : '') + '</span></div>' +
+      '<div class="review-row"><strong>Name</strong><span>' + (name ? name.value : '') + '</span></div>' +
+      '<div class="review-row"><strong>Email</strong><span>' + (email ? email.value : '') + '</span></div>' +
+      '<div class="review-row"><strong>Phone</strong><span>' + (phone ? phone.value : '—') + '</span></div>' +
+      '<div class="review-row"><strong>Level</strong><span>' + (level ? level.value : '') + '</span></div>' +
+      '<div class="review-row"><strong>Focus</strong><span>' + (focus ? focus.value : '—') + '</span></div>' +
+      '<div class="review-row"><strong>Message</strong><span>' + (msg ? msg.value : '') + '</span></div>';
+  }
+
+  // Next/Back buttons
+  form.addEventListener('click', function(e){
+    var btn = e.target.closest('.form-next');
+    if(btn){
+      var next = parseInt(btn.getAttribute('data-next'));
+      if(next === 2){
+        var pathInput = document.getElementById('form-selected-path');
+        if(!pathInput || !pathInput.value){ return; }
+      }
+      if(next === 3){
+        var nameEl = document.getElementById('form-name');
+        var emailEl = document.getElementById('form-email');
+        if(!nameEl.value.trim() || !emailEl.value.trim()){
+          nameEl.reportValidity();
+          emailEl.reportValidity();
+          return;
+        }
+      }
+      showStep(next);
+      return;
+    }
+    var back = e.target.closest('.form-back');
+    if(back){
+      showStep(parseInt(back.getAttribute('data-back')));
+      return;
+    }
+    var pathBtn = e.target.closest('.form-path-btn');
+    if(pathBtn){
+      form.querySelectorAll('.form-path-btn').forEach(function(b){ b.classList.remove('selected'); });
+      pathBtn.classList.add('selected');
+      var val = pathBtn.getAttribute('data-value');
+      var pathHidden = document.getElementById('form-selected-path');
+      if(pathHidden) pathHidden.value = val;
+      var levelSelect = document.getElementById('form-level');
+      if(levelSelect){
+        for(var i=0;i<levelSelect.options.length;i++){
+          if(levelSelect.options[i].text === val){
+            levelSelect.selectedIndex = i;
+            break;
+          }
+        }
+      }
+      var nextBtn = form.querySelector('#form-step-1 .form-next');
+      if(nextBtn) nextBtn.disabled = false;
+    }
+  });
+
+  // Draft chime on submit
+  var audio = new Audio('nfl-draft-chime.mp3');
+  audio.preload = 'auto';
+  var submitted = false;
+  function submitForm(){
+    if(submitted) return;
+    submitted = true;
+    HTMLFormElement.prototype.submit.call(form);
+  }
+  form.addEventListener('submit', function(e){
+    if(submitted) return;
+    e.preventDefault();
+    var finished = false;
+    var continueSubmit = function(){
+      if(finished) return;
+      finished = true;
+      submitForm();
+    };
+    try{
+      audio.pause();
+      audio.currentTime = 0;
+      var playPromise = audio.play();
+      audio.onended = continueSubmit;
+      setTimeout(continueSubmit, 1600);
+      if(playPromise && typeof playPromise.then === 'function'){
+        playPromise.catch(function(){ continueSubmit(); });
+      }
+    }catch(err){
+      continueSubmit();
+    }
+  });
+})();
+
+/* ── Find Your Path ──────────────────────────────────────── */
+(function(){
+  var cards = document.querySelectorAll('.path-card');
+  var result = document.getElementById('path-result');
+  if(!cards.length) return;
+
+  var messages = {
+    'middle-school': 'Foundation training at PPF builds the movement quality, coordination, and athletic habits that separate athletes early. Start building the base now.',
+    'high-school': 'Speed, strength, and position-specific development to prepare for college recruiting, camps, and next-level competition. The work starts here.',
+    'college': 'Advanced performance training, measurable development, and position work for athletes competing at the collegiate level and preparing for evaluation.',
+    'draft-prep': 'Full-cycle combine and pro day preparation — verified testing, measurable gains, and a profile built to hold up when the room is watching.',
+    'adult': 'Structured performance training with elite-level programming, accountability, and results. Built for adults who train with purpose.',
+    'recovery-only': 'Access our full recovery suite — compression, PEMF, red light, infrared sauna, and cold plunge — on your schedule.',
+    'parent': 'We welcome family conversations. Learn about our programs, tour the facility, and see what structured development looks like at PPF.'
+  };
+
+  cards.forEach(function(card){
+    card.addEventListener('click', function(){
+      cards.forEach(function(c){ c.classList.remove('selected'); });
+      card.classList.add('selected');
+      var path = card.getAttribute('data-path');
+      if(result && messages[path]){
+        result.innerHTML = '<div class="path-message">' + messages[path] + ' <a href="#contact" class="btn primary" style="margin-top:16px;display:inline-flex">Start Your Application</a></div>';
+      }
+    });
+  });
+})();
+
+/* ── RAS Score Simulator ─────────────────────────────────── */
+(function(){
+  var calcBtn = document.getElementById('sim-calculate');
+  var resultEl = document.getElementById('sim-result');
+  var compEl = document.getElementById('sim-comparison');
+  if(!calcBtn) return;
+
+  var ppfAthletes = [
+    {name:'Jack Coco',score:9.92},{name:'Jalen Camp',score:9.78},
+    {name:'Sean Martin',score:9.68},{name:'DK Kaufman',score:9.35},
+    {name:'Dymere Miller',score:9.01},{name:'Kyler Baugh',score:8.56},
+    {name:'Cam Bright',score:8.45},{name:'Omar Dollison',score:8.35},
+    {name:'Travis Bell',score:8.27},{name:'Mike Allen',score:8.09},
+    {name:'Dezmond Tell',score:7.91},{name:'Robert Kennedy',score:7.63},
+    {name:'Tobias Oliver',score:7.26},{name:'Ajani Kerr',score:7.21}
+  ];
+
+  calcBtn.addEventListener('click', function(){
+    var forty = parseFloat(document.getElementById('sim-forty').value);
+    var vert = parseFloat(document.getElementById('sim-vert').value);
+    var bench = parseFloat(document.getElementById('sim-bench').value);
+    var weight = parseFloat(document.getElementById('sim-weight').value);
+
+    if(!forty && !vert && !bench){
+      resultEl.innerHTML = '<p style="color:var(--orange)">Please enter at least one measurable to calculate.</p>';
+      return;
+    }
+
+    var scores = [];
+    if(forty >= 4.0 && forty <= 6.0){
+      scores.push(Math.max(0, Math.min(10, (6.0 - forty) / 0.2)));
+    }
+    if(vert >= 15 && vert <= 50){
+      scores.push(Math.max(0, Math.min(10, (vert - 20) / 2.5)));
+    }
+    if(bench >= 0 && bench <= 50){
+      scores.push(Math.max(0, Math.min(10, bench / 3.8)));
+    }
+    if(weight >= 100 && weight <= 400){
+      scores.push(Math.max(0, Math.min(10, 5 + (weight - 200) / 80)));
+    }
+
+    if(!scores.length){
+      resultEl.innerHTML = '<p style="color:var(--orange)">Please enter valid values in the fields above.</p>';
+      return;
+    }
+
+    var composite = scores.reduce(function(a,b){ return a+b; },0) / scores.length;
+    composite = Math.min(10, Math.max(0, composite));
+
+    resultEl.innerHTML =
+      '<div class="score-display">' + composite.toFixed(2) + '</div>' +
+      '<div class="score-label">Estimated Composite Athletic Score (out of 10.00)</div>';
+
+    var html = '';
+    var placed = false;
+    ppfAthletes.forEach(function(a){
+      if(!placed && composite >= a.score){
+        html += '<div class="sim-athlete" style="border-color:rgba(255,106,0,.4);background:rgba(255,106,0,.08)"><strong>You — ' + composite.toFixed(2) + '</strong></div>';
+        placed = true;
+      }
+      html += '<div class="sim-athlete">' + a.name + ' — <strong>' + a.score.toFixed(2) + '</strong></div>';
+    });
+    if(!placed){
+      html += '<div class="sim-athlete" style="border-color:rgba(255,106,0,.4);background:rgba(255,106,0,.08)"><strong>You — ' + composite.toFixed(2) + '</strong></div>';
+    }
+    compEl.innerHTML = html;
+  });
+})();
+
+/* ── Sound Toggle ────────────────────────────────────────── */
+(function(){
+  var toggle = document.getElementById('sound-toggle');
+  if(!toggle) return;
+  var soundOn = false;
+  toggle.addEventListener('click', function(){
+    soundOn = !soundOn;
+    toggle.classList.toggle('active', soundOn);
+  });
 })();

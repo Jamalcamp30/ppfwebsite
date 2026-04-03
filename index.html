@@ -9,19 +9,79 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css"/>
+<!-- Organization Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "PPF Athletics",
+  "url": "https://ppfathletics.com",
+  "logo": "https://static.wixstatic.com/media/86a15f_872649b65d214d5f81965bb77a2a2039~mv2.png",
+  "description": "PPF Athletics 2027 NFL Combine and Pro Day Prep in Cumming, Georgia.",
+  "sameAs": [
+    "https://www.instagram.com/ppfathletics/",
+    "https://www.facebook.com/PPFAthletics/",
+    "https://www.youtube.com/@powerperformancefitness1507/feature"
+  ]
+}
+</script>
+<!-- LocalBusiness Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "PPF Athletics",
+  "description": "Speed, power, position work, recovery, and measurable development built for serious prospects.",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "7721 Majors Rd",
+    "addressLocality": "Cumming",
+    "addressRegion": "GA",
+    "postalCode": "30041",
+    "addressCountry": "US"
+  },
+  "telephone": ["+1-678-910-3080", "+1-678-938-9668"],
+  "email": ["rebecca@ppfathletics.com", "richard@ppfathletics.com"],
+  "url": "https://ppfathletics.com",
+  "openingHours": "Mo-Sa 06:00-20:00"
+}
+</script>
+<!-- VideoObject Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "VideoObject",
+  "name": "Jalen Camp — 30 Bench Press Reps at Georgia Tech Pro Day",
+  "description": "Jalen Camp posts 30 reps on the 225-pound bench press at Georgia Tech Pro Day in 2021, a combine-caliber benchmark.",
+  "thumbnailUrl": "Jalen.Camp.Texans.featured.latest.jpg",
+  "uploadDate": "2021-04-01",
+  "contentUrl": "IMG_0371.MOV"
+}
+</script>
 </head>
 <body>
 
 <!-- Cursor Glow -->
 <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
 
-<!-- Preloader -->
-<div class="preloader" aria-hidden="true">
-  <div class="preloader-logo">
-    <img alt="PPF Athletics" src="https://static.wixstatic.com/media/86a15f_872649b65d214d5f81965bb77a2a2039~mv2.png/v1/fill/w_218%2Ch_131%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01%2Cenc_avif%2Cquality_auto/PPF%20logo%20%28dark%20background%29.png"/>
+<!-- Cinematic Intro -->
+<div class="cinematic-intro" aria-hidden="true">
+  <div class="intro-vignette"></div>
+  <div class="intro-content">
+    <div class="intro-logo-reveal">
+      <img alt="PPF Athletics" src="https://static.wixstatic.com/media/86a15f_872649b65d214d5f81965bb77a2a2039~mv2.png/v1/fill/w_218%2Ch_131%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01%2Cenc_avif%2Cquality_auto/PPF%20logo%20%28dark%20background%29.png" width="218" height="131"/>
+    </div>
+    <div class="intro-line"></div>
+    <div class="intro-tagline">Power • Performance • Fitness</div>
+    <div class="intro-bar"><span></span></div>
   </div>
-  <div class="preloader-bar"><span></span></div>
 </div>
+
+<!-- Sound Toggle -->
+<button class="sound-toggle" id="sound-toggle" aria-label="Toggle sound" title="Toggle sound">
+  <svg class="sound-on" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8.5v7a4.49 4.49 0 002.5-3.5zM14 3.23v2.06a7.007 7.007 0 010 13.42v2.06A9.007 9.007 0 0014 3.23z"/></svg>
+  <svg class="sound-off" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M16.5 12A4.5 4.5 0 0014 8.5v2.14l2.45 2.45c.03-.2.05-.39.05-.59zm2.5 0a7 7 0 00-.57-2.79l-1.5 1.5A4.98 4.98 0 0117 12h2zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 003.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4l-1.88 1.88L12 7.76V4z"/></svg>
+</button>
 
 <!-- Scroll Progress Bar -->
 <div class="scroll-progress"></div>
@@ -39,10 +99,12 @@
 <a href="#system">System</a>
 <a href="#draft-board">Draft Board</a>
 <a href="#ras-board">RAS</a>
+<a href="#ras-simulator">Simulator</a>
 <a href="#measurables">Measurables</a>
 <a href="#coach">Coaches</a>
 <a href="#media">Testimonials</a>
 <a href="#recovery">Recovery</a>
+<a href="#find-path">Find Path</a>
 <a href="#contact">Submit</a>
 </div>
 <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -56,14 +118,20 @@
       <div class="ticker-text">Washington, D.C. <span>•</span> April 27, 2027 <span>•</span> 8:00 PM ET</div>
     </div>
     <div class="ticker-countdown" id="draft-countdown">
-      <div class="ticker-unit"><strong id="draft-days">403</strong><span>Days</span></div>
-      <div class="ticker-unit"><strong id="draft-hours">00</strong><span>Hours</span></div>
-      <div class="ticker-unit"><strong id="draft-minutes">00</strong><span>Minutes</span></div>
-      <div class="ticker-unit"><strong id="draft-seconds">00</strong><span>Seconds</span></div>
+      <div class="ticker-unit"><strong id="draft-days">---</strong><span>Days</span></div>
+      <div class="ticker-unit"><strong id="draft-hours">--</strong><span>Hours</span></div>
+      <div class="ticker-unit"><strong id="draft-minutes">--</strong><span>Minutes</span></div>
+      <div class="ticker-unit"><strong id="draft-seconds">--</strong><span>Seconds</span></div>
     </div>
   </div>
 </section>
 <header class="hero" id="top">
+<div class="hero-video-wrap" aria-hidden="true">
+  <video class="hero-video" autoplay muted loop playsinline poster="Jalen.Camp.Texans.featured.latest.jpg">
+    <source src="IMG_0371.MOV" type="video/quicktime">
+  </video>
+  <div class="hero-video-overlay"></div>
+</div>
 <div class="container hero-grid">
 <div class="reveal">
 <span class="eyebrow">2027 combine and pro day prep</span>
@@ -132,20 +200,20 @@
 </div>
 <div class="stack reveal">
 <div class="card image-card">
-<img alt="Jalen Camp profile graphic" src="Jalen.Camp.DraftProof.png" style="aspect-ratio:16/9;object-fit:contain;object-position:center center;background:transparent"/>
+<img loading="lazy" alt="Jalen Camp profile graphic" src="Jalen.Camp.DraftProof.png" style="aspect-ratio:16/9;object-fit:contain;object-position:center center;background:transparent"/>
 <div class="label"><strong>Draft proof</strong><span>Profiles sharpen here and carry into draft weekend, camp evaluations, and next-level conversations.</span></div>
 </div>
 <div class="cards-4">
 <div class="card image-card draft-proof-card">
-<img alt="Travis Bell draft graphic" src="710214b4-c6e6-4962-b402-5a6ce6d115d5.png"/>
+<img loading="lazy" alt="Travis Bell draft graphic" src="710214b4-c6e6-4962-b402-5a6ce6d115d5.png"/>
 <div class="label"><strong>Historic results</strong><span>Real opportunity follows real preparation.</span></div>
 </div>
 <div class="card image-card carryover-card">
-<img alt="Ahmarean Brown NFL carryover image" class="carryover-card-image" class="carryover-card-image" src="ahmarean brown.webp"/>
+<img loading="lazy" alt="Ahmarean Brown NFL carryover image" class="carryover-card-image" class="carryover-card-image" src="ahmarean brown.webp"/>
 <div class="label"><strong class="carryover-card-title">NEXT-LEVEL CARRYOVER</strong><span class="carryover-card-copy">The work should still look right after the testing cycle.</span></div>
 </div>
 <div class="combine-note reveal">
-<img alt="Sean Martin player photo" src="Sean.Martin.WVU.NEW.png"/>
+<img loading="lazy" alt="Sean Martin player photo" src="Sean.Martin.WVU.NEW.png"/>
 <div class="combine-copy">
 <h4>Sean Martin</h4>
 <p>PPF carried a true NFL Combine participant through the cycle with a profile built on front-line size, verified testing strength, and movement that translates cleanly in the defensive front.</p>
@@ -153,7 +221,7 @@
 </div>
 </div>
 <div class="combine-note reveal">
-<img alt="Torricelli Simpkins player photo" src="Torricelli.Simpkins.SC.png"/>
+<img loading="lazy" alt="Torricelli Simpkins player photo" src="Torricelli.Simpkins.SC.png"/>
 <div class="combine-copy">
 <h4>Torricelli Simpkins</h4>
 <p>Few rooms can point to combine-level offensive line size and movement in the same view. This profile adds another clear marker of what the work can look like when it reaches the highest level and through the NFL Combine process.</p>
@@ -179,7 +247,7 @@
 <div class="board-top">
 <div class="featured-spotlight">
 <article class="athlete-card reveal jalen-card">
-<div class="thumb"><img alt="Jalen Camp professional photo" src="Jalen.Camp.Texans.featured.latest.jpg"/></div>
+<div class="thumb"><img loading="lazy" alt="Jalen Camp professional photo" src="Jalen.Camp.Texans.featured.latest.jpg"/></div>
 <div class="content">
 <div class="overline">Featured draft board</div>
 <h3>Jalen Camp</h3>
@@ -188,7 +256,7 @@
 <div class="actions"><a class="inline hot" href="https://ramblinwreck.com/camp-selected-in-6th-round-of-nfl-draft/" rel="noopener noreferrer" target="_blank">Official draft story</a><span class="inline">39.5″ vert · 30 reps</span></div>
 </div></article>
 <article class="athlete-card reveal travis-card">
-<div class="thumb"><img alt="Travis Bell professional photo" src="Travis.Bell.2.jpeg"/></div>
+<div class="thumb"><img loading="lazy" alt="Travis Bell professional photo" src="Travis.Bell.2.jpeg"/></div>
 <div class="content">
 <div class="overline">Featured draft board</div>
 <h3>Travis Bell</h3>
@@ -197,7 +265,7 @@
 <div class="actions"><a class="inline hot" href="https://ksuowls.com/news/2023/4/29/football-travis-bell-makes-history-as-first-owl-selected-in-nfl-draft.aspx" rel="noopener noreferrer" target="_blank">Official draft story</a><span class="inline">305 lb frame · 30 reps</span></div>
 </div></article>
 <article class="athlete-card reveal nate-card">
-<div class="thumb"><img alt="Nathan Cottrell professional photo" src="Nate.Cottrell.jpeg"/></div>
+<div class="thumb"><img loading="lazy" alt="Nathan Cottrell professional photo" src="Nate.Cottrell.jpeg"/></div>
 <div class="content">
 <div class="overline">Featured draft board</div>
 <h3>Nathan Cottrell</h3>
@@ -206,7 +274,7 @@
 <div class="actions"><a class="inline hot" href="https://ramblinwreck.com/cottrell-signs-with-jaguars/" rel="noopener noreferrer" target="_blank">Official signing story</a><span class="inline">4.38 forty · 29 reps</span></div>
 </div></article>
 <article class="athlete-card reveal">
-<div class="thumb"><img alt="Jack Coco professional photo" src="Jack.Coco.png"/></div>
+<div class="thumb"><img loading="lazy" alt="Jack Coco professional photo" src="Jack.Coco.png"/></div>
 <div class="content">
 <div class="overline">Featured draft board</div>
 <h3>Jack Coco</h3>
@@ -215,7 +283,7 @@
 <div class="actions"><a class="inline hot" href="https://www.packers.com/news/longform/long-odds-didn-t-deter-jack-coco-from-chasing-his-nfl-dream" rel="noopener noreferrer" target="_blank">Official Packers story</a><span class="inline">Special teams value</span></div>
 </div></article>
 <article class="athlete-card reveal kyler-card">
-<div class="thumb"><img alt="Kyler Baugh training photo" src="78106e1b-2316-486c-88f1-dd55eeed4922.png"/></div>
+<div class="thumb"><img loading="lazy" alt="Kyler Baugh training photo" src="78106e1b-2316-486c-88f1-dd55eeed4922.png"/></div>
 <div class="content">
 <div class="overline">Featured draft board</div>
 <h3>Kyler Baugh</h3>
@@ -224,7 +292,7 @@
 <div class="actions"><a class="inline hot" href="https://www.neworleanssaints.com/news/new-orleans-saints-agree-to-terms-with-15-undrafted-free-agents" rel="noopener noreferrer" target="_blank">Official Saints signing</a><span class="inline">305 lbs · 33.5″ vert · 34 reps</span></div>
 </div></article>
 <article class="athlete-card reveal">
-<div class="thumb"><img alt="Torricelli Simpkins professional photo" src="Torricelli.Simpkins.featured.new.jpg"/></div>
+<div class="thumb"><img loading="lazy" alt="Torricelli Simpkins professional photo" src="Torricelli.Simpkins.featured.new.jpg"/></div>
 <div class="content">
 <div class="overline">Featured draft board</div>
 <h3>Torricelli Simpkins</h3>
@@ -233,7 +301,7 @@
 <div class="actions"><a class="inline hot" href="https://www.neworleanssaints.com/team/players-roster/torricelli-simpkins-iii/" rel="noopener noreferrer" target="_blank">Official Saints roster</a><span class="inline">312 lb frame</span></div>
 </div></article>
 <article class="athlete-card reveal dymere-card">
-<div class="thumb"><img alt="Dymere Miller player photo" src="04286b51-da30-4a14-9689-581c51b5628d.jpeg"/></div>
+<div class="thumb"><img loading="lazy" alt="Dymere Miller player photo" src="04286b51-da30-4a14-9689-581c51b5628d.jpeg"/></div>
 <div class="content">
 <div class="overline">Featured draft board</div>
 <h3>Dymere Miller</h3>
@@ -242,7 +310,7 @@
 <div class="actions"><a class="inline hot" href="https://www.newyorkjets.com/news/jets-2025-undrafted-free-agents" rel="noopener noreferrer" target="_blank">Official Jets signing</a><span class="inline">4.32 forty · 9.01 RAS</span></div>
 </div></article>
 <article class="athlete-card reveal">
-<div class="thumb"><img alt="Ahmarean Brown player photo" src="AB.Brown.png"/></div>
+<div class="thumb"><img loading="lazy" alt="Ahmarean Brown player photo" src="AB.Brown.png"/></div>
 <div class="content">
 <div class="overline">Featured draft board</div>
 <h3>Ahmarean Brown</h3>
@@ -251,7 +319,7 @@
 <div class="actions"><a class="inline hot" href="https://heavy.com/sports/nfl/cleveland-browns/ahmarean-brown-signed-udfa-jamari-thrash/" rel="noopener noreferrer" target="_blank">Browns signing story</a><span class="inline">4.29 featured speed</span></div>
 </div></article>
 <article class="athlete-card reveal">
-<div class="thumb"><img alt="Robert Cooper player photo" src="Robert.Cooper.jpeg"/></div>
+<div class="thumb"><img loading="lazy" alt="Robert Cooper player photo" src="Robert.Cooper.jpeg"/></div>
 <div class="content">
 <div class="overline">Featured draft board</div>
 <h3>Robert Cooper</h3>
@@ -281,11 +349,38 @@
 <div class="search-row reveal">
 <input class="search" id="alumniSearch" placeholder="Search alumni by name, school, position, or team" type="text"/>
 </div>
+<div class="filter-row reveal" id="alumniFilters">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="WR">WR</button>
+  <button class="filter-btn" data-filter="DB">DB</button>
+  <button class="filter-btn" data-filter="DT">DT</button>
+  <button class="filter-btn" data-filter="DL">DL</button>
+  <button class="filter-btn" data-filter="OL">OL</button>
+  <button class="filter-btn" data-filter="LB">LB</button>
+  <button class="filter-btn" data-filter="RB">RB</button>
+  <button class="filter-btn" data-filter="S">S</button>
+  <button class="filter-btn" data-filter="LS">LS</button>
+</div>
 <div class="directory-grid reveal" id="alumniGrid"></div>
 </div>
 <div class="tab-panel hidden" id="tab-room">
 <div class="search-row reveal">
 <input class="search" id="roomSearch" placeholder="Search the full athlete board" type="text"/>
+</div>
+<div class="filter-row reveal" id="roomFilters">
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="WR">WR</button>
+  <button class="filter-btn" data-filter="DB">DB</button>
+  <button class="filter-btn" data-filter="DL">DL</button>
+  <button class="filter-btn" data-filter="DT">DT</button>
+  <button class="filter-btn" data-filter="OL">OL</button>
+  <button class="filter-btn" data-filter="LB">LB</button>
+  <button class="filter-btn" data-filter="RB">RB</button>
+  <button class="filter-btn" data-filter="TE">TE</button>
+  <button class="filter-btn" data-filter="EDGE">EDGE</button>
+  <button class="filter-btn" data-filter="S">S</button>
+  <button class="filter-btn" data-filter="CB">CB</button>
+  <button class="filter-btn" data-filter="ATH">ATH</button>
 </div>
 <div class="directory-grid reveal" id="roomGrid"></div>
 </div>
@@ -359,7 +454,7 @@
 <span class="eyebrow">Relative Athletic Score board</span>
 <h2 class="section-title reveal">Elite RAS profiles from athletes developed in our environment.</h2>
 <div class="panel reveal ras-hero-card">
-<img alt="Jalen Camp Pro Day graphic" src="jalen_camp_proday.jpg"/>
+<img loading="lazy" alt="Jalen Camp Pro Day graphic" src="jalen_camp_proday.jpg"/>
 </div>
 <div class="ras-intro-grid">
 <div class="panel reveal ras-summary-panel">
@@ -379,48 +474,56 @@
 <article class="mini-card reveal">
 <div class="kicker">Wide Receiver | 2021 class</div>
 <h3>Jalen Camp — 9.78 RAS</h3>
+<div class="ras-bar" data-score="9.78"></div>
 <p>All-time rank: #62 of 2,487 wide receiver profiles.</p>
 <div class="chips"><span class="chip">Georgia Tech</span><span class="chip">30 bench reps</span><span class="chip">39.5″ vertical</span></div>
 </article>
 <article class="mini-card reveal">
 <div class="kicker">Long Snapper | 2020 class</div>
 <h3>Jack Coco — 9.92 RAS</h3>
+<div class="ras-bar" data-score="9.92"></div>
 <p>All-time rank: #4 of 112 long snapper profiles.</p>
 <div class="chips"><span class="chip">Georgia Tech</span><span class="chip">Elite specialist profile</span><span class="chip">9.9+ marker</span></div>
 </article>
 <article class="mini-card reveal">
 <div class="kicker">Defensive Line | 2025 class</div>
 <h3>Sean Martin — 9.68 RAS</h3>
+<div class="ras-bar" data-score="9.68"></div>
 <p>All-time rank: #20 of 1,808 defensive line profiles.</p>
 <div class="chips"><span class="chip">West Virginia</span><span class="chip">NFL Combine participant</span><span class="chip">Front-line size</span></div>
 </article>
 <article class="mini-card reveal">
 <div class="kicker">Free Safety | 2025 class</div>
 <h3>DK Kaufman — 9.35 RAS</h3>
+<div class="ras-bar" data-score="9.35"></div>
 <p>All-time rank: #79 of 1,209 free safety profiles.</p>
 <div class="chips"><span class="chip">NC State</span><span class="chip">DB profile</span><span class="chip">Explosive testing</span></div>
 </article>
 <article class="mini-card reveal">
 <div class="kicker">Wide Receiver | 2025 class</div>
 <h3>Dymere Miller — 9.01 RAS</h3>
+<div class="ras-bar" data-score="9.01"></div>
 <p>All-time rank: #378 of 3,815 wide receiver profiles.</p>
 <div class="chips"><span class="chip">Rutgers</span><span class="chip">4.32 featured speed</span><span class="chip">9.0+ threshold</span></div>
 </article>
 <article class="mini-card reveal">
 <div class="kicker">Defensive Tackle | 2024 class</div>
 <h3>Kyler Baugh — 8.56 RAS</h3>
+<div class="ras-bar" data-score="8.56"></div>
 <p>All-time rank: #262 of 1,808 defensive tackle profiles.</p>
 <div class="chips"><span class="chip">Minnesota</span><span class="chip">305 lbs</span><span class="chip">34 bench reps</span></div>
 </article>
 <article class="mini-card reveal">
 <div class="kicker">Linebacker | 2023 class</div>
 <h3>Cam Bright — 8.45 RAS</h3>
+<div class="ras-bar" data-score="8.45"></div>
 <p>All-time rank: #421 of 2,648 linebacker profiles.</p>
 <div class="chips"><span class="chip">Washington / Pitt</span><span class="chip">LB profile</span><span class="chip">33 bench reps</span></div>
 </article>
 <article class="mini-card reveal">
 <div class="kicker">Wide Receiver | 2025 class</div>
 <h3>Omar Dollison — 8.35 RAS</h3>
+<div class="ras-bar" data-score="8.35"></div>
 <p>All-time rank: #676 of 3,815 wide receiver profiles.</p>
 <div class="chips"><span class="chip">James Madison</span><span class="chip">WR profile</span><span class="chip">4.46 forty</span></div>
 </article>
@@ -460,6 +563,39 @@
 </div>
 </div>
 </section>
+
+<!-- RAS Score Simulator -->
+<section class="section" id="ras-simulator">
+  <div class="container">
+    <span class="eyebrow">Signature tool</span>
+    <h2 class="section-title reveal">RAS Score Simulator</h2>
+    <p class="section-sub reveal">Enter your testing numbers and see where you'd rank among PPF athletes. This tool provides an estimated composite athletic score based on key combine measurables.</p>
+    <div class="simulator-panel reveal">
+      <div class="sim-inputs">
+        <div class="sim-field">
+          <label>40-yard dash (seconds)</label>
+          <input type="number" step="0.01" id="sim-forty" placeholder="4.50" min="4.0" max="6.0">
+        </div>
+        <div class="sim-field">
+          <label>Vertical jump (inches)</label>
+          <input type="number" step="0.5" id="sim-vert" placeholder="36" min="15" max="50">
+        </div>
+        <div class="sim-field">
+          <label>Bench press (reps at 225)</label>
+          <input type="number" id="sim-bench" placeholder="20" min="0" max="50">
+        </div>
+        <div class="sim-field">
+          <label>Body weight (lbs)</label>
+          <input type="number" id="sim-weight" placeholder="220" min="100" max="400">
+        </div>
+      </div>
+      <button class="btn primary sim-calculate" id="sim-calculate" type="button">Calculate Your Score</button>
+      <div class="sim-result" id="sim-result"></div>
+      <div class="sim-comparison" id="sim-comparison"></div>
+    </div>
+  </div>
+</section>
+
 <section class="section" id="measurables">
 <div class="container">
 <span class="eyebrow">Verified Performance Profile</span>
@@ -496,7 +632,7 @@ Your browser does not support the video tag.
 
     <div class="coach-hero reveal">
       <article class="card coach-hero-card">
-        <div class="coach-photo"><img src="Richard.Pose.jpg" alt="Richard Camp"></div>
+        <div class="coach-photo"><img loading="lazy" src="Richard.Pose.jpg" alt="Richard Camp"></div>
         <div class="coach-copy">
           <span class="role">Head strength coach • performance lead</span>
           <h3>Richard Camp</h3>
@@ -512,12 +648,12 @@ Your browser does not support the video tag.
     </div>
 
     <div class="coach-grid reveal">
-      <article class="card coach-card"><div class="thumb"><img src="TJ.Brown WR.Coach.jpeg" alt="TJ Brown"></div><div class="body"><span class="role">Wide receivers / tight ends</span><h4>TJ Brown</h4><p>Release detail, route movement, transition efficiency, and receiver-specific field work built for timing, separation, and clean evaluation.</p></div></article>
-      <article class="card coach-card"><div class="thumb"><img src="Marcus.howard.jpeg" alt="Marcus Howard"></div><div class="body"><span class="role">Defensive line</span><h4>Marcus Howard</h4><p>First-step explosiveness, leverage, hand usage, movement skills, and front-seven detail that carries from drills to pro-day work.</p></div></article>
-      <article class="card coach-card"><div class="thumb"><img src="Ben.Grubbs.jpeg" alt="Ben Grubbs"></div><div class="body"><span class="role">Offensive line</span><h4>Ben Grubbs</h4><p>Set mechanics, base, posture, strike timing, and movement for offensive linemen who need cleaner technique and stronger testing carryover.</p></div></article>
-      <article class="card coach-card"><div class="thumb"><img src="TJ.Heath.jpeg" alt="TJ Heath"></div><div class="body"><span class="role">Safeties / defensive backs</span><h4>TJ Heath</h4><p>Pedal mechanics, transition speed, range, ball movement, and DB-specific positional work built around cleaner movement and sharper finish.</p></div></article>
-      <article class="card coach-card"><div class="thumb"><img src="Coach.Allen.jpeg" alt="Coach Allen"></div><div class="body"><span class="role">Linebackers</span><h4>Coach Allen</h4><p>Read-step discipline, change of direction, strike timing, coverage movement, and box-to-space detail for linebackers who need range and control.</p></div></article>
-      <article class="card coach-card"><div class="thumb"><img src="Coach Marquell Beckwith.jpeg" alt="Marquell Beckwith"></div><div class="body"><span class="role">Running backs</span><h4>Marquell Beckwith</h4><p>Burst, pad level, path efficiency, lateral control, pass-game movement, and backfield detail shaped for next-level evaluation.</p></div></article>
+      <article class="card coach-card"><div class="thumb"><img loading="lazy" src="TJ.Brown WR.Coach.jpeg" alt="TJ Brown"></div><div class="body"><span class="role">Wide receivers / tight ends</span><h4>TJ Brown</h4><p>Release detail, route movement, transition efficiency, and receiver-specific field work built for timing, separation, and clean evaluation.</p></div></article>
+      <article class="card coach-card"><div class="thumb"><img loading="lazy" src="Marcus.howard.jpeg" alt="Marcus Howard"></div><div class="body"><span class="role">Defensive line</span><h4>Marcus Howard</h4><p>First-step explosiveness, leverage, hand usage, movement skills, and front-seven detail that carries from drills to pro-day work.</p></div></article>
+      <article class="card coach-card"><div class="thumb"><img loading="lazy" src="Ben.Grubbs.jpeg" alt="Ben Grubbs"></div><div class="body"><span class="role">Offensive line</span><h4>Ben Grubbs</h4><p>Set mechanics, base, posture, strike timing, and movement for offensive linemen who need cleaner technique and stronger testing carryover.</p></div></article>
+      <article class="card coach-card"><div class="thumb"><img loading="lazy" src="TJ.Heath.jpeg" alt="TJ Heath"></div><div class="body"><span class="role">Safeties / defensive backs</span><h4>TJ Heath</h4><p>Pedal mechanics, transition speed, range, ball movement, and DB-specific positional work built around cleaner movement and sharper finish.</p></div></article>
+      <article class="card coach-card"><div class="thumb"><img loading="lazy" src="Coach.Allen.jpeg" alt="Coach Allen"></div><div class="body"><span class="role">Linebackers</span><h4>Coach Allen</h4><p>Read-step discipline, change of direction, strike timing, coverage movement, and box-to-space detail for linebackers who need range and control.</p></div></article>
+      <article class="card coach-card"><div class="thumb"><img loading="lazy" src="Coach Marquell Beckwith.jpeg" alt="Marquell Beckwith"></div><div class="body"><span class="role">Running backs</span><h4>Marquell Beckwith</h4><p>Burst, pad level, path efficiency, lateral control, pass-game movement, and backfield detail shaped for next-level evaluation.</p></div></article>
     </div>
   </div>
 </section>
@@ -547,9 +683,11 @@ Your browser does not support the video tag.
 <h2 class="section-title reveal">Fuel. Recover. Perform.</h2>
 <p class="section-sub reveal">A fully integrated system built to support performance, recovery, and long-term durability. Every service is structured with precision and delivered through trusted specialists and performance-driven protocols.</p>
 
-<div class="performance-services-grid reveal">
-  <details class="service-card" open>
-    <summary>
+<!-- Nutrition Immersive Card -->
+<div class="recovery-modalities-grid reveal">
+  <article class="recovery-modality-card">
+    <div class="modality-icon">🥗</div>
+    <div class="modality-content">
       <div class="service-label">Nutrition &amp; Performance Fueling</div>
       <h3>Structured. Personalized. Performance-Driven.</h3>
       <p>A guided nutrition system designed to align directly with training demands, recovery needs, and individual goals.</p>
@@ -560,41 +698,121 @@ Your browser does not support the video tag.
         <li>Post-Training Recovery Shakes</li>
         <li>Pre-Training Supplements &amp; Probiotics</li>
       </ul>
-      <div class="service-action">View Details</div>
-    </summary>
-    <div class="service-detail-panel">
-      <p>Each plan is built around training volume, recovery demands, body-composition goals, food preferences, and consistency standards. The objective is to keep fueling connected to output, recovery, and long-term performance.</p>
-      <div class="service-detail-grid">
-        <div><strong>What it covers</strong><span>Meal structure, recovery support, supplementation, and guided weekly accountability.</span></div>
-        <div><strong>Why it matters</strong><span>Nutrition should reinforce the work, improve recovery quality, and keep performance trending the right way.</span></div>
+      <div class="modality-details">
+        <div class="modality-detail-item"><strong>What it covers</strong><span>Meal structure, recovery support, supplementation, and guided weekly accountability.</span></div>
+        <div class="modality-detail-item"><strong>Who it's for</strong><span>Athletes in combine prep, draft cycles, or long-term development blocks who need fueling precision.</span></div>
+        <div class="modality-detail-item"><strong>Why it matters</strong><span>Nutrition should reinforce the work, improve recovery quality, and keep performance trending the right way.</span></div>
       </div>
     </div>
-  </details>
+  </article>
 
-  <details class="service-card">
-    <summary>
-      <div class="service-label">Recovery &amp; Rehabilitation</div>
-      <h3>Integrated Recovery. Elite-Level Care.</h3>
-      <p>Delivered through our partnership with Alliance and R5, providing access to advanced recovery and therapeutic services that support healing, circulation, and performance longevity.</p>
-      <ul class="service-bullets">
-        <li>Compression Therapy (Boots)</li>
-        <li>Pulsed Electromagnetic Field (PEMF) Therapy</li>
-        <li>Amethyst Infrared PEMF Recovery Mat</li>
-        <li>Targeted PEMF Loop Therapy</li>
-        <li>Red Light Therapy</li>
-        <li>Infrared Sauna</li>
-        <li>Cold Plunge</li>
-      </ul>
-      <div class="service-action">Explore Recovery Services</div>
-    </summary>
-    <div class="service-detail-panel">
-      <p>Recovery is positioned as part of the performance system, not as a separate conversation. These modalities are used to support circulation, reduce inflammation, improve restoration quality, and help the body stay prepared for demanding training blocks.</p>
-      <div class="service-detail-grid">
-        <div><strong>What it covers</strong><span>Compression, PEMF-based therapy, infrared heat, cold immersion, and recovery tools selected to support durability and readiness.</span></div>
-        <div><strong>Why it matters</strong><span>The body should not only be pushed. It should be restored, maintained, and prepared for what comes next.</span></div>
+  <!-- Recovery Modality Cards -->
+  <article class="recovery-modality-card">
+    <div class="modality-icon">🦵</div>
+    <div class="modality-content">
+      <div class="service-label">Compression Therapy</div>
+      <h3>Pneumatic Recovery Boots</h3>
+      <p>Sequential compression that promotes circulation, reduces swelling, and accelerates lower-body recovery between sessions.</p>
+      <div class="modality-details">
+        <div class="modality-detail-item"><strong>What this does</strong><span>Enhances blood flow through sequential compression to flush metabolic waste and reduce soreness.</span></div>
+        <div class="modality-detail-item"><strong>When to use it</strong><span>Post-training, between sessions, and during heavy training blocks for lower-body recovery.</span></div>
       </div>
     </div>
-  </details>
+  </article>
+
+  <article class="recovery-modality-card">
+    <div class="modality-icon">⚡</div>
+    <div class="modality-content">
+      <div class="service-label">PEMF Therapy</div>
+      <h3>Pulsed Electromagnetic Field Recovery</h3>
+      <p>Advanced electromagnetic field therapy including amethyst infrared PEMF recovery mat and targeted PEMF loop therapy for deep-tissue recovery.</p>
+      <div class="modality-details">
+        <div class="modality-detail-item"><strong>What this does</strong><span>Stimulates cellular repair, reduces inflammation, and supports deep-tissue recovery at the cellular level.</span></div>
+        <div class="modality-detail-item"><strong>When to use it</strong><span>During recovery windows, injury rehab protocols, and for managing systemic inflammation.</span></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="recovery-modality-card">
+    <div class="modality-icon">🔴</div>
+    <div class="modality-content">
+      <div class="service-label">Red Light Therapy</div>
+      <h3>Photobiomodulation Recovery</h3>
+      <p>Near-infrared and red light wavelengths designed to support tissue repair, reduce inflammation, and enhance recovery quality.</p>
+      <div class="modality-details">
+        <div class="modality-detail-item"><strong>What this does</strong><span>Promotes mitochondrial function and cellular energy production to accelerate tissue repair.</span></div>
+        <div class="modality-detail-item"><strong>When to use it</strong><span>Pre or post-training, for injury recovery, and as a regular maintenance modality.</span></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="recovery-modality-card">
+    <div class="modality-icon">🔥</div>
+    <div class="modality-content">
+      <div class="service-label">Infrared Sauna</div>
+      <h3>Deep-Heat Recovery</h3>
+      <p>Infrared heat therapy that promotes detoxification, increases circulation, supports muscle recovery, and improves overall readiness.</p>
+      <div class="modality-details">
+        <div class="modality-detail-item"><strong>What this does</strong><span>Penetrating infrared heat increases core temperature, promotes sweating, and supports cardiovascular conditioning.</span></div>
+        <div class="modality-detail-item"><strong>When to use it</strong><span>Post-training recovery, rest days, and as part of a structured recovery rotation.</span></div>
+      </div>
+    </div>
+  </article>
+
+  <article class="recovery-modality-card">
+    <div class="modality-icon">❄️</div>
+    <div class="modality-content">
+      <div class="service-label">Cold Plunge</div>
+      <h3>Cold Immersion Therapy</h3>
+      <p>Cold water immersion for vasoconstriction, inflammation management, nervous system activation, and accelerated recovery.</p>
+      <div class="modality-details">
+        <div class="modality-detail-item"><strong>What this does</strong><span>Triggers vasoconstriction, reduces inflammation, and activates the nervous system for faster recovery.</span></div>
+        <div class="modality-detail-item"><strong>When to use it</strong><span>Post-training, after high-intensity sessions, and for nervous system reset between training blocks.</span></div>
+      </div>
+    </div>
+  </article>
+</div>
+
+<!-- Recovery Journey Timeline -->
+<div class="recovery-timeline reveal">
+  <h3 class="recovery-timeline-title">The Recovery Journey</h3>
+  <div class="timeline-steps">
+    <div class="timeline-step">
+      <div class="timeline-number">01</div>
+      <div class="timeline-label">Train</div>
+      <div class="timeline-desc">High-output session</div>
+    </div>
+    <div class="timeline-connector"></div>
+    <div class="timeline-step">
+      <div class="timeline-number">02</div>
+      <div class="timeline-label">Compress</div>
+      <div class="timeline-desc">Flush &amp; circulate</div>
+    </div>
+    <div class="timeline-connector"></div>
+    <div class="timeline-step">
+      <div class="timeline-number">03</div>
+      <div class="timeline-label">Restore</div>
+      <div class="timeline-desc">PEMF &amp; red light</div>
+    </div>
+    <div class="timeline-connector"></div>
+    <div class="timeline-step">
+      <div class="timeline-number">04</div>
+      <div class="timeline-label">Contrast</div>
+      <div class="timeline-desc">Sauna &amp; cold plunge</div>
+    </div>
+    <div class="timeline-connector"></div>
+    <div class="timeline-step">
+      <div class="timeline-number">05</div>
+      <div class="timeline-label">Fuel</div>
+      <div class="timeline-desc">Nutrition &amp; recovery shake</div>
+    </div>
+    <div class="timeline-connector"></div>
+    <div class="timeline-step">
+      <div class="timeline-number">06</div>
+      <div class="timeline-label">Ready</div>
+      <div class="timeline-desc">Prepared for next session</div>
+    </div>
+  </div>
 </div>
 
 <div class="performance-standard reveal">
@@ -603,6 +821,53 @@ Your browser does not support the video tag.
   <p>Training, nutrition, and recovery are aligned under one structure—designed to maximize output, accelerate recovery, and sustain performance over time. Everything is intentional. Everything is built to perform.</p>
 </div>
 </div>
+</section>
+
+<!-- Find Your Path -->
+<section class="section" id="find-path">
+  <div class="container">
+    <span class="eyebrow">Personalized experience</span>
+    <h2 class="section-title reveal">Find Your Path</h2>
+    <p class="section-sub reveal">Select the option that best describes your situation. We'll guide you to the right program, the right information, and the right next step.</p>
+    <div class="path-grid reveal">
+      <button class="path-card" data-path="middle-school" type="button">
+        <div class="path-icon">🏈</div>
+        <h3>Middle School Athlete</h3>
+        <p>Foundation-level speed, movement, and coordination development for young athletes building toward high school competition.</p>
+      </button>
+      <button class="path-card" data-path="high-school" type="button">
+        <div class="path-icon">⚡</div>
+        <h3>High School Athlete</h3>
+        <p>Speed, strength, and position-specific development built to prepare athletes for college recruiting and next-level performance.</p>
+      </button>
+      <button class="path-card" data-path="college" type="button">
+        <div class="path-icon">🎯</div>
+        <h3>College Athlete</h3>
+        <p>Advanced performance training, testing preparation, and position work for athletes competing at the collegiate level.</p>
+      </button>
+      <button class="path-card" data-path="draft-prep" type="button">
+        <div class="path-icon">🏆</div>
+        <h3>Draft / Combine Prep</h3>
+        <p>Full-cycle combine and pro day preparation with verified testing, measurable development, and profile-building structure.</p>
+      </button>
+      <button class="path-card" data-path="adult" type="button">
+        <div class="path-icon">💪</div>
+        <h3>Adult Performance</h3>
+        <p>Structured performance training for adults who want elite-level programming, accountability, and measurable results.</p>
+      </button>
+      <button class="path-card" data-path="recovery-only" type="button">
+        <div class="path-icon">🧊</div>
+        <h3>Recovery Only</h3>
+        <p>Access to our full recovery suite — compression, PEMF, red light, sauna, and cold plunge — without a training commitment.</p>
+      </button>
+      <button class="path-card" data-path="parent" type="button">
+        <div class="path-icon">👨‍👩‍👦</div>
+        <h3>Parent / Family Inquiry</h3>
+        <p>Information for families exploring training options, facility tours, program details, and the enrollment process.</p>
+      </button>
+    </div>
+    <div class="path-result" id="path-result"></div>
+  </div>
 </section>
 <section class="section" id="contact">
 <div class="container contact-grid">
@@ -629,26 +894,80 @@ Your browser does not support the video tag.
 </div>
 </div>
 <div class="card reveal">
+<!-- Multi-Step Onboarding Form -->
+<div class="onboarding-progress" id="onboarding-progress">
+  <div class="progress-step active" data-step="1"><span>1</span> Path</div>
+  <div class="progress-step" data-step="2"><span>2</span> Info</div>
+  <div class="progress-step" data-step="3"><span>3</span> Details</div>
+  <div class="progress-step" data-step="4"><span>4</span> Review</div>
+</div>
 <form id="contactForm" action="https://api.web3forms.com/submit" method="POST">
 <input type="hidden" name="access_key" value="c47bfd11-04c5-44f9-aea3-87f44f87a1c5"/>
-<div class="form-grid">
-<div><label>Full name</label><input name="name" placeholder="Athlete name" required="" type="text"/></div>
-<div><label>Email</label><input name="email" placeholder="you@example.com" required="" type="email"/></div>
-<div><label>Phone</label><input name="phone" placeholder="(555) 555-5555" type="tel"/></div>
-<div><label>Current level</label>
-<select name="current_level">
-<option>College athlete</option>
-<option>Draft-eligible senior</option>
-<option>Transfer athlete</option>
-<option>Pro-day / combine prep</option>
-<option>Family inquiry</option>
-</select>
-</div>
-</div>
-<div><label>Primary focus</label><input name="primary_focus" placeholder="40-yard dash, position work, pro day, power development" type="text"/></div>
-<div><label>Message</label><textarea name="message" placeholder="Tell us what the athlete needs, what cycle is coming up, and what result matters most." required=""></textarea></div>
 <input type="hidden" name="redirect" value="https://web3forms.com/success"/>
-<button class="btn primary" type="submit">Submit</button>
+<input type="hidden" name="selected_path" id="form-selected-path" value=""/>
+
+<!-- Step 1: Select Path -->
+<div class="form-step active" id="form-step-1">
+  <h3 class="form-step-title">Select Your Path</h3>
+  <div class="form-path-options">
+    <button type="button" class="form-path-btn" data-value="College athlete">College Athlete</button>
+    <button type="button" class="form-path-btn" data-value="Draft-eligible senior">Draft-Eligible Senior</button>
+    <button type="button" class="form-path-btn" data-value="Transfer athlete">Transfer Athlete</button>
+    <button type="button" class="form-path-btn" data-value="Pro-day / combine prep">Pro Day / Combine Prep</button>
+    <button type="button" class="form-path-btn" data-value="High school athlete">High School Athlete</button>
+    <button type="button" class="form-path-btn" data-value="Adult performance">Adult Performance</button>
+    <button type="button" class="form-path-btn" data-value="Recovery only">Recovery Only</button>
+    <button type="button" class="form-path-btn" data-value="Family inquiry">Family Inquiry</button>
+  </div>
+  <button type="button" class="btn primary form-next" data-next="2" disabled>Continue</button>
+</div>
+
+<!-- Step 2: Personal Info -->
+<div class="form-step" id="form-step-2">
+  <h3 class="form-step-title">Personal Information</h3>
+  <div class="form-grid">
+    <div><label>Full name</label><input name="name" id="form-name" placeholder="Athlete name" required type="text"/></div>
+    <div><label>Email</label><input name="email" id="form-email" placeholder="you@example.com" required type="email"/></div>
+    <div><label>Phone</label><input name="phone" id="form-phone" placeholder="(555) 555-5555" type="tel"/></div>
+    <div><label>Current level</label>
+      <select name="current_level" id="form-level">
+        <option>College athlete</option>
+        <option>Draft-eligible senior</option>
+        <option>Transfer athlete</option>
+        <option>Pro-day / combine prep</option>
+        <option>High school athlete</option>
+        <option>Adult performance</option>
+        <option>Recovery only</option>
+        <option>Family inquiry</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-nav-row">
+    <button type="button" class="btn secondary form-back" data-back="1">Back</button>
+    <button type="button" class="btn primary form-next" data-next="3">Continue</button>
+  </div>
+</div>
+
+<!-- Step 3: Athletic Details -->
+<div class="form-step" id="form-step-3">
+  <h3 class="form-step-title">Athletic Details</h3>
+  <div><label>Primary focus</label><input name="primary_focus" id="form-focus" placeholder="40-yard dash, position work, pro day, power development" type="text"/></div>
+  <div style="margin-top:14px"><label>Message</label><textarea name="message" id="form-message" placeholder="Tell us what the athlete needs, what cycle is coming up, and what result matters most." required></textarea></div>
+  <div class="form-nav-row">
+    <button type="button" class="btn secondary form-back" data-back="2">Back</button>
+    <button type="button" class="btn primary form-next" data-next="4">Review &amp; Submit</button>
+  </div>
+</div>
+
+<!-- Step 4: Review & Submit -->
+<div class="form-step" id="form-step-4">
+  <h3 class="form-step-title">Review Your Application</h3>
+  <div class="review-summary" id="review-summary"></div>
+  <div class="form-nav-row">
+    <button type="button" class="btn secondary form-back" data-back="3">Edit</button>
+    <button class="btn primary" type="submit">Submit Application</button>
+  </div>
+</div>
 </form>
 </div>
 </div>
