@@ -1500,7 +1500,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
         'middle-school':'#find-path',
         'high-school':'#find-path',
         'college':'#system',
-        'draft-prep':'#top',
+        'draft-prep':'#draft-room',
         'adult':'#find-path',
         'recovery':'#recovery',
         'parent':'#contact'
