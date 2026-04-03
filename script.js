@@ -986,7 +986,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
 /* ── Enhanced 3D Card Tilt ──────────────────────────────── */
 (function(){
   if(window.matchMedia('(pointer: coarse)').matches) return;
-  var cards = document.querySelectorAll('.athlete-card, .system-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card');
+  var cards = document.querySelectorAll('.athlete-card, .system-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card, .pos-guide-card, .dr-card, .facility-card, .recovery-modality-card, .path-card');
   cards.forEach(function(card){
     card.addEventListener('mousemove', function(e){
       var rect = card.getBoundingClientRect();
@@ -1252,74 +1252,382 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   });
 })();
 
-/* ── RAS Score Simulator ─────────────────────────────────── */
+/* ── RAS Score Simulator → PPF Performance Lab ───────────── */
 (function(){
-  var calcBtn = document.getElementById('sim-calculate');
-  var resultEl = document.getElementById('sim-result');
-  var compEl = document.getElementById('sim-comparison');
+  var calcBtn = document.getElementById('lab-calculate');
+  var resultEl = document.getElementById('lab-results');
   if(!calcBtn) return;
 
+  var selectedPos = 'WR';
+
+  // Position benchmarks: [min(worst), max(best)] for each metric at each position
+  // These are approximate combine ranges used to normalize scores
+  var benchmarks = {
+    WR: {height:[69,77],weight:[170,225],forty:[4.25,4.75],twenty:[2.45,2.80],ten:[1.45,1.65],bench:[8,25],vert:[30,42],broad:[114,134],shuttle:[3.95,4.40],cone:[6.50,7.20]},
+    DB: {height:[68,76],weight:[175,215],forty:[4.28,4.65],twenty:[2.48,2.75],ten:[1.46,1.62],bench:[10,22],vert:[32,42],broad:[118,136],shuttle:[3.95,4.35],cone:[6.55,7.15]},
+    RB: {height:[67,74],weight:[190,235],forty:[4.30,4.70],twenty:[2.50,2.78],ten:[1.47,1.63],bench:[14,28],vert:[30,40],broad:[112,130],shuttle:[4.05,4.45],cone:[6.70,7.30]},
+    LB: {height:[71,77],weight:[220,260],forty:[4.40,4.85],twenty:[2.55,2.88],ten:[1.50,1.68],bench:[18,33],vert:[30,40],broad:[112,130],shuttle:[4.10,4.50],cone:[6.80,7.40]},
+    EDGE:{height:[73,79],weight:[240,275],forty:[4.45,4.90],twenty:[2.58,2.90],ten:[1.52,1.70],bench:[18,30],vert:[30,39],broad:[112,130],shuttle:[4.15,4.55],cone:[6.85,7.45]},
+    OL: {height:[74,80],weight:[290,340],forty:[4.85,5.50],twenty:[2.80,3.15],ten:[1.65,1.85],bench:[22,38],vert:[24,34],broad:[100,120],shuttle:[4.40,5.00],cone:[7.20,8.00]},
+    DL: {height:[73,79],weight:[275,330],forty:[4.70,5.30],twenty:[2.70,3.05],ten:[1.58,1.80],bench:[20,35],vert:[26,36],broad:[104,124],shuttle:[4.25,4.80],cone:[7.00,7.70]},
+    TE: {height:[74,79],weight:[235,265],forty:[4.40,4.85],twenty:[2.55,2.88],ten:[1.50,1.68],bench:[15,28],vert:[30,39],broad:[112,128],shuttle:[4.15,4.55],cone:[6.85,7.45]},
+    S:  {height:[69,76],weight:[190,220],forty:[4.30,4.65],twenty:[2.48,2.78],ten:[1.46,1.62],bench:[10,22],vert:[32,42],broad:[118,134],shuttle:[3.98,4.38],cone:[6.55,7.20]},
+    CB: {height:[68,75],weight:[170,205],forty:[4.28,4.60],twenty:[2.45,2.75],ten:[1.44,1.62],bench:[8,20],vert:[33,43],broad:[120,138],shuttle:[3.92,4.35],cone:[6.45,7.10]}
+  };
+
+  // Position importance order for display
+  var posImportance = {
+    WR: ['ten','forty','vert','broad','shuttle','cone','height','weight','bench','twenty'],
+    DB: ['forty','vert','shuttle','cone','ten','height','weight','bench','broad','twenty'],
+    RB: ['ten','shuttle','cone','broad','vert','forty','height','weight','bench','twenty'],
+    LB: ['shuttle','cone','ten','forty','broad','vert','height','weight','bench','twenty'],
+    EDGE:['ten','broad','vert','cone','shuttle','forty','height','weight','bench','twenty'],
+    OL: ['height','weight','shuttle','cone','ten','bench','vert','broad','forty','twenty'],
+    DL: ['ten','broad','shuttle','vert','height','weight','bench','cone','forty','twenty'],
+    TE: ['forty','vert','broad','cone','shuttle','height','weight','ten','bench','twenty'],
+    S:  ['forty','vert','shuttle','cone','ten','height','weight','bench','broad','twenty'],
+    CB: ['forty','vert','shuttle','cone','ten','height','weight','bench','broad','twenty']
+  };
+
+  var metricLabels = {
+    height:'Height',weight:'Weight',forty:'40-Yard Dash',twenty:'20-Yard Split',
+    ten:'10-Yard Split',bench:'Bench Press',vert:'Vertical Jump',broad:'Broad Jump',
+    shuttle:'Short Shuttle',cone:'3-Cone Drill'
+  };
+
   var ppfAthletes = [
-    {name:'Jack Coco',score:9.92},{name:'Jalen Camp',score:9.78},
-    {name:'Sean Martin',score:9.68},{name:'DK Kaufman',score:9.35},
-    {name:'Dymere Miller',score:9.01},{name:'Kyler Baugh',score:8.56},
-    {name:'Cam Bright',score:8.45},{name:'Omar Dollison',score:8.35},
-    {name:'Travis Bell',score:8.27},{name:'Mike Allen',score:8.09},
-    {name:'Dezmond Tell',score:7.91},{name:'Robert Kennedy',score:7.63},
-    {name:'Tobias Oliver',score:7.26},{name:'Ajani Kerr',score:7.21}
+    {name:'Jack Coco',score:9.92,pos:'LS'},{name:'Jalen Camp',score:9.78,pos:'WR'},
+    {name:'Sean Martin',score:9.68,pos:'DL'},{name:'DK Kaufman',score:9.35,pos:'S'},
+    {name:'Dymere Miller',score:9.01,pos:'WR'},{name:'Kyler Baugh',score:8.56,pos:'DT'},
+    {name:'Cam Bright',score:8.45,pos:'LB'},{name:'Omar Dollison',score:8.35,pos:'WR'},
+    {name:'Travis Bell',score:8.27,pos:'DT'},{name:'Mike Allen',score:8.09,pos:'DL'},
+    {name:'Dezmond Tell',score:7.91,pos:'DT'},{name:'Robert Kennedy',score:7.63,pos:'DB'},
+    {name:'Tobias Oliver',score:7.26,pos:'DB'},{name:'Ajani Kerr',score:7.21,pos:'DB'}
   ];
 
+  // Position selector
+  document.querySelectorAll('.lab-pos-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.lab-pos-btn').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      selectedPos = btn.getAttribute('data-pos');
+    });
+  });
+
+  function scoreMetric(key, val, pos){
+    var b = benchmarks[pos] || benchmarks.WR;
+    var range = b[key];
+    if(!range) return null;
+    var mn = range[0], mx = range[1];
+    var inverted = ['forty','twenty','ten','shuttle','cone'].indexOf(key) !== -1;
+    var raw;
+    if(inverted){
+      raw = (mx - val) / (mx - mn);
+    } else {
+      raw = (val - mn) / (mx - mn);
+    }
+    return Math.max(0, Math.min(10, raw * 10));
+  }
+
   calcBtn.addEventListener('click', function(){
-    var forty = parseFloat(document.getElementById('sim-forty').value);
-    var vert = parseFloat(document.getElementById('sim-vert').value);
-    var bench = parseFloat(document.getElementById('sim-bench').value);
-    var weight = parseFloat(document.getElementById('sim-weight').value);
+    var htFt = parseFloat(document.getElementById('lab-height-ft').value) || 0;
+    var htIn = parseFloat(document.getElementById('lab-height-in').value) || 0;
+    var height = htFt * 12 + htIn;
+    var weight = parseFloat(document.getElementById('lab-weight').value) || 0;
+    var forty = parseFloat(document.getElementById('lab-forty').value) || 0;
+    var twenty = parseFloat(document.getElementById('lab-twenty').value) || 0;
+    var ten = parseFloat(document.getElementById('lab-ten').value) || 0;
+    var bench = parseFloat(document.getElementById('lab-bench').value) || 0;
+    var vert = parseFloat(document.getElementById('lab-vert').value) || 0;
+    var broad = parseFloat(document.getElementById('lab-broad').value) || 0;
+    var shuttle = parseFloat(document.getElementById('lab-shuttle').value) || 0;
+    var cone = parseFloat(document.getElementById('lab-cone').value) || 0;
 
-    if(!forty && !vert && !bench){
-      resultEl.innerHTML = '<p style="color:var(--orange)">Please enter at least one measurable to calculate.</p>';
+    var inputs = {height:height,weight:weight,forty:forty,twenty:twenty,ten:ten,bench:bench,vert:vert,broad:broad,shuttle:shuttle,cone:cone};
+    var scores = {};
+    var count = 0;
+
+    Object.keys(inputs).forEach(function(k){
+      if(inputs[k] > 0){
+        var s = scoreMetric(k, inputs[k], selectedPos);
+        if(s !== null){
+          scores[k] = s;
+          count++;
+        }
+      }
+    });
+
+    if(count < 1){
+      resultEl.innerHTML = '<p style="color:var(--orange);text-align:center;padding:20px">Please enter at least one measurable to calculate your profile.</p>';
       return;
     }
 
-    var scores = [];
-    if(forty >= 4.0 && forty <= 6.0){
-      scores.push(Math.max(0, Math.min(10, (6.0 - forty) / 0.2)));
-    }
-    if(vert >= 15 && vert <= 50){
-      scores.push(Math.max(0, Math.min(10, (vert - 20) / 2.5)));
-    }
-    if(bench >= 0 && bench <= 50){
-      scores.push(Math.max(0, Math.min(10, bench / 3.8)));
-    }
-    if(weight >= 100 && weight <= 400){
-      scores.push(Math.max(0, Math.min(10, 5 + (weight - 200) / 80)));
-    }
-
-    if(!scores.length){
-      resultEl.innerHTML = '<p style="color:var(--orange)">Please enter valid values in the fields above.</p>';
-      return;
-    }
-
-    var composite = scores.reduce(function(a,b){ return a+b; },0) / scores.length;
+    var total = 0;
+    Object.keys(scores).forEach(function(k){ total += scores[k]; });
+    var composite = total / count;
     composite = Math.min(10, Math.max(0, composite));
 
-    resultEl.innerHTML =
-      '<div class="score-display">' + composite.toFixed(2) + '</div>' +
-      '<div class="score-label">Estimated Composite Athletic Score (out of 10.00)</div>';
+    var needsMore = count < 6;
+    var percentile = Math.round(composite * 10);
 
+    // Build results HTML
     var html = '';
+
+    // Score Hero
+    html += '<div class="lab-score-hero">';
+    html += '<div class="lab-score-number">' + composite.toFixed(2) + '</div>';
+    html += '<div class="lab-score-label">Estimated RAS • ' + selectedPos + ' position group • ' + count + ' of 10 measurements</div>';
+    if(needsMore){
+      html += '<div style="margin-top:8px;font-size:13px;color:var(--orange)">⚠ Official RAS requires at least 6 of 10 measurements. Add more for a complete profile.</div>';
+    }
+    html += '<div class="lab-score-percentile">Top ' + (100 - percentile) + '% of ' + selectedPos + ' position group</div>';
+    html += '</div>';
+
+    // Metric Breakdown
+    html += '<h3 class="lab-gaps-title">Metric Breakdown</h3>';
+    html += '<div class="lab-breakdown">';
+    var order = posImportance[selectedPos] || Object.keys(metricLabels);
+    order.forEach(function(k){
+      if(scores[k] !== undefined){
+        var s = scores[k];
+        var cls = s >= 8 ? 'elite' : s >= 6 ? 'good' : s >= 4 ? 'average' : 'below';
+        var tier = s >= 9 ? 'Elite' : s >= 7.5 ? 'Great' : s >= 6 ? 'Good' : s >= 4 ? 'Average' : 'Develop';
+        html += '<div class="lab-metric-item">';
+        html += '<div class="lab-metric-name">' + metricLabels[k] + '</div>';
+        html += '<div class="lab-metric-bar"><div class="lab-metric-fill ' + cls + '" style="width:' + (s * 10) + '%"></div></div>';
+        html += '<div class="lab-metric-value">' + s.toFixed(2) + ' / 10.00 <span class="lab-metric-rank">(' + tier + ')</span></div>';
+        html += '</div>';
+      }
+    });
+    html += '</div>';
+
+    // Development Gaps
+    var gaps = [];
+    order.forEach(function(k){
+      if(scores[k] !== undefined && scores[k] < 6){
+        gaps.push({key:k, score:scores[k]});
+      }
+    });
+    var missing = [];
+    Object.keys(metricLabels).forEach(function(k){
+      if(scores[k] === undefined) missing.push(k);
+    });
+
+    if(gaps.length > 0 || missing.length > 0){
+      html += '<div class="lab-gaps">';
+      html += '<h3 class="lab-gaps-title">🎯 What to Improve Next</h3>';
+      gaps.forEach(function(g){
+        html += '<div class="lab-gap-item"><span class="lab-gap-icon">📈</span><div class="lab-gap-text"><strong>' + metricLabels[g.key] + '</strong> scored ' + g.score.toFixed(2) + ' — prioritize this to raise your overall profile.</div></div>';
+      });
+      if(missing.length > 0){
+        html += '<div class="lab-gap-item"><span class="lab-gap-icon">📋</span><div class="lab-gap-text">Missing data: <strong>' + missing.map(function(k){ return metricLabels[k]; }).join(', ') + '</strong> — add these to get a complete RAS.</div></div>';
+      }
+      html += '</div>';
+    }
+
+    // PPF Comparison
+    html += '<div class="lab-comparison">';
+    html += '<h3 class="lab-comp-title">Where You Rank Among PPF Athletes</h3>';
+    html += '<div class="lab-comp-list">';
     var placed = false;
     ppfAthletes.forEach(function(a){
       if(!placed && composite >= a.score){
-        html += '<div class="sim-athlete" style="border-color:rgba(255,106,0,.4);background:rgba(255,106,0,.08)"><strong>You — ' + composite.toFixed(2) + '</strong></div>';
+        html += '<div class="lab-comp-athlete is-you"><strong>You — ' + composite.toFixed(2) + '</strong></div>';
         placed = true;
       }
-      html += '<div class="sim-athlete">' + a.name + ' — <strong>' + a.score.toFixed(2) + '</strong></div>';
+      html += '<div class="lab-comp-athlete">' + a.name + ' (' + a.pos + ') — <strong>' + a.score.toFixed(2) + '</strong></div>';
     });
     if(!placed){
-      html += '<div class="sim-athlete" style="border-color:rgba(255,106,0,.4);background:rgba(255,106,0,.08)"><strong>You — ' + composite.toFixed(2) + '</strong></div>';
+      html += '<div class="lab-comp-athlete is-you"><strong>You — ' + composite.toFixed(2) + '</strong></div>';
     }
-    compEl.innerHTML = html;
+    html += '</div></div>';
+
+    resultEl.innerHTML = html;
+
+    // Animate metric bars
+    setTimeout(function(){
+      resultEl.querySelectorAll('.lab-metric-fill').forEach(function(el){
+        var w = el.style.width;
+        el.style.width = '0';
+        requestAnimationFrame(function(){
+          el.style.width = w;
+        });
+      });
+    }, 50);
+
+    // Scroll to results
+    resultEl.scrollIntoView({behavior:'smooth', block:'start'});
   });
+})();
+
+/* ── Persona Overlay ─────────────────────────────────────── */
+(function(){
+  var overlay = document.getElementById('persona-overlay');
+  var skip = document.getElementById('persona-skip');
+  if(!overlay) return;
+
+  // Wait for cinematic intro to finish
+  var intro = document.querySelector('.cinematic-intro');
+  if(intro){
+    var checkIntro = setInterval(function(){
+      if(intro.classList.contains('done')){
+        clearInterval(checkIntro);
+        overlay.style.display = 'flex';
+      }
+    }, 100);
+  } else {
+    overlay.style.display = 'flex';
+  }
+
+  function closeOverlay(){
+    overlay.classList.add('done');
+  }
+
+  if(skip) skip.addEventListener('click', closeOverlay);
+
+  document.querySelectorAll('.persona-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var persona = btn.getAttribute('data-persona');
+      // Store selected persona
+      document.body.setAttribute('data-persona', persona);
+      closeOverlay();
+
+      // Auto-scroll to relevant section based on persona
+      var targets = {
+        'middle-school':'#find-path',
+        'high-school':'#find-path',
+        'college':'#system',
+        'draft-prep':'#top',
+        'adult':'#find-path',
+        'recovery':'#recovery',
+        'parent':'#contact'
+      };
+      var target = targets[persona];
+      if(target && target !== '#top'){
+        setTimeout(function(){
+          var el = document.querySelector(target);
+          if(el) el.scrollIntoView({behavior:'smooth'});
+        }, 900);
+      }
+    });
+  });
+})();
+
+/* ── Draft Room Mode ─────────────────────────────────────── */
+(function(){
+  var grid = document.getElementById('draft-room-grid');
+  var compareBtn = document.getElementById('dr-compare-btn');
+  var comparePanel = document.getElementById('draft-room-compare');
+  if(!grid) return;
+
+  var draftData = [
+    {name:'Jalen Camp',pos:'WR',school:'Georgia Tech',photo:'Jalen.Camp.alumni.jpeg',ras:'9.78',forty:'4.39',vert:'39.5"',bench:'30 reps'},
+    {name:'Jack Coco',pos:'LS',school:'Georgia Tech',photo:'Jack.Coco.png',ras:'9.92',forty:'—',vert:'—',bench:'—'},
+    {name:'Sean Martin',pos:'DL',school:'West Virginia',photo:'Sean Martin.jpeg',ras:'9.68',forty:'4.88',vert:'—',bench:'28 reps'},
+    {name:'DK Kaufman',pos:'DB',school:'NC State',photo:'Dk Kaufman.jpeg',ras:'9.35',forty:'—',vert:'38"',bench:'—'},
+    {name:'Dymere Miller',pos:'WR',school:'Rutgers',photo:'Dymere.Miller.alumni.jpeg',ras:'9.01',forty:'4.32',vert:'—',bench:'—'},
+    {name:'Kyler Baugh',pos:'DT',school:'Minnesota',photo:'Kyler.Baugh.jpeg',ras:'8.56',forty:'4.91',vert:'33.5"',bench:'34 reps'},
+    {name:'Cam Bright',pos:'LB',school:'Pittsburgh',photo:'Cam.bright.jpeg',ras:'8.45',forty:'—',vert:'—',bench:'33 reps'},
+    {name:'Omar Dollison',pos:'WR',school:'James Madison',photo:'7c46366d-87fd-4f79-81f2-f22e4c704154.png',ras:'8.35',forty:'4.46',vert:'—',bench:'—'},
+    {name:'Travis Bell',pos:'DT',school:'Kennesaw State',photo:'Travis.Bell.2.jpeg',ras:'8.27',forty:'—',vert:'—',bench:'30 reps'},
+    {name:'Mike Allen',pos:'DL',school:'Western Kentucky',photo:'Mike Allen.jpeg',ras:'8.09',forty:'—',vert:'—',bench:'—'},
+    {name:'Ahmarean Brown',pos:'WR',school:'Georgia Tech',photo:'AB.Brown.png',ras:'—',forty:'4.29',vert:'—',bench:'—'},
+    {name:'Robert Cooper',pos:'DT',school:'Florida State',photo:'Robert.Cooper.jpeg',ras:'—',forty:'—',vert:'—',bench:'—'},
+    {name:'Nathan Cottrell',pos:'RB',school:'Georgia Tech',photo:'Nate.Cottrell.jpeg',ras:'—',forty:'4.38',vert:'—',bench:'29 reps'},
+    {name:'Shawn Williams',pos:'S',school:'Georgia',photo:'Shawn.williams.alumni.jpeg',ras:'—',forty:'—',vert:'—',bench:'—'},
+    {name:'Martez Manuel',pos:'S',school:'Missouri',photo:'Martez.Manuel.jpeg',ras:'—',forty:'4.47',vert:'—',bench:'—'},
+    {name:'Torricelli Simpkins',pos:'OL',school:'South Carolina',photo:'Torricelli.Simpkins.alumni.new.jpg',ras:'—',forty:'—',vert:'29"',bench:'—'},
+    {name:'Zeke Correll',pos:'OL',school:'Notre Dame',photo:'Zeke.Correll.new.jpg',ras:'—',forty:'—',vert:'—',bench:'—'}
+  ];
+
+  var selected = [];
+
+  function renderDraftCards(filter){
+    grid.innerHTML = '';
+    var filtered = filter === 'all' ? draftData : draftData.filter(function(a){ return a.pos === filter; });
+    filtered.forEach(function(a, idx){
+      var card = document.createElement('div');
+      card.className = 'dr-card';
+      card.setAttribute('data-idx', draftData.indexOf(a));
+      if(selected.indexOf(draftData.indexOf(a)) !== -1) card.classList.add('selected');
+      card.innerHTML =
+        '<div class="dr-card-check">✓</div>' +
+        '<img class="dr-card-photo" src="' + a.photo + '" alt="' + a.name + '" loading="lazy">' +
+        '<div class="dr-card-body">' +
+          '<div class="dr-card-name">' + a.name + '</div>' +
+          '<span class="dr-card-pos">' + a.pos + '</span>' +
+          '<div class="dr-card-school">' + a.school + '</div>' +
+          '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">' +
+            (a.ras !== '—' ? '<span style="font-size:11px;font-weight:800;color:var(--orange2)">' + a.ras + ' RAS</span>' : '') +
+            (a.forty !== '—' ? '<span style="font-size:11px;color:var(--muted)">' + a.forty + ' forty</span>' : '') +
+          '</div>' +
+        '</div>';
+      card.addEventListener('click', function(){
+        var i = parseInt(card.getAttribute('data-idx'));
+        var pos = selected.indexOf(i);
+        if(pos !== -1){
+          selected.splice(pos, 1);
+          card.classList.remove('selected');
+        } else if(selected.length < 2){
+          selected.push(i);
+          card.classList.add('selected');
+        }
+        updateCompareBtn();
+      });
+      grid.appendChild(card);
+    });
+  }
+
+  function updateCompareBtn(){
+    if(!compareBtn) return;
+    compareBtn.textContent = 'Compare Selected (' + selected.length + '/2)';
+    compareBtn.disabled = selected.length !== 2;
+  }
+
+  if(compareBtn){
+    compareBtn.addEventListener('click', function(){
+      if(selected.length !== 2 || !comparePanel) return;
+      var a = draftData[selected[0]];
+      var b = draftData[selected[1]];
+      comparePanel.classList.add('active');
+      comparePanel.innerHTML =
+        '<div class="dr-compare-grid">' +
+          '<div class="dr-compare-athlete">' +
+            '<img src="' + a.photo + '" alt="' + a.name + '">' +
+            '<h4>' + a.name + '</h4>' +
+            '<span class="dr-card-pos">' + a.pos + '</span>' +
+          '</div>' +
+          '<div class="dr-compare-vs">VS</div>' +
+          '<div class="dr-compare-athlete">' +
+            '<img src="' + b.photo + '" alt="' + b.name + '">' +
+            '<h4>' + b.name + '</h4>' +
+            '<span class="dr-card-pos">' + b.pos + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="dr-compare-stats">' +
+          '<div class="dr-compare-row"><div class="dr-val">' + a.ras + '</div><div class="dr-label">RAS</div><div class="dr-val">' + b.ras + '</div></div>' +
+          '<div class="dr-compare-row"><div class="dr-val">' + a.forty + '</div><div class="dr-label">40-Yard</div><div class="dr-val">' + b.forty + '</div></div>' +
+          '<div class="dr-compare-row"><div class="dr-val">' + a.vert + '</div><div class="dr-label">Vertical</div><div class="dr-val">' + b.vert + '</div></div>' +
+          '<div class="dr-compare-row"><div class="dr-val">' + a.bench + '</div><div class="dr-label">Bench</div><div class="dr-val">' + b.bench + '</div></div>' +
+        '</div>';
+      comparePanel.scrollIntoView({behavior:'smooth', block:'nearest'});
+    });
+  }
+
+  // Filter buttons
+  document.querySelectorAll('.draft-room-filter').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.querySelectorAll('.draft-room-filter').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      selected = [];
+      updateCompareBtn();
+      if(comparePanel) comparePanel.classList.remove('active');
+      renderDraftCards(btn.getAttribute('data-drfilter'));
+    });
+  });
+
+  renderDraftCards('all');
+  updateCompareBtn();
 })();
 
 /* ── Sound Toggle ────────────────────────────────────────── */
