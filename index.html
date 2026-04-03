@@ -77,6 +77,49 @@
   </div>
 </div>
 
+<!-- Persona Selector Overlay -->
+<div class="persona-overlay" id="persona-overlay">
+  <div class="persona-bg"></div>
+  <div class="persona-content">
+    <div class="persona-logo">
+      <img alt="PPF Athletics" src="https://static.wixstatic.com/media/86a15f_872649b65d214d5f81965bb77a2a2039~mv2.png/v1/fill/w_218%2Ch_131%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01%2Cenc_avif%2Cquality_auto/PPF%20logo%20%28dark%20background%29.png" width="140" height="84"/>
+    </div>
+    <h2 class="persona-title">Who Are You Training As?</h2>
+    <p class="persona-sub">Select your path and the experience adapts to you.</p>
+    <div class="persona-grid">
+      <button class="persona-btn" data-persona="middle-school" type="button">
+        <span class="persona-icon">🏈</span>
+        <span class="persona-label">Middle School</span>
+      </button>
+      <button class="persona-btn" data-persona="high-school" type="button">
+        <span class="persona-icon">⚡</span>
+        <span class="persona-label">High School</span>
+      </button>
+      <button class="persona-btn" data-persona="college" type="button">
+        <span class="persona-icon">🎯</span>
+        <span class="persona-label">College</span>
+      </button>
+      <button class="persona-btn" data-persona="draft-prep" type="button">
+        <span class="persona-icon">🏆</span>
+        <span class="persona-label">Draft Prep</span>
+      </button>
+      <button class="persona-btn" data-persona="adult" type="button">
+        <span class="persona-icon">💪</span>
+        <span class="persona-label">Adult Performance</span>
+      </button>
+      <button class="persona-btn" data-persona="recovery" type="button">
+        <span class="persona-icon">🧊</span>
+        <span class="persona-label">Recovery</span>
+      </button>
+      <button class="persona-btn" data-persona="parent" type="button">
+        <span class="persona-icon">👨‍👩‍👦</span>
+        <span class="persona-label">Parent / Family</span>
+      </button>
+    </div>
+    <button class="persona-skip" id="persona-skip" type="button">Skip — Explore Everything</button>
+  </div>
+</div>
+
 <!-- Sound Toggle -->
 <button class="sound-toggle" id="sound-toggle" aria-label="Toggle sound" title="Toggle sound">
   <svg class="sound-on" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8.5v7a4.49 4.49 0 002.5-3.5zM14 3.23v2.06a7.007 7.007 0 010 13.42v2.06A9.007 9.007 0 0014 3.23z"/></svg>
@@ -99,7 +142,8 @@
 <a href="#system">System</a>
 <a href="#draft-board">Draft Board</a>
 <a href="#ras-board">RAS</a>
-<a href="#ras-simulator">Simulator</a>
+<a href="#ras-simulator">Performance Lab</a>
+<a href="#draft-room">Draft Room</a>
 <a href="#measurables">Measurables</a>
 <a href="#coach">Coaches</a>
 <a href="#media">Testimonials</a>
@@ -164,7 +208,7 @@
 <div class="hero-card reveal">
 <div class="photo">
 <div class="hero-photo-badge"><span>Richard Camp</span><strong>Owner of PPF Athletics</strong></div>
-<img alt="Richard Camp on the field at PPF Athletics" src="Richard.camp.Vertical.jpeg">
+<img alt="Richard Camp on the field at PPF Athletics" src="https://github.com/user-attachments/assets/f8aa6dd9-2dc5-4b43-830f-911ad36f0b13">
 </img></div>
 <div class="copy">
 <h3>Built for athletes who want the details handled the right way.</h3>
@@ -564,34 +608,295 @@
 </div>
 </section>
 
-<!-- RAS Score Simulator -->
+<!-- PPF Performance Lab -->
 <section class="section" id="ras-simulator">
   <div class="container">
-    <span class="eyebrow">Signature tool</span>
-    <h2 class="section-title reveal">RAS Score Simulator</h2>
-    <p class="section-sub reveal">Enter your testing numbers and see where you'd rank among PPF athletes. This tool provides an estimated composite athletic score based on key combine measurables.</p>
-    <div class="simulator-panel reveal">
-      <div class="sim-inputs">
-        <div class="sim-field">
-          <label>40-yard dash (seconds)</label>
-          <input type="number" step="0.01" id="sim-forty" placeholder="4.50" min="4.0" max="6.0">
-        </div>
-        <div class="sim-field">
-          <label>Vertical jump (inches)</label>
-          <input type="number" step="0.5" id="sim-vert" placeholder="36" min="15" max="50">
-        </div>
-        <div class="sim-field">
-          <label>Bench press (reps at 225)</label>
-          <input type="number" id="sim-bench" placeholder="20" min="0" max="50">
-        </div>
-        <div class="sim-field">
-          <label>Body weight (lbs)</label>
-          <input type="number" id="sim-weight" placeholder="220" min="100" max="400">
+    <span class="eyebrow">PPF Performance Lab</span>
+    <h2 class="section-title reveal">Your Athletic Profile. Measured. Ranked. Mapped.</h2>
+    <p class="section-sub reveal">Enter your testing numbers across all 10 official RAS combine measurements. Select your position and see how you rank against your position group, where your strengths are, what to improve, and how you compare to PPF athletes — all on a 0.00 to 10.00 scale.</p>
+
+    <div class="lab-panel reveal">
+      <!-- Position Selector -->
+      <div class="lab-position-row">
+        <label class="lab-label">Select your position</label>
+        <div class="lab-position-grid">
+          <button class="lab-pos-btn active" data-pos="WR" type="button">WR</button>
+          <button class="lab-pos-btn" data-pos="DB" type="button">DB</button>
+          <button class="lab-pos-btn" data-pos="RB" type="button">RB</button>
+          <button class="lab-pos-btn" data-pos="LB" type="button">LB</button>
+          <button class="lab-pos-btn" data-pos="EDGE" type="button">EDGE</button>
+          <button class="lab-pos-btn" data-pos="OL" type="button">OL</button>
+          <button class="lab-pos-btn" data-pos="DL" type="button">DL</button>
+          <button class="lab-pos-btn" data-pos="TE" type="button">TE</button>
+          <button class="lab-pos-btn" data-pos="S" type="button">S</button>
+          <button class="lab-pos-btn" data-pos="CB" type="button">CB</button>
         </div>
       </div>
-      <button class="btn primary sim-calculate" id="sim-calculate" type="button">Calculate Your Score</button>
-      <div class="sim-result" id="sim-result"></div>
-      <div class="sim-comparison" id="sim-comparison"></div>
+
+      <!-- Athletic Buckets -->
+      <div class="lab-buckets">
+        <!-- Size -->
+        <div class="lab-bucket">
+          <div class="lab-bucket-header">
+            <span class="lab-bucket-icon">📏</span>
+            <span class="lab-bucket-title">Size</span>
+          </div>
+          <div class="lab-bucket-fields">
+            <div class="lab-field">
+              <label>Height</label>
+              <div class="lab-height-row">
+                <input type="number" id="lab-height-ft" placeholder="6" min="4" max="7" class="lab-input lab-input-sm">
+                <span class="lab-height-sep">ft</span>
+                <input type="number" id="lab-height-in" placeholder="2" min="0" max="11" class="lab-input lab-input-sm">
+                <span class="lab-height-sep">in</span>
+              </div>
+            </div>
+            <div class="lab-field">
+              <label>Weight (lbs)</label>
+              <input type="number" id="lab-weight" placeholder="220" min="100" max="400" class="lab-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- Speed -->
+        <div class="lab-bucket">
+          <div class="lab-bucket-header">
+            <span class="lab-bucket-icon">💨</span>
+            <span class="lab-bucket-title">Speed</span>
+          </div>
+          <div class="lab-bucket-fields">
+            <div class="lab-field">
+              <label>40-yard dash (sec)</label>
+              <input type="number" step="0.01" id="lab-forty" placeholder="4.50" min="4.0" max="6.0" class="lab-input">
+            </div>
+            <div class="lab-field">
+              <label>20-yard split (sec)</label>
+              <input type="number" step="0.01" id="lab-twenty" placeholder="2.60" min="2.0" max="4.0" class="lab-input">
+            </div>
+            <div class="lab-field">
+              <label>10-yard split (sec)</label>
+              <input type="number" step="0.01" id="lab-ten" placeholder="1.55" min="1.0" max="2.5" class="lab-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- Explosion -->
+        <div class="lab-bucket">
+          <div class="lab-bucket-header">
+            <span class="lab-bucket-icon">🔥</span>
+            <span class="lab-bucket-title">Explosion</span>
+          </div>
+          <div class="lab-bucket-fields">
+            <div class="lab-field">
+              <label>Vertical jump (in)</label>
+              <input type="number" step="0.5" id="lab-vert" placeholder="36" min="15" max="50" class="lab-input">
+            </div>
+            <div class="lab-field">
+              <label>Broad jump (in)</label>
+              <input type="number" id="lab-broad" placeholder="120" min="70" max="150" class="lab-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- Strength -->
+        <div class="lab-bucket">
+          <div class="lab-bucket-header">
+            <span class="lab-bucket-icon">🏋️</span>
+            <span class="lab-bucket-title">Strength</span>
+          </div>
+          <div class="lab-bucket-fields">
+            <div class="lab-field">
+              <label>Bench press (reps at 225)</label>
+              <input type="number" id="lab-bench" placeholder="20" min="0" max="50" class="lab-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- Agility -->
+        <div class="lab-bucket">
+          <div class="lab-bucket-header">
+            <span class="lab-bucket-icon">🔀</span>
+            <span class="lab-bucket-title">Agility</span>
+          </div>
+          <div class="lab-bucket-fields">
+            <div class="lab-field">
+              <label>Short shuttle / 5-10-5 (sec)</label>
+              <input type="number" step="0.01" id="lab-shuttle" placeholder="4.20" min="3.5" max="5.5" class="lab-input">
+            </div>
+            <div class="lab-field">
+              <label>3-cone drill (sec)</label>
+              <input type="number" step="0.01" id="lab-cone" placeholder="7.00" min="6.0" max="9.0" class="lab-input">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lab-info-note">
+        <strong>How RAS works:</strong> Each of the 10 measurements is weighted equally and compared against your position group on a 0.00–10.00 scale. You need at least 6 of 10 to receive a final RAS. Arm length, hand size, and wingspan are <em>not</em> included.
+      </div>
+
+      <button class="btn primary lab-calculate" id="lab-calculate" type="button">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="margin-right:6px"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+        Analyze My Profile
+      </button>
+
+      <!-- Results Section -->
+      <div class="lab-results" id="lab-results"></div>
+    </div>
+
+    <!-- Position-Specific What Matters Most -->
+    <div class="position-guide reveal" style="margin-top:40px">
+      <h3 class="section-title" style="font-size:clamp(28px,4vw,44px)">What Matters Most by Position</h3>
+      <p class="section-sub">RAS weights every test equally — but football evaluation does not. Here is what scouts care about most at each position.</p>
+      <div class="pos-guide-grid" style="margin-top:24px">
+        <div class="pos-guide-card">
+          <div class="pos-guide-tag">WR</div>
+          <h4>Wide Receiver</h4>
+          <ol class="pos-priority-list">
+            <li><strong>10-yard split</strong> <span>Burst off the line</span></li>
+            <li><strong>40-yard dash</strong> <span>Top-end separation</span></li>
+            <li><strong>Vertical + broad jump</strong> <span>Explosion &amp; playmaking</span></li>
+            <li><strong>Short shuttle / 3-cone</strong> <span>Route separation</span></li>
+            <li><strong>Size</strong> <span>Frame &amp; matchup value</span></li>
+            <li><strong>Bench press</strong> <span>Upper-body strength</span></li>
+          </ol>
+        </div>
+        <div class="pos-guide-card">
+          <div class="pos-guide-tag">DB</div>
+          <h4>Defensive Back</h4>
+          <ol class="pos-priority-list">
+            <li><strong>40-yard dash</strong> <span>Recovery speed</span></li>
+            <li><strong>Vertical jump</strong> <span>Ball-play explosion</span></li>
+            <li><strong>Short shuttle / 3-cone</strong> <span>Hip fluidity &amp; redirect</span></li>
+            <li><strong>10-yard split</strong> <span>Burst &amp; click-and-close</span></li>
+            <li><strong>Size</strong> <span>Length &amp; press ability</span></li>
+            <li><strong>Bench press</strong> <span>Press strength</span></li>
+          </ol>
+        </div>
+        <div class="pos-guide-card">
+          <div class="pos-guide-tag">RB</div>
+          <h4>Running Back</h4>
+          <ol class="pos-priority-list">
+            <li><strong>10-yard split</strong> <span>First-step burst</span></li>
+            <li><strong>Short shuttle / 3-cone</strong> <span>Quickness is king</span></li>
+            <li><strong>Broad + vertical jump</strong> <span>Lower-body explosion</span></li>
+            <li><strong>40-yard dash</strong> <span>Breakaway speed</span></li>
+            <li><strong>Size</strong> <span>Durability &amp; between-tackles fit</span></li>
+            <li><strong>Bench press</strong> <span>Contact balance</span></li>
+          </ol>
+        </div>
+        <div class="pos-guide-card">
+          <div class="pos-guide-tag">LB</div>
+          <h4>Linebacker</h4>
+          <ol class="pos-priority-list">
+            <li><strong>Short shuttle / 3-cone</strong> <span>Lateral range</span></li>
+            <li><strong>10-yard split / 40</strong> <span>Downhill burst</span></li>
+            <li><strong>Broad + vertical jump</strong> <span>Strike explosion</span></li>
+            <li><strong>Size</strong> <span>Stack &amp; shed frame</span></li>
+            <li><strong>Bench press</strong> <span>Upper-body striking power</span></li>
+          </ol>
+        </div>
+        <div class="pos-guide-card">
+          <div class="pos-guide-tag">EDGE</div>
+          <h4>EDGE / DE</h4>
+          <ol class="pos-priority-list">
+            <li><strong>10-yard split</strong> <span>Get-off explosion</span></li>
+            <li><strong>Broad + vertical jump</strong> <span>Lower-body explosion</span></li>
+            <li><strong>3-cone / short shuttle</strong> <span>Bend &amp; redirect</span></li>
+            <li><strong>40-yard dash</strong> <span>Closing speed</span></li>
+            <li><strong>Size</strong> <span>Length &amp; anchor</span></li>
+            <li><strong>Bench press</strong> <span>Hand violence</span></li>
+          </ol>
+        </div>
+        <div class="pos-guide-card">
+          <div class="pos-guide-tag">OL</div>
+          <h4>Offensive Line</h4>
+          <ol class="pos-priority-list">
+            <li><strong>Size / frame</strong> <span>Anchor &amp; length</span></li>
+            <li><strong>Short shuttle</strong> <span>Lateral agility</span></li>
+            <li><strong>3-cone</strong> <span>Movement efficiency</span></li>
+            <li><strong>10-yard split</strong> <span>Set speed</span></li>
+            <li><strong>Bench press</strong> <span>Strike &amp; sustain power</span></li>
+            <li><strong>Jumps</strong> <span>Lower-body power</span></li>
+          </ol>
+        </div>
+        <div class="pos-guide-card">
+          <div class="pos-guide-tag">DL</div>
+          <h4>Interior DL / DT</h4>
+          <ol class="pos-priority-list">
+            <li><strong>10-yard split</strong> <span>First-step disruption</span></li>
+            <li><strong>Broad jump</strong> <span>Lower-body explosion</span></li>
+            <li><strong>Short shuttle</strong> <span>Lateral quickness</span></li>
+            <li><strong>Vertical</strong> <span>Explosive power</span></li>
+            <li><strong>Size</strong> <span>Anchor &amp; gap control</span></li>
+            <li><strong>Bench press</strong> <span>Hand power</span></li>
+          </ol>
+        </div>
+        <div class="pos-guide-card">
+          <div class="pos-guide-tag">TE</div>
+          <h4>Tight End</h4>
+          <ol class="pos-priority-list">
+            <li><strong>40-yard dash</strong> <span>Seam-stretch speed</span></li>
+            <li><strong>Vertical + broad jump</strong> <span>Catch-radius explosion</span></li>
+            <li><strong>3-cone / short shuttle</strong> <span>Route movement</span></li>
+            <li><strong>Size</strong> <span>Inline blocking frame</span></li>
+            <li><strong>10-yard split</strong> <span>Release burst</span></li>
+            <li><strong>Bench press</strong> <span>Blocking power</span></li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Draft Room Mode -->
+<section class="section draft-room-section" id="draft-room">
+  <div class="container">
+    <span class="eyebrow">Signature experience</span>
+    <h2 class="section-title reveal">Draft Room Mode</h2>
+    <p class="section-sub reveal">Step inside the evaluation. Filter, compare, and analyze PPF athletes the way a real draft room operates — position by position, number by number.</p>
+    <div class="draft-room-panel reveal">
+      <div class="draft-room-controls">
+        <div class="draft-room-filter-row">
+          <button class="draft-room-filter active" data-drfilter="all" type="button">All Positions</button>
+          <button class="draft-room-filter" data-drfilter="WR" type="button">WR</button>
+          <button class="draft-room-filter" data-drfilter="DB" type="button">DB</button>
+          <button class="draft-room-filter" data-drfilter="DL" type="button">DL</button>
+          <button class="draft-room-filter" data-drfilter="DT" type="button">DT</button>
+          <button class="draft-room-filter" data-drfilter="OL" type="button">OL</button>
+          <button class="draft-room-filter" data-drfilter="LB" type="button">LB</button>
+          <button class="draft-room-filter" data-drfilter="RB" type="button">RB</button>
+          <button class="draft-room-filter" data-drfilter="S" type="button">S</button>
+        </div>
+        <button class="btn secondary draft-room-compare-btn" id="dr-compare-btn" type="button" disabled>
+          Compare Selected (0/2)
+        </button>
+      </div>
+      <div class="draft-room-grid" id="draft-room-grid"></div>
+      <div class="draft-room-compare" id="draft-room-compare"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Facility Gallery -->
+<section class="section" id="facility-gallery">
+  <div class="container">
+    <span class="eyebrow">Inside PPF</span>
+    <h2 class="section-title reveal">Step Inside the Environment.</h2>
+    <p class="section-sub reveal">A look at the space, the energy, and the standard that define every session at PPF Athletics.</p>
+    <div class="facility-grid reveal">
+      <div class="facility-card facility-card-lg">
+        <img loading="lazy" alt="PPF Athletics facility and training environment" src="https://github.com/user-attachments/assets/037fa193-8e0e-4c53-ade7-011301e004c1">
+        <div class="facility-overlay"><span>Training Floor</span></div>
+      </div>
+      <div class="facility-card">
+        <img loading="lazy" alt="PPF Athletics training session" src="https://github.com/user-attachments/assets/e71e6538-5a7c-4291-92c1-6bf6b972b775">
+        <div class="facility-overlay"><span>Speed Development</span></div>
+      </div>
+      <div class="facility-card">
+        <img loading="lazy" alt="PPF Athletics performance environment" src="https://github.com/user-attachments/assets/f0f11874-c3bc-4ca4-bf87-5397533ed1dd">
+        <div class="facility-overlay"><span>Performance Zone</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -664,14 +969,14 @@ Your browser does not support the video tag.
 <h2 class="section-title reveal">Built on Power. Proven by People. Hear the PPF Experience in Their Words.</h2>
 
 <div class="testimonial-grid reveal" style="margin-top:28px">
-<article class="card quote-card"><div class="quote-mark">"</div><h3>Jalen Camp</h3><div class="quote-meta">Wide Receiver • Georgia Tech • Trained for 2021 Draft Class</div><p>"PPF gave me a training environment that was disciplined, detailed, and built around performance that translates. Every phase had purpose. The work on speed, power, movement quality, and testing preparation helped me walk into the draft process sharper, more confident, and better prepared to perform when it counted."</p></article>
-<article class="card quote-card"><div class="quote-mark">"</div><h3>Travis Bell</h3><div class="quote-meta">Defensive Line • Kennesaw State • Trained for 2023 Draft Class</div><p>"PPF kept the preparation professional from start to finish. The structure, the coaching, and the expectation every day made the difference. I never felt like I was just working out. I felt like I was training with intention for a real opportunity."</p></article>
-<article class="card quote-card"><div class="quote-mark">"</div><h3>Jack Coco</h3><div class="quote-meta">Long Snapper • Georgia Tech • Trained for 2022 Draft Class</div><p>"What stood out to me at PPF was how organized the work was. The room stays demanding, but it stays personal. You know exactly what you are being asked to improve, and you feel that every detail is there to help you present better when teams start evaluating."</p></article>
-<article class="card quote-card"><div class="quote-mark">"</div><h3>Nathan Cottrell</h3><div class="quote-meta">Georgia Tech • Trained for 2020 Draft Class</div><p>"PPF brings a real standard to the process. It is competitive, but it is also precise. The coaching does not waste reps, and the expectation is that you show up every day ready to improve something measurable."</p></article>
-<article class="card quote-card"><div class="quote-mark">"</div><h3>Ahmarean Brown</h3><div class="quote-meta">Wide Receiver • Georgia Tech / South Carolina • Trained for 2024 Draft Class</div><p>"PPF creates a performance environment that feels intentional from the moment you walk in. The work is sharp, demanding, and purposeful, and the standard inside the room brings your preparation in line with the level you are working to reach."</p></article>
-<article class="card quote-card"><div class="quote-mark">"</div><h3>Robert Cooper</h3><div class="quote-meta">Defensive Tackle • Florida State • Trained for 2023 Draft Class</div><p>"The work at PPF stayed centered on exactly what matters when big men are being evaluated. The room demanded conditioning, power, movement efficiency, and consistency every day. That level of structure helped me carry more confidence into the pre-draft process and show up with a stronger profile when it was time to perform."</p></article>
-<article class="card quote-card"><div class="quote-mark">"</div><h3>Kyler Baugh</h3><div class="quote-meta">Defensive Tackle • Minnesota / Houston Christian • Trained for 2024 Draft Class</div><p>"PPF made the preparation feel sharp, specific, and professional. The standard never drifted. Every block of work was tied to movement quality, testing detail, and the kind of physical readiness that has to show up when teams are looking closely. That clarity gives the process real value."</p></article>
-<article class="card quote-card"><div class="quote-mark">"</div><h3>Torricelli Simpkins III</h3><div class="quote-meta">Offensive Line • North Carolina Central / South Carolina • Trained for 2025 Draft Class</div><p>"PPF gave the process a level of discipline that matched what the moment requires. The training stayed intentional, the expectations stayed high, and the details never got casual. It is the type of environment that helps an athlete look more complete on testing day and more prepared in every part of the evaluation."</p></article>
+<article class="card quote-card"><h3>Jalen Camp</h3><div class="quote-meta">Wide Receiver • Georgia Tech • Trained for 2021 Draft Class</div><p>"PPF gave me a training environment that was disciplined, detailed, and built around performance that translates. Every phase had purpose. The work on speed, power, movement quality, and testing preparation helped me walk into the draft process sharper, more confident, and better prepared to perform when it counted."</p></article>
+<article class="card quote-card"><h3>Travis Bell</h3><div class="quote-meta">Defensive Line • Kennesaw State • Trained for 2023 Draft Class</div><p>"PPF kept the preparation professional from start to finish. The structure, the coaching, and the expectation every day made the difference. I never felt like I was just working out. I felt like I was training with intention for a real opportunity."</p></article>
+<article class="card quote-card"><h3>Jack Coco</h3><div class="quote-meta">Long Snapper • Georgia Tech • Trained for 2022 Draft Class</div><p>"What stood out to me at PPF was how organized the work was. The room stays demanding, but it stays personal. You know exactly what you are being asked to improve, and you feel that every detail is there to help you present better when teams start evaluating."</p></article>
+<article class="card quote-card"><h3>Nathan Cottrell</h3><div class="quote-meta">Georgia Tech • Trained for 2020 Draft Class</div><p>"PPF brings a real standard to the process. It is competitive, but it is also precise. The coaching does not waste reps, and the expectation is that you show up every day ready to improve something measurable."</p></article>
+<article class="card quote-card"><h3>Ahmarean Brown</h3><div class="quote-meta">Wide Receiver • Georgia Tech / South Carolina • Trained for 2024 Draft Class</div><p>"PPF creates a performance environment that feels intentional from the moment you walk in. The work is sharp, demanding, and purposeful, and the standard inside the room brings your preparation in line with the level you are working to reach."</p></article>
+<article class="card quote-card"><h3>Robert Cooper</h3><div class="quote-meta">Defensive Tackle • Florida State • Trained for 2023 Draft Class</div><p>"The work at PPF stayed centered on exactly what matters when big men are being evaluated. The room demanded conditioning, power, movement efficiency, and consistency every day. That level of structure helped me carry more confidence into the pre-draft process and show up with a stronger profile when it was time to perform."</p></article>
+<article class="card quote-card"><h3>Kyler Baugh</h3><div class="quote-meta">Defensive Tackle • Minnesota / Houston Christian • Trained for 2024 Draft Class</div><p>"PPF made the preparation feel sharp, specific, and professional. The standard never drifted. Every block of work was tied to movement quality, testing detail, and the kind of physical readiness that has to show up when teams are looking closely. That clarity gives the process real value."</p></article>
+<article class="card quote-card"><h3>Torricelli Simpkins III</h3><div class="quote-meta">Offensive Line • North Carolina Central / South Carolina • Trained for 2025 Draft Class</div><p>"PPF gave the process a level of discipline that matched what the moment requires. The training stayed intentional, the expectations stayed high, and the details never got casual. It is the type of environment that helps an athlete look more complete on testing day and more prepared in every part of the evaluation."</p></article>
 </div>
 <div class="testimonial-close reveal">Real preparation leaves a real impression. The standard shows up in the work, the testing, and the way athletes carry themselves when opportunity arrives.</div>
 </div>

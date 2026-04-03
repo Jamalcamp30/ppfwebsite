@@ -10,18 +10,18 @@
   if(!intro) return;
   let progress = 0;
   const tick = setInterval(()=>{
-    progress += Math.random()*14 + 6;
+    progress += Math.random()*8 + 3;
     if(progress > 100) progress = 100;
     if(bar) bar.style.width = progress + '%';
     if(progress >= 100){
       clearInterval(tick);
-      setTimeout(()=> intro.classList.add('done'), 600);
+      setTimeout(()=> intro.classList.add('done'), 1000);
     }
-  },140);
+  },200);
   window.addEventListener('load',()=>{
     progress = 100;
     if(bar) bar.style.width = '100%';
-    setTimeout(()=> intro.classList.add('done'), 800);
+    setTimeout(()=> intro.classList.add('done'), 1400);
   });
 })();
 
