@@ -1358,7 +1358,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     });
 
     if(count < 1){
-      resultEl.innerHTML = '<p style="color:var(--orange);text-align:center;padding:20px">Please enter at least one measurable to calculate your profile.</p>';
+      resultEl.innerHTML = '<p class="lab-message lab-message-error">Please enter at least one measurable to calculate your profile.</p>';
       return;
     }
 
@@ -1378,7 +1378,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     html += '<div class="lab-score-number">' + composite.toFixed(2) + '</div>';
     html += '<div class="lab-score-label">Estimated RAS • ' + selectedPos + ' position group • ' + count + ' of 10 measurements</div>';
     if(needsMore){
-      html += '<div style="margin-top:8px;font-size:13px;color:var(--orange)">⚠ Official RAS requires at least 6 of 10 measurements. Add more for a complete profile.</div>';
+      html += '<div class="lab-message lab-message-warning">⚠ Official RAS requires at least 6 of 10 measurements. Add more for a complete profile.</div>';
     }
     html += '<div class="lab-score-percentile">Top ' + (100 - percentile) + '% of ' + selectedPos + ' position group</div>';
     html += '</div>';
@@ -1394,7 +1394,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
         var tier = s >= 9 ? 'Elite' : s >= 7.5 ? 'Great' : s >= 6 ? 'Good' : s >= 4 ? 'Average' : 'Develop';
         html += '<div class="lab-metric-item">';
         html += '<div class="lab-metric-name">' + metricLabels[k] + '</div>';
-        html += '<div class="lab-metric-bar"><div class="lab-metric-fill ' + cls + '" style="width:' + (s * 10) + '%"></div></div>';
+        html += '<div class="lab-metric-bar"><div class="lab-metric-fill ' + cls + '" style="--fill-w:' + (s * 10) + '%"></div></div>';
         html += '<div class="lab-metric-value">' + s.toFixed(2) + ' / 10.00 <span class="lab-metric-rank">(' + tier + ')</span></div>';
         html += '</div>';
       }
@@ -1444,14 +1444,10 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
 
     resultEl.innerHTML = html;
 
-    // Animate metric bars
+    // Animate metric bars via CSS class
     setTimeout(function(){
       resultEl.querySelectorAll('.lab-metric-fill').forEach(function(el){
-        var w = el.style.width;
-        el.style.width = '0';
-        requestAnimationFrame(function(){
-          el.style.width = w;
-        });
+        el.classList.add('animate-in');
       });
     }, 50);
 
@@ -1469,12 +1465,19 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   // Wait for cinematic intro to finish
   var intro = document.querySelector('.cinematic-intro');
   if(intro){
-    var checkIntro = setInterval(function(){
-      if(intro.classList.contains('done')){
-        clearInterval(checkIntro);
-        overlay.style.display = 'flex';
-      }
-    }, 100);
+    if(intro.classList.contains('done')){
+      overlay.style.display = 'flex';
+    } else {
+      var observer = new MutationObserver(function(mutations){
+        mutations.forEach(function(m){
+          if(m.type === 'attributes' && intro.classList.contains('done')){
+            observer.disconnect();
+            overlay.style.display = 'flex';
+          }
+        });
+      });
+      observer.observe(intro, {attributes:true, attributeFilter:['class']});
+    }
   } else {
     overlay.style.display = 'flex';
   }
@@ -1557,9 +1560,9 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
           '<div class="dr-card-name">' + a.name + '</div>' +
           '<span class="dr-card-pos">' + a.pos + '</span>' +
           '<div class="dr-card-school">' + a.school + '</div>' +
-          '<div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">' +
-            (a.ras !== '—' ? '<span style="font-size:11px;font-weight:800;color:var(--orange2)">' + a.ras + ' RAS</span>' : '') +
-            (a.forty !== '—' ? '<span style="font-size:11px;color:var(--muted)">' + a.forty + ' forty</span>' : '') +
+          '<div class="dr-card-stats">' +
+            (a.ras !== '—' ? '<span class="dr-stat-ras">' + a.ras + ' RAS</span>' : '') +
+            (a.forty !== '—' ? '<span class="dr-stat-forty">' + a.forty + ' forty</span>' : '') +
           '</div>' +
         '</div>';
       card.addEventListener('click', function(){
