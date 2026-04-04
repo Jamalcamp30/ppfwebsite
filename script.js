@@ -4290,3 +4290,548 @@ document.addEventListener('keydown', function(e){
   GravityFX.prototype.destroy = function(){this.particles=[];};
 
 })();
+
+/* ══════════════════════════════════════════════════════════
+   PROOF OF STANDARD — Interactive Command Center
+   ══════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  /* ── Athlete data with full testimonials + measurables ── */
+  var posAthletes = [
+    {
+      id:'jalen-camp',name:'Jalen Camp',position:'Wide Receiver',posShort:'WR',
+      school:'Georgia Tech',classYear:'2021',proOutcome:'Houston Texans',
+      trainedFor:'NFL Draft',bestTrait:'Elite burst-to-size ratio',
+      photo:'Jalen.Camp.Texans.featured.latest.jpg',
+      thumbPhoto:'Jalen.Camp.alumni.jpeg',
+      forty:'4.39',vert:'39.5"',bench:'30',ras:'9.78',broad:'126',weight:'228',
+      quote:'PPF gave me a training environment that was <em class="pos-emphasis">disciplined</em>, detailed, and built around performance that translates. Every phase had purpose.',
+      fullQuote:'PPF gave me a training environment that was disciplined, detailed, and built around performance that translates. Every phase had purpose. The work on speed, power, movement quality, and testing preparation helped me walk into the draft process sharper, more confident, and better prepared to perform when it counted.',
+      stoodOut:'Disciplined environment with purpose-driven structure',
+      improved:'Speed, power, movement quality, testing preparation',
+      environment:'Professional, detailed, performance-driven',
+      whyMattered:'Walked into the draft process sharper, more confident',
+      journey:'draft-prep',journeyLabel:'Draft Prep',
+      filterGroup:'WR'
+    },
+    {
+      id:'travis-bell',name:'Travis Bell',position:'Defensive Tackle',posShort:'DT',
+      school:'Kennesaw State',classYear:'2023',proOutcome:'Chicago Bears • Atlanta Falcons',
+      trainedFor:'NFL Draft',bestTrait:'Rare size with bench output',
+      photo:'Travis.Bell.2.jpeg',thumbPhoto:'Travis.Bell.2.jpeg',
+      forty:'5.05',vert:'30"',bench:'30',ras:'8.27',broad:'108',weight:'315',
+      quote:'PPF kept the preparation <em class="pos-emphasis">professional</em> from start to finish. The structure, the coaching, and the expectation every day made the difference.',
+      fullQuote:'PPF kept the preparation professional from start to finish. The structure, the coaching, and the expectation every day made the difference. I never felt like I was just working out. I felt like I was training with intention for a real opportunity.',
+      stoodOut:'Professional structure with daily accountability',
+      improved:'First-step explosiveness and hand technique',
+      environment:'Structured, coaching-driven, expectation-based',
+      whyMattered:'Training felt intentional for a real opportunity',
+      journey:'draft-prep',journeyLabel:'Draft Prep',
+      filterGroup:'DL'
+    },
+    {
+      id:'jack-coco',name:'Jack Coco',position:'Long Snapper',posShort:'LS',
+      school:'Georgia Tech',classYear:'2022',proOutcome:'Green Bay Packers',
+      trainedFor:'NFL Draft',bestTrait:'Positional RAS dominance',
+      photo:'Jack.Coco.png',thumbPhoto:'Jack.Coco.png',
+      forty:'—',vert:'—',bench:'—',ras:'9.92',broad:'—',weight:'245',
+      quote:'What stood out to me at PPF was how <em class="pos-emphasis">organized</em> the work was. The room stays demanding, but it stays personal.',
+      fullQuote:'What stood out to me at PPF was how organized the work was. The room stays demanding, but it stays personal. You know exactly what you are being asked to improve, and you feel that every detail is there to help you present better when teams start evaluating.',
+      stoodOut:'Organization and attention to individual improvement',
+      improved:'Clean technique fundamentals under evaluation pressure',
+      environment:'Demanding yet personal, detail-oriented',
+      whyMattered:'Felt every detail was there to help present better',
+      journey:'pro-day',journeyLabel:'Pro Day',
+      filterGroup:'Specialist'
+    },
+    {
+      id:'nathan-cottrell',name:'Nathan Cottrell',position:'Running Back',posShort:'RB',
+      school:'Georgia Tech',classYear:'2020',proOutcome:'Jacksonville Jaguars',
+      trainedFor:'NFL Draft',bestTrait:'Speed-and-power backfield profile',
+      photo:'Nate.Cottrell.featured.jpg',thumbPhoto:'Nate.Cottrell.jpeg',
+      forty:'4.38',vert:'36"',bench:'29',ras:'—',broad:'122',weight:'205',
+      quote:'PPF brings a real standard to the process. It is competitive, but it is also <em class="pos-emphasis">precise</em>.',
+      fullQuote:'PPF brings a real standard to the process. It is competitive, but it is also precise. The coaching does not waste reps, and the expectation is that you show up every day ready to improve something measurable.',
+      stoodOut:'Precision and competitive standard',
+      improved:'Burst and path efficiency through focused back work',
+      environment:'Competitive, precise, no wasted reps',
+      whyMattered:'Ready to improve something measurable every day',
+      journey:'draft-prep',journeyLabel:'Draft Prep',
+      filterGroup:'RB'
+    },
+    {
+      id:'ahmarean-brown',name:'Ahmarean Brown',position:'Wide Receiver',posShort:'WR',
+      school:'Georgia Tech / South Carolina',classYear:'2024',
+      proOutcome:'Cleveland Browns • Buffalo Bills',
+      trainedFor:'NFL Draft',bestTrait:'Elite verified speed',
+      photo:'AB.Brown.png',thumbPhoto:'AB.Brown.png',
+      forty:'4.29',vert:'38"',bench:'10',ras:'—',broad:'125',weight:'180',
+      quote:'PPF creates a performance environment that feels <em class="pos-emphasis">intentional</em> from the moment you walk in.',
+      fullQuote:'PPF creates a performance environment that feels intentional from the moment you walk in. The work is sharp, demanding, and purposeful, and the standard inside the room brings your preparation in line with the level you are working to reach.',
+      stoodOut:'Intentional atmosphere from the first moment',
+      improved:'Separation and route precision through focused position work',
+      environment:'Sharp, demanding, purposeful',
+      whyMattered:'Preparation aligned with the level being pursued',
+      journey:'development',journeyLabel:'College Development',
+      filterGroup:'WR'
+    },
+    {
+      id:'robert-cooper',name:'Robert Cooper',position:'Defensive Tackle',posShort:'DT',
+      school:'Florida State',classYear:'2023',
+      proOutcome:'Seattle Seahawks • Miami Dolphins',
+      trainedFor:'NFL Draft',bestTrait:'True interior mass',
+      photo:'Robert.Cooper.jpeg',thumbPhoto:'Robert.Cooper.jpeg',
+      forty:'5.10',vert:'28"',bench:'26',ras:'—',broad:'104',weight:'320',
+      quote:'The work at PPF stayed centered on exactly what matters when big men are being evaluated. The room demanded conditioning, power, <em class="pos-emphasis">movement efficiency</em>, and consistency.',
+      fullQuote:'The work at PPF stayed centered on exactly what matters when big men are being evaluated. The room demanded conditioning, power, movement efficiency, and consistency every day. That level of structure helped me carry more confidence into the pre-draft process and show up with a stronger profile when it was time to perform.',
+      stoodOut:'Work centered on what matters for big-man evaluation',
+      improved:'Leverage, movement efficiency, overall DL profile',
+      environment:'Conditioning-focused, power-driven, consistent daily standard',
+      whyMattered:'Carried more confidence into pre-draft process',
+      journey:'standard',journeyLabel:'Performance Standard',
+      filterGroup:'DL'
+    },
+    {
+      id:'kyler-baugh',name:'Kyler Baugh',position:'Defensive Tackle',posShort:'DT',
+      school:'Minnesota / Houston Christian',classYear:'2024',
+      proOutcome:'New Orleans Saints',
+      trainedFor:'NFL Draft',bestTrait:'Upper-body power at premium weight',
+      photo:'Kyler.Baugh.featured.jpg',thumbPhoto:'Kyler.Baugh.jpeg',
+      forty:'4.91',vert:'33.5"',bench:'34',ras:'8.56',broad:'112',weight:'303',
+      quote:'PPF made the preparation feel sharp, specific, and <em class="pos-emphasis">professional</em>. The standard never drifted.',
+      fullQuote:'PPF made the preparation feel sharp, specific, and professional. The standard never drifted. Every block of work was tied to movement quality, testing detail, and the kind of physical readiness that has to show up when teams are looking closely. That clarity gives the process real value.',
+      stoodOut:'Sharp, specific preparation with unwavering standard',
+      improved:'Movement quality, testing detail, physical readiness',
+      environment:'Professional, no drift in standards, clear purpose',
+      whyMattered:'Clarity gives the process real value under evaluation',
+      journey:'pro-day',journeyLabel:'Pro Day',
+      filterGroup:'DL'
+    },
+    {
+      id:'torricelli-simpkins',name:'Torricelli Simpkins III',position:'Offensive Line',posShort:'OL',
+      school:'North Carolina Central / South Carolina',classYear:'2025',
+      proOutcome:'New Orleans Saints',
+      trainedFor:'NFL Draft',bestTrait:'Big-man movement at size',
+      photo:'Torricelli.Simpkins.featured.new.jpg',
+      thumbPhoto:'Torricelli.Simpkins.alumni.new.jpg',
+      forty:'5.20',vert:'29"',bench:'24',ras:'—',broad:'102',weight:'312',
+      quote:'PPF gave the process a level of <em class="pos-emphasis">discipline</em> that matched what the moment requires.',
+      fullQuote:'PPF gave the process a level of discipline that matched what the moment requires. The training stayed intentional, the expectations stayed high, and the details never got casual. It is the type of environment that helps an athlete look more complete on testing day and more prepared in every part of the evaluation.',
+      stoodOut:'Discipline that matched the moment',
+      improved:'Technique, drill sharpness, physical presence',
+      environment:'Intentional, high expectations, no casual details',
+      whyMattered:'Looked more complete on testing day',
+      journey:'draft-prep',journeyLabel:'Draft Prep',
+      filterGroup:'OL'
+    }
+  ];
+
+  var currentIndex = 0;
+  var isTransitioning = false;
+  var activeFilter = 'All';
+  var activeJourney = 'athlete';
+
+  /* ── Build the rail cards ────────────────────────────── */
+  function buildRail(){
+    var rail = document.getElementById('posRail');
+    if(!rail) return;
+    rail.innerHTML = '';
+    var filtered = getFilteredAthletes();
+    filtered.forEach(function(a,i){
+      var card = document.createElement('div');
+      card.className = 'pos-rail-card' + (a === posAthletes[currentIndex] ? ' pos-rail-active' : '');
+      card.setAttribute('role','option');
+      card.setAttribute('aria-selected', a === posAthletes[currentIndex] ? 'true' : 'false');
+      card.setAttribute('data-athlete-index', posAthletes.indexOf(a));
+
+      var microStat = a.ras !== '—' ? 'RAS ' + a.ras : (a.forty !== '—' ? a.forty + 's' : a.posShort);
+
+      card.innerHTML =
+        '<div class="pos-rail-img-wrap">' +
+          '<img class="pos-rail-img" src="' + a.thumbPhoto + '" alt="' + a.name + '" loading="lazy">' +
+        '</div>' +
+        '<div class="pos-rail-info">' +
+          '<div class="pos-rail-name">' + a.name + '</div>' +
+          '<div class="pos-rail-meta">' + a.posShort + ' • ' + a.school.split('/')[0].split('•')[0].trim() + '</div>' +
+          '<span class="pos-rail-chip">' + microStat + '</span>' +
+        '</div>';
+
+      card.addEventListener('click', function(){
+        var idx = parseInt(card.getAttribute('data-athlete-index'));
+        selectAthlete(idx);
+      });
+      rail.appendChild(card);
+    });
+  }
+
+  /* ── Get filtered athletes ───────────────────────────── */
+  function getFilteredAthletes(){
+    return posAthletes.filter(function(a){
+      var filterMatch = activeFilter === 'All' || a.filterGroup === activeFilter;
+      var journeyMatch = activeJourney === 'athlete' || a.journey === activeJourney;
+      return filterMatch && journeyMatch;
+    });
+  }
+
+  /* ── Select athlete — the cinematic transition ────── */
+  function selectAthlete(index){
+    if(isTransitioning || index === currentIndex) return;
+    isTransitioning = true;
+    var a = posAthletes[index];
+
+    // Transition out
+    var portrait = document.getElementById('posPortrait');
+    var quoteEl = document.getElementById('posQuoteText');
+    var nameEl = document.getElementById('posAthleteName');
+    var ribbon = document.getElementById('posProofRibbon');
+    var stack = document.getElementById('posProofStack');
+
+    if(portrait) portrait.classList.add('pos-transitioning');
+    if(quoteEl) quoteEl.classList.add('pos-transitioning');
+    if(nameEl) nameEl.classList.add('pos-transitioning');
+    if(ribbon) ribbon.classList.add('pos-transitioning');
+    if(stack) stack.classList.add('pos-transitioning');
+
+    // Shift glow orb
+    var orb = document.querySelector('.pos-glow-orb');
+    if(orb){
+      var offsets = [-15,-10,-5,0,5,10,15,20];
+      var shift = offsets[index % offsets.length] || 0;
+      orb.style.transform = 'translateX(calc(-50% + ' + shift + '%))';
+    }
+
+    setTimeout(function(){
+      // Update portrait
+      if(portrait){
+        portrait.src = a.photo;
+        portrait.alt = a.name + ' portrait';
+      }
+
+      // Update quote
+      if(quoteEl) quoteEl.innerHTML = a.quote;
+      if(nameEl) nameEl.textContent = a.name;
+
+      // Update proof ribbon chips
+      if(ribbon){
+        ribbon.innerHTML =
+          buildChip('vert','Vert',a.vert) +
+          buildChip('bench','Bench',a.bench) +
+          buildChip('forty','40',a.forty) +
+          buildChip('ras','RAS',a.ras) +
+          buildChip('pos','Pos',a.posShort) +
+          buildChip('class','Class',a.classYear);
+      }
+
+      // Update proof stack
+      updateStackValue('posStackPos', a.position);
+      updateStackValue('posStackSchool', a.school);
+      updateStackValue('posStackClass', a.classYear);
+      updateStackValue('posStackTrained', a.trainedFor);
+      updateStackValue('posStackPro', a.proOutcome);
+      updateStackValue('posStackTrait', a.bestTrait);
+
+      // Update inside-the-testimonial
+      updateInsideValue('posInsideStoodOut', a.stoodOut);
+      updateInsideValue('posInsideImproved', a.improved);
+      updateInsideValue('posInsideEnv', a.environment);
+      updateInsideValue('posInsideWhy', a.whyMattered);
+
+      // Close inside panel on athlete switch
+      var insideContent = document.getElementById('posInsideContent');
+      var insideToggle = document.getElementById('posInsideToggle');
+      if(insideContent) insideContent.classList.remove('pos-expanded');
+      if(insideToggle) insideToggle.setAttribute('aria-expanded','false');
+
+      // Transition in
+      setTimeout(function(){
+        if(portrait) portrait.classList.remove('pos-transitioning');
+        if(quoteEl) quoteEl.classList.remove('pos-transitioning');
+        if(nameEl) nameEl.classList.remove('pos-transitioning');
+        if(ribbon) ribbon.classList.remove('pos-transitioning');
+        if(stack) stack.classList.remove('pos-transitioning');
+
+        currentIndex = index;
+        updateRailActive();
+        isTransitioning = false;
+      },60);
+    },400);
+  }
+
+  function buildChip(type,label,value){
+    return '<span class="pos-chip" data-type="' + type + '"><span class="pos-chip-label">' +
+      label + '</span><span class="pos-chip-value">' + value + '</span></span>';
+  }
+
+  function updateStackValue(id, val){
+    var el = document.getElementById(id);
+    if(el) el.textContent = val;
+  }
+
+  function updateInsideValue(id, val){
+    var el = document.getElementById(id);
+    if(el) el.textContent = val;
+  }
+
+  function updateRailActive(){
+    var cards = document.querySelectorAll('.pos-rail-card');
+    cards.forEach(function(c){
+      var idx = parseInt(c.getAttribute('data-athlete-index'));
+      if(idx === currentIndex){
+        c.classList.add('pos-rail-active');
+        c.setAttribute('aria-selected','true');
+        // Scroll active card into view
+        var scrollBehavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+        c.scrollIntoView({behavior:scrollBehavior,block:'nearest',inline:'center'});
+      } else {
+        c.classList.remove('pos-rail-active');
+        c.setAttribute('aria-selected','false');
+      }
+    });
+
+    // Update connector line
+    var activeCard = document.querySelector('.pos-rail-card.pos-rail-active');
+    var connector = document.getElementById('posRailConnector');
+    if(activeCard && connector){
+      var rail = document.getElementById('posRail');
+      var railRect = rail.getBoundingClientRect();
+      var cardRect = activeCard.getBoundingClientRect();
+      var centerX = cardRect.left - railRect.left + cardRect.width / 2;
+      connector.style.left = centerX + 'px';
+      connector.classList.add('pos-visible');
+    }
+  }
+
+  /* ── Position Filters ────────────────────────────────── */
+  function setupFilters(){
+    var btns = document.querySelectorAll('.pos-filter-btn');
+    btns.forEach(function(btn){
+      btn.addEventListener('click',function(){
+        btns.forEach(function(b){ b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected','true');
+        activeFilter = btn.getAttribute('data-filter');
+        var filtered = getFilteredAthletes();
+        if(filtered.length > 0){
+          currentIndex = posAthletes.indexOf(filtered[0]);
+          refreshSpotlight();
+        }
+        buildRail();
+      });
+    });
+  }
+
+  /* ── Journey Mode Toggle ─────────────────────────────── */
+  function setupJourneyToggle(){
+    var btns = document.querySelectorAll('.pos-journey-btn');
+    btns.forEach(function(btn){
+      btn.addEventListener('click',function(){
+        btns.forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeJourney = btn.getAttribute('data-journey');
+        var filtered = getFilteredAthletes();
+        if(filtered.length > 0){
+          currentIndex = posAthletes.indexOf(filtered[0]);
+          refreshSpotlight();
+        }
+        buildRail();
+      });
+    });
+  }
+
+  /* ── Refresh spotlight without animation ─────────────── */
+  function refreshSpotlight(){
+    var a = posAthletes[currentIndex];
+    var portrait = document.getElementById('posPortrait');
+    var quoteEl = document.getElementById('posQuoteText');
+    var nameEl = document.getElementById('posAthleteName');
+    var ribbon = document.getElementById('posProofRibbon');
+
+    if(portrait){ portrait.src = a.photo; portrait.alt = a.name + ' portrait'; }
+    if(quoteEl) quoteEl.innerHTML = a.quote;
+    if(nameEl) nameEl.textContent = a.name;
+    if(ribbon){
+      ribbon.innerHTML =
+        buildChip('vert','Vert',a.vert) +
+        buildChip('bench','Bench',a.bench) +
+        buildChip('forty','40',a.forty) +
+        buildChip('ras','RAS',a.ras) +
+        buildChip('pos','Pos',a.posShort) +
+        buildChip('class','Class',a.classYear);
+    }
+    updateStackValue('posStackPos', a.position);
+    updateStackValue('posStackSchool', a.school);
+    updateStackValue('posStackClass', a.classYear);
+    updateStackValue('posStackTrained', a.trainedFor);
+    updateStackValue('posStackPro', a.proOutcome);
+    updateStackValue('posStackTrait', a.bestTrait);
+    updateInsideValue('posInsideStoodOut', a.stoodOut);
+    updateInsideValue('posInsideImproved', a.improved);
+    updateInsideValue('posInsideEnv', a.environment);
+    updateInsideValue('posInsideWhy', a.whyMattered);
+  }
+
+  /* ── Inside the Testimonial toggle ───────────────────── */
+  function setupInsideToggle(){
+    var toggle = document.getElementById('posInsideToggle');
+    var content = document.getElementById('posInsideContent');
+    if(!toggle || !content) return;
+    toggle.addEventListener('click',function(){
+      var expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      if(expanded){
+        content.classList.remove('pos-expanded');
+      } else {
+        content.classList.add('pos-expanded');
+      }
+    });
+  }
+
+  /* ── Rotating headline ───────────────────────────────── */
+  function setupRotatingHeadline(){
+    var el = document.querySelector('.pos-headline-text');
+    if(!el) return;
+    var headlines;
+    try { headlines = JSON.parse(el.getAttribute('data-headlines')); } catch(e){ console.warn('POS: headline parse error',e); return; }
+    if(!headlines || headlines.length < 2) return;
+    var idx = 0;
+    setInterval(function(){
+      el.classList.add('pos-fade');
+      setTimeout(function(){
+        idx = (idx + 1) % headlines.length;
+        el.textContent = headlines[idx];
+        el.classList.remove('pos-fade');
+      },500);
+    },3500);
+  }
+
+  /* ── Waveform canvas animation ───────────────────────── */
+  function setupWaveform(){
+    var canvas = document.getElementById('posWaveform');
+    if(!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var dpr = window.devicePixelRatio || 1;
+    var animFrame;
+
+    function resize(){
+      var rect = canvas.parentElement.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+      ctx.scale(dpr, dpr);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    var time = 0;
+    function draw(){
+      var w = canvas.width / dpr;
+      var h = canvas.height / dpr;
+      ctx.clearRect(0,0,w,h);
+      ctx.strokeStyle = 'rgba(255,106,0,0.12)';
+      ctx.lineWidth = 1.5;
+
+      for(var line = 0; line < 3; line++){
+        ctx.beginPath();
+        var yBase = h * (0.35 + line * 0.15);
+        var amp = 15 + line * 8;
+        var freq = 0.008 - line * 0.001;
+        var speed = 0.02 + line * 0.005;
+        for(var x = 0; x < w; x += 2){
+          var y = yBase + Math.sin(x * freq + time * speed) * amp +
+                  Math.sin(x * freq * 2.3 + time * speed * 1.4) * (amp * 0.3);
+          if(x === 0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+        }
+        ctx.stroke();
+      }
+      time++;
+      animFrame = requestAnimationFrame(draw);
+    }
+
+    // Only animate when visible
+    var observer = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){
+        if(!animFrame) draw();
+      } else {
+        if(animFrame){ cancelAnimationFrame(animFrame); animFrame = null; }
+      }
+    },{threshold:0.05});
+    observer.observe(canvas);
+  }
+
+  /* ── Keyboard navigation ─────────────────────────────── */
+  function setupKeyboard(){
+    document.addEventListener('keydown',function(e){
+      var spotlight = document.getElementById('posSpotlight');
+      if(!spotlight) return;
+      var rect = spotlight.getBoundingClientRect();
+      var inView = rect.top < window.innerHeight && rect.bottom > 0;
+      if(!inView) return;
+
+      var filtered = getFilteredAthletes();
+      var currentFilteredIdx = filtered.indexOf(posAthletes[currentIndex]);
+
+      if(e.key === 'ArrowRight' || e.key === 'ArrowDown'){
+        e.preventDefault();
+        var nextIdx = (currentFilteredIdx + 1) % filtered.length;
+        selectAthlete(posAthletes.indexOf(filtered[nextIdx]));
+      }
+      if(e.key === 'ArrowLeft' || e.key === 'ArrowUp'){
+        e.preventDefault();
+        var prevIdx = (currentFilteredIdx - 1 + filtered.length) % filtered.length;
+        selectAthlete(posAthletes.indexOf(filtered[prevIdx]));
+      }
+    });
+  }
+
+  /* ── Initialize everything ───────────────────────────── */
+  function initProofOfStandard(){
+    if(!document.getElementById('posSpotlight')) return;
+    buildRail();
+    setupFilters();
+    setupJourneyToggle();
+    setupInsideToggle();
+    setupRotatingHeadline();
+    setupWaveform();
+    setupKeyboard();
+    updateRailActive();
+
+    // Add 3D tilt to spotlight (throttled via rAF)
+    var spotlight = document.querySelector('.pos-spotlight');
+    if(spotlight){
+      var tiltRAF = null;
+      spotlight.addEventListener('mousemove',function(e){
+        if(tiltRAF) return;
+        tiltRAF = requestAnimationFrame(function(){
+          var rect = spotlight.getBoundingClientRect();
+          var x = (e.clientX - rect.left) / rect.width - 0.5;
+          var y = (e.clientY - rect.top) / rect.height - 0.5;
+          spotlight.style.transform = 'perspective(1200px) rotateY(' + (x * 2) + 'deg) rotateX(' + (-y * 2) + 'deg)';
+          tiltRAF = null;
+        });
+      });
+      spotlight.addEventListener('mouseleave',function(){
+        spotlight.style.transform = '';
+        spotlight.style.transition = 'transform .6s var(--ease-out-expo)';
+        setTimeout(function(){ spotlight.style.transition = ''; },600);
+      });
+    }
+
+    // observe spotlight entrance for kinetic marks activation
+    var spotlightObs = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){
+        document.querySelector('.pos-spotlight').classList.add('pos-active');
+      }
+    },{threshold:0.2});
+    if(spotlight) spotlightObs.observe(spotlight);
+  }
+
+  // Wait for DOM
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initProofOfStandard);
+  } else {
+    initProofOfStandard();
+  }
+
+})();
