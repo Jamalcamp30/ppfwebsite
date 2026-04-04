@@ -1273,6 +1273,7 @@
 <div class="cc-bg-grid"></div>
 <div class="cc-scanline"></div>
 <div class="cc-spotlight"></div>
+<canvas class="cc-route-canvas" id="ccRouteCanvas"></canvas>
 
 <div class="container">
 
@@ -1296,12 +1297,34 @@
   <button class="cc-filter-btn" data-pos="draft">Draft Prep</button>
 </div>
 
-<!-- ── Hero Coach — Richard Camp ───────────────────────── -->
+<!-- ── Position Context Strip (dynamic on filter) ──────── -->
+<div class="cc-pos-context" id="ccPosContext">
+  <div class="cc-pos-context-inner">
+    <div class="cc-pos-context-header">
+      <span class="cc-pos-icon" id="ccPosIcon"></span>
+      <span class="cc-pos-label" id="ccPosLabel"></span>
+    </div>
+    <p class="cc-pos-copy" id="ccPosCopy"></p>
+    <div class="cc-pos-traits" id="ccPosTraits"></div>
+    <div class="cc-pos-profile-lane" id="ccPosLane">
+      <span class="cc-pos-lane-label">How your profile gets built:</span>
+      <div class="cc-pos-lane-steps" id="ccPosLaneSteps"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Hero Coach — Richard Camp (System Anchor) ───────── -->
 <div class="cc-hero reveal" data-coach="richard-camp" data-positions="wr,te,db,ol,dl,lb,rb,draft">
-  <div class="cc-hero-portrait">
+  <div class="cc-hero-portrait" data-parallax="0.04">
     <img loading="lazy" src="Richard.Pose.jpg" alt="Richard Camp — Performance Architecture">
     <div class="cc-hero-glow"></div>
     <div class="cc-hero-scanbar"></div>
+    <div class="cc-hero-stat-flicker">
+      <span class="cc-stat-flick">25+ YRS</span>
+      <span class="cc-stat-flick">CSCS</span>
+      <span class="cc-stat-flick">SPEED</span>
+      <span class="cc-stat-flick">POWER</span>
+    </div>
   </div>
   <div class="cc-hero-intel">
     <span class="cc-role-badge"><span class="cc-badge-dot"></span>Performance Leadership / System Director</span>
@@ -1317,6 +1340,55 @@
       <div class="cc-pillar" data-trait="standard"><span class="cc-pillar-icon">🏛️</span><strong>Room Standard</strong><span class="cc-pillar-desc">Professional environment, direct feedback, elite detail</span></div>
       <div class="cc-pillar" data-trait="presentation"><span class="cc-pillar-icon">👁️</span><strong>Athlete Presentation</strong><span class="cc-pillar-desc">How the athlete looks on film, in testing, in the room</span></div>
     </div>
+  </div>
+</div>
+
+<!-- ── Orbital Network Diagram ─────────────────────────── -->
+<div class="cc-orbital reveal">
+  <div class="cc-orbital-header">
+    <span class="cc-orbital-label">System Architecture</span>
+    <span class="cc-orbital-sublabel">How each specialist feeds into the athlete's complete profile</span>
+  </div>
+  <div class="cc-orbital-diagram" id="ccOrbitalDiagram">
+    <svg class="cc-orbital-svg" viewBox="0 0 1200 340" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <linearGradient id="orbLineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:rgba(255,106,0,.5)"/>
+          <stop offset="100%" style="stop-color:rgba(255,106,0,.08)"/>
+        </linearGradient>
+        <filter id="orbGlow"><feGaussianBlur stdDeviation="3" result="g"/><feMerge><feMergeNode in="g"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <path id="orbPath1" class="cc-orbit-line" d="M600,170 Q350,115 100,60" data-coach="tj-brown"/>
+      <path id="orbPath2" class="cc-orbit-line" d="M600,170 Q470,105 340,40" data-coach="marcus-howard"/>
+      <path id="orbPath3" class="cc-orbit-line" d="M600,170 Q730,105 860,40" data-coach="ben-grubbs"/>
+      <path id="orbPath4" class="cc-orbit-line" d="M600,170 Q850,115 1100,60" data-coach="tj-heath"/>
+      <path id="orbPath5" class="cc-orbit-line" d="M600,170 Q440,235 280,300" data-coach="coach-allen"/>
+      <path id="orbPath6" class="cc-orbit-line" d="M600,170 Q760,235 920,300" data-coach="marquell-beckwith"/>
+      <circle class="cc-pulse-dot" r="4" filter="url(#orbGlow)"><animateMotion dur="2.8s" repeatCount="indefinite"><mpath href="#orbPath1"/></animateMotion></circle>
+      <circle class="cc-pulse-dot" r="4" filter="url(#orbGlow)"><animateMotion dur="3.2s" repeatCount="indefinite"><mpath href="#orbPath2"/></animateMotion></circle>
+      <circle class="cc-pulse-dot" r="4" filter="url(#orbGlow)"><animateMotion dur="2.5s" repeatCount="indefinite"><mpath href="#orbPath3"/></animateMotion></circle>
+      <circle class="cc-pulse-dot" r="4" filter="url(#orbGlow)"><animateMotion dur="3s" repeatCount="indefinite"><mpath href="#orbPath4"/></animateMotion></circle>
+      <circle class="cc-pulse-dot" r="4" filter="url(#orbGlow)"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#orbPath5"/></animateMotion></circle>
+      <circle class="cc-pulse-dot" r="4" filter="url(#orbGlow)"><animateMotion dur="3.4s" repeatCount="indefinite"><mpath href="#orbPath6"/></animateMotion></circle>
+      <text class="cc-orbit-flow-label" x="330" y="108" transform="rotate(-12,330,108)">Speed</text>
+      <text class="cc-orbit-flow-label" x="455" y="90" transform="rotate(-6,455,90)">Power</text>
+      <text class="cc-orbit-flow-label" x="745" y="90" transform="rotate(6,745,90)">Movement</text>
+      <text class="cc-orbit-flow-label" x="870" y="108" transform="rotate(12,870,108)">Position Detail</text>
+      <text class="cc-orbit-flow-label" x="420" y="255" transform="rotate(10,420,255)">Recovery</text>
+      <text class="cc-orbit-flow-label" x="780" y="255" transform="rotate(-10,780,255)">Testing</text>
+    </svg>
+    <div class="cc-orbit-center">
+      <div class="cc-orbit-center-ring"></div>
+      <div class="cc-orbit-center-ring cc-orbit-ring-outer"></div>
+      <span class="cc-orbit-center-init">RC</span>
+      <span class="cc-orbit-center-title">System Director</span>
+    </div>
+    <div class="cc-orbit-node" data-coach="tj-brown" style="left:8.3%;top:17.6%"><div class="cc-orbit-node-ring"></div><span class="cc-orbit-node-init">TB</span><span class="cc-orbit-node-name">TJ Brown</span><span class="cc-orbit-node-trait">Separation</span></div>
+    <div class="cc-orbit-node" data-coach="marcus-howard" style="left:28.3%;top:11.7%"><div class="cc-orbit-node-ring"></div><span class="cc-orbit-node-init">MH</span><span class="cc-orbit-node-name">M. Howard</span><span class="cc-orbit-node-trait">First Step</span></div>
+    <div class="cc-orbit-node" data-coach="ben-grubbs" style="left:71.6%;top:11.7%"><div class="cc-orbit-node-ring"></div><span class="cc-orbit-node-init">BG</span><span class="cc-orbit-node-name">B. Grubbs</span><span class="cc-orbit-node-trait">Strike Timing</span></div>
+    <div class="cc-orbit-node" data-coach="tj-heath" style="left:91.6%;top:17.6%"><div class="cc-orbit-node-ring"></div><span class="cc-orbit-node-init">TH</span><span class="cc-orbit-node-name">TJ Heath</span><span class="cc-orbit-node-trait">Transition</span></div>
+    <div class="cc-orbit-node" data-coach="coach-allen" style="left:23.3%;top:88.2%"><div class="cc-orbit-node-ring"></div><span class="cc-orbit-node-init">CA</span><span class="cc-orbit-node-name">Coach Allen</span><span class="cc-orbit-node-trait">Space Control</span></div>
+    <div class="cc-orbit-node" data-coach="marquell-beckwith" style="left:76.6%;top:88.2%"><div class="cc-orbit-node-ring"></div><span class="cc-orbit-node-init">MB</span><span class="cc-orbit-node-name">M. Beckwith</span><span class="cc-orbit-node-trait">Path Efficiency</span></div>
   </div>
 </div>
 
@@ -1338,9 +1410,11 @@
   <!-- TJ Brown -->
   <article class="cc-card" data-coach="tj-brown" data-positions="wr,te,draft">
     <div class="cc-card-glow"></div>
-    <div class="cc-card-portrait">
+    <div class="cc-card-edge-glow"></div>
+    <div class="cc-card-portrait" data-parallax="0.03">
       <img loading="lazy" src="TJ.Brown WR.Coach.jpeg" alt="TJ Brown">
       <div class="cc-card-scanbar"></div>
+      <div class="cc-card-route-line cc-route-wr"></div>
     </div>
     <div class="cc-card-intel">
       <span class="cc-spec-role">Wide Receivers / Tight Ends</span>
@@ -1357,15 +1431,20 @@
       <div class="cc-tac-row"><span class="cc-tac-label">Corrects</span><span class="cc-tac-val">Route tempo, release timing, stem detail, transition speed</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Improves</span><span class="cc-tac-val">Cleaner separation, sharper route breaks, stronger finish</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Shows Up As</span><span class="cc-tac-val">Faster split, cleaner route break, stronger drill presence</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Athlete Feels</span><span class="cc-tac-val">Faster off the line, more confident in release, sharper in transitions</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Scouts See</span><span class="cc-tac-val">Cleaner route tree, decisive breaks, polished positional movement</span></div>
     </div>
+    <button class="cc-card-expand" aria-label="View coached outcomes">View Outcomes ↗</button>
   </article>
 
   <!-- Marcus Howard -->
   <article class="cc-card" data-coach="marcus-howard" data-positions="dl,draft">
     <div class="cc-card-glow"></div>
-    <div class="cc-card-portrait">
+    <div class="cc-card-edge-glow"></div>
+    <div class="cc-card-portrait" data-parallax="0.03">
       <img loading="lazy" src="Marcus.howard.jpeg" alt="Marcus Howard">
       <div class="cc-card-scanbar"></div>
+      <div class="cc-card-route-line cc-route-dl"></div>
     </div>
     <div class="cc-card-intel">
       <span class="cc-spec-role">Defensive Line</span>
@@ -1382,15 +1461,20 @@
       <div class="cc-tac-row"><span class="cc-tac-label">Corrects</span><span class="cc-tac-val">Pad level, hand placement, first-step timing, rush angle</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Improves</span><span class="cc-tac-val">Faster get-off, cleaner leverage, stronger hands at contact</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Shows Up As</span><span class="cc-tac-val">Explosive first step, dominant drill work, power benchmarks</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Athlete Feels</span><span class="cc-tac-val">More explosive off the ball, better hand control, stronger at the point</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Scouts See</span><span class="cc-tac-val">Violent first step, consistent leverage, dominant front-seven presence</span></div>
     </div>
+    <button class="cc-card-expand" aria-label="View coached outcomes">View Outcomes ↗</button>
   </article>
 
   <!-- Ben Grubbs -->
   <article class="cc-card" data-coach="ben-grubbs" data-positions="ol,draft">
     <div class="cc-card-glow"></div>
-    <div class="cc-card-portrait">
+    <div class="cc-card-edge-glow"></div>
+    <div class="cc-card-portrait" data-parallax="0.03">
       <img loading="lazy" src="Ben.Grubbs.jpeg" alt="Ben Grubbs">
       <div class="cc-card-scanbar"></div>
+      <div class="cc-card-route-line cc-route-ol"></div>
     </div>
     <div class="cc-card-intel">
       <span class="cc-spec-role">Offensive Line</span>
@@ -1407,15 +1491,20 @@
       <div class="cc-tac-row"><span class="cc-tac-label">Corrects</span><span class="cc-tac-val">Base width, hand strike timing, set posture, mirror technique</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Improves</span><span class="cc-tac-val">Cleaner technique, better leverage, stronger testing carryover</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Shows Up As</span><span class="cc-tac-val">Sharper OL drills, cleaner foot movement, confident presentation</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Athlete Feels</span><span class="cc-tac-val">More stable base, quicker hands, controlled power through contact</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Scouts See</span><span class="cc-tac-val">Reliable pass protection, clean technique under pressure, OL polish</span></div>
     </div>
+    <button class="cc-card-expand" aria-label="View coached outcomes">View Outcomes ↗</button>
   </article>
 
   <!-- TJ Heath -->
   <article class="cc-card" data-coach="tj-heath" data-positions="db,draft">
     <div class="cc-card-glow"></div>
-    <div class="cc-card-portrait">
+    <div class="cc-card-edge-glow"></div>
+    <div class="cc-card-portrait" data-parallax="0.03">
       <img loading="lazy" src="TJ.Heath.jpeg" alt="TJ Heath">
       <div class="cc-card-scanbar"></div>
+      <div class="cc-card-route-line cc-route-db"></div>
     </div>
     <div class="cc-card-intel">
       <span class="cc-spec-role">Safeties / Defensive Backs</span>
@@ -1432,15 +1521,20 @@
       <div class="cc-tac-row"><span class="cc-tac-label">Corrects</span><span class="cc-tac-val">Pedal depth, transition speed, hip fluidity, ball tracking</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Improves</span><span class="cc-tac-val">Cleaner movement, faster breaks, sharper finish on the ball</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Shows Up As</span><span class="cc-tac-val">Smooth transition, clean DB drills, confident range in space</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Athlete Feels</span><span class="cc-tac-val">Smoother hip transitions, faster recovery angles, sharper ball skills</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Scouts See</span><span class="cc-tac-val">Fluid transitions, range on tape, confident coverage presence</span></div>
     </div>
+    <button class="cc-card-expand" aria-label="View coached outcomes">View Outcomes ↗</button>
   </article>
 
   <!-- Coach Allen -->
   <article class="cc-card" data-coach="coach-allen" data-positions="lb,draft">
     <div class="cc-card-glow"></div>
-    <div class="cc-card-portrait">
+    <div class="cc-card-edge-glow"></div>
+    <div class="cc-card-portrait" data-parallax="0.03">
       <img loading="lazy" src="Coach.Allen.jpeg" alt="Coach Allen">
       <div class="cc-card-scanbar"></div>
+      <div class="cc-card-route-line cc-route-lb"></div>
     </div>
     <div class="cc-card-intel">
       <span class="cc-spec-role">Linebackers</span>
@@ -1457,15 +1551,20 @@
       <div class="cc-tac-row"><span class="cc-tac-label">Corrects</span><span class="cc-tac-val">Read-step discipline, change of direction, strike timing</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Improves</span><span class="cc-tac-val">Range, coverage movement, box-to-space detail</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Shows Up As</span><span class="cc-tac-val">Cleaner LB drills, faster lateral cuts, confident space control</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Athlete Feels</span><span class="cc-tac-val">Faster reads, sharper direction changes, more confident in coverage</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Scouts See</span><span class="cc-tac-val">Controlled movement in space, decisive reads, complete LB profile</span></div>
     </div>
+    <button class="cc-card-expand" aria-label="View coached outcomes">View Outcomes ↗</button>
   </article>
 
   <!-- Marquell Beckwith -->
   <article class="cc-card" data-coach="marquell-beckwith" data-positions="rb,draft">
     <div class="cc-card-glow"></div>
-    <div class="cc-card-portrait">
+    <div class="cc-card-edge-glow"></div>
+    <div class="cc-card-portrait" data-parallax="0.03">
       <img loading="lazy" src="Coach Marquell Beckwith.jpeg" alt="Marquell Beckwith">
       <div class="cc-card-scanbar"></div>
+      <div class="cc-card-route-line cc-route-rb"></div>
     </div>
     <div class="cc-card-intel">
       <span class="cc-spec-role">Running Backs</span>
@@ -1482,49 +1581,90 @@
       <div class="cc-tac-row"><span class="cc-tac-label">Corrects</span><span class="cc-tac-val">Pad level, path efficiency, lateral movement, contact timing</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Improves</span><span class="cc-tac-val">Burst, contact balance, pass-game movement, backfield detail</span></div>
       <div class="cc-tac-row"><span class="cc-tac-label">Shows Up As</span><span class="cc-tac-val">Explosive cuts, cleaner backfield work, sharper evaluation tape</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Athlete Feels</span><span class="cc-tac-val">Quicker burst, cleaner cuts, stronger through contact</span></div>
+      <div class="cc-tac-row"><span class="cc-tac-label">Scouts See</span><span class="cc-tac-val">Efficient pathing, explosive burst, polished backfield presence</span></div>
     </div>
+    <button class="cc-card-expand" aria-label="View coached outcomes">View Outcomes ↗</button>
   </article>
 
 </div>
 
-<!-- ── Staff Pipeline Strip ────────────────────────────── -->
+<!-- ── Staff Pipeline Strip (Enhanced) ─────────────────── -->
 <div class="cc-pipeline reveal">
   <h4 class="cc-pipeline-title">How the Staff Works Together</h4>
   <div class="cc-pipeline-track">
-    <div class="cc-pipe-step">
+    <div class="cc-pipe-step" data-pipe-coaches="richard-camp">
       <div class="cc-pipe-node"><span>01</span></div>
       <strong>Assessment</strong>
       <p>Richard Camp</p>
     </div>
     <div class="cc-pipe-connector"></div>
-    <div class="cc-pipe-step">
+    <div class="cc-pipe-step" data-pipe-coaches="tj-brown,marcus-howard,ben-grubbs,tj-heath,coach-allen,marquell-beckwith">
       <div class="cc-pipe-node"><span>02</span></div>
       <strong>Position Breakdown</strong>
       <p>Position Specialists</p>
     </div>
     <div class="cc-pipe-connector"></div>
-    <div class="cc-pipe-step">
+    <div class="cc-pipe-step" data-pipe-coaches="richard-camp">
       <div class="cc-pipe-node"><span>03</span></div>
       <strong>Speed &amp; Power</strong>
       <p>Richard Camp</p>
     </div>
     <div class="cc-pipe-connector"></div>
-    <div class="cc-pipe-step">
+    <div class="cc-pipe-step" data-pipe-coaches="tj-brown,marcus-howard,ben-grubbs,tj-heath,coach-allen,marquell-beckwith">
       <div class="cc-pipe-node"><span>04</span></div>
       <strong>Technical Detail</strong>
       <p>Position Coaches</p>
     </div>
     <div class="cc-pipe-connector"></div>
-    <div class="cc-pipe-step">
+    <div class="cc-pipe-step" data-pipe-coaches="richard-camp,tj-brown,marcus-howard,ben-grubbs,tj-heath,coach-allen,marquell-beckwith">
       <div class="cc-pipe-node"><span>05</span></div>
       <strong>Recovery Integration</strong>
       <p>Full Staff</p>
     </div>
     <div class="cc-pipe-connector"></div>
-    <div class="cc-pipe-step">
+    <div class="cc-pipe-step" data-pipe-coaches="richard-camp">
       <div class="cc-pipe-node"><span>06</span></div>
       <strong>Testing Readiness</strong>
       <p>Richard Camp</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Coached Outcomes Overlay ─────────────────────────── -->
+<div class="cc-outcomes-overlay" id="ccOutcomes">
+  <div class="cc-outcomes-backdrop"></div>
+  <div class="cc-outcomes-panel">
+    <button class="cc-outcomes-close" aria-label="Close outcomes panel">&times;</button>
+    <div class="cc-outcomes-header">
+      <img class="cc-outcomes-img" id="ccOutImg" src="" alt="">
+      <div class="cc-outcomes-meta">
+        <h4 class="cc-outcomes-name" id="ccOutName"></h4>
+        <span class="cc-outcomes-role" id="ccOutRole"></span>
+        <span class="cc-outcomes-sig" id="ccOutSig"></span>
+      </div>
+    </div>
+    <div class="cc-outcomes-body">
+      <div class="cc-outcomes-section">
+        <h5>Primary Specialty</h5>
+        <div class="cc-outcomes-specialty" id="ccOutSpecialty"></div>
+      </div>
+      <div class="cc-outcomes-section">
+        <h5>What They Correct</h5>
+        <div class="cc-outcomes-detail" id="ccOutCorrects"></div>
+      </div>
+      <div class="cc-outcomes-section">
+        <h5>What That Improves</h5>
+        <div class="cc-outcomes-detail" id="ccOutImproves"></div>
+      </div>
+      <div class="cc-outcomes-section">
+        <h5>What Scouts &amp; Film See After</h5>
+        <div class="cc-outcomes-detail" id="ccOutScouts"></div>
+      </div>
+      <div class="cc-outcomes-section">
+        <h5>Coached Outcomes</h5>
+        <div class="cc-outcomes-athletes" id="ccOutAthletes"></div>
+      </div>
     </div>
   </div>
 </div>

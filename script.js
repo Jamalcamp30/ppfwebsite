@@ -768,7 +768,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
 })();
 
-/* ── Coach Command Center — Position Filter & Interactivity ── */
+/* ── Coach Command Center — Enhanced Interactivity ── */
 (function(){
   var section = document.querySelector('.cc-section');
   if(!section) return;
@@ -777,8 +777,133 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   var hero = section.querySelector('.cc-hero');
   var cards = section.querySelectorAll('.cc-card');
   var spotlight = section.querySelector('.cc-spotlight');
+  var posContext = document.getElementById('ccPosContext');
+  var orbitalNodes = section.querySelectorAll('.cc-orbit-node');
+  var orbitalLines = section.querySelectorAll('.cc-orbit-line');
 
-  /* ── Position Filter ── */
+  /* ── Position Intelligence Data ── */
+  var positionData = {
+    wr: {
+      icon: '🎯', label: 'Wide Receivers',
+      copy: 'Receivers are evaluated on separation, route precision, and transition detail. Every break has to be clean. Every release has to be intentional. The profile is built through route-tree polish, release mechanics, and testing-day explosiveness.',
+      traits: ['Route Breaks','Release Package','Transition Speed','Stem Detail','Catch Radius','Testing Presence'],
+      lane: ['Movement Screen','Release & Route Work','Speed Development','Route-Tree Polish','Testing Prep']
+    },
+    te: {
+      icon: '🔗', label: 'Tight Ends',
+      copy: 'Tight ends are evaluated across multiple skill sets — blocking, route-running, and body control. The most complete profiles show both physicality in the run game and clean route mechanics in space.',
+      traits: ['Route Running','Blocking','Body Control','Transition','RAC Ability','Versatility'],
+      lane: ['Movement Screen','Blocking Technique','Route Integration','Speed & Power','Testing Prep']
+    },
+    db: {
+      icon: '🛡️', label: 'Defensive Backs',
+      copy: 'Defensive backs win with transition speed before they win with recovery. Pedal mechanics, hip fluidity, and ball skills are the foundation. The evaluation is about controlled speed in space and clean breaks on the ball.',
+      traits: ['Pedal Mechanics','Transition Speed','Hip Fluidity','Ball Skills','Range','Recovery Angles'],
+      lane: ['Movement Screen','Pedal & Transition Work','Speed & Agility','Film Study','Testing Prep']
+    },
+    ol: {
+      icon: '🏗️', label: 'Offensive Line',
+      copy: 'Offensive linemen win with base and timing before they win with effort. Set mechanics, hand strike timing, and mirror ability define the evaluation. The profile is built through repetition of fundamentals under pressure.',
+      traits: ['Set Mechanics','Hand Strike','Base Width','Mirror Ability','Posture','Anchor Strength'],
+      lane: ['Movement Screen','Technique Drills','Power Development','Position Polish','Testing Prep']
+    },
+    dl: {
+      icon: '💥', label: 'Defensive Line',
+      copy: 'Big men do not get evaluated on effort alone. They get evaluated on movement. First step, leverage, hand usage, and rush mechanics define the front-seven profile. The work has to be violent, precise, and repeatable.',
+      traits: ['First Step','Leverage','Hand Timing','Rush Mechanics','Pad Level','Motor'],
+      lane: ['Movement Screen','Hand & Pad Work','Explosive Training','Rush Development','Testing Prep']
+    },
+    lb: {
+      icon: '⚔️', label: 'Linebackers',
+      copy: 'Linebackers cannot rely on instinct alone. Discipline in space changes everything. Read-step mechanics, change-of-direction, and coverage ability define the modern linebacker profile. The evaluation favors controlled movement.',
+      traits: ['Read-Step','COD','Coverage','Strike Timing','Range','Space Discipline'],
+      lane: ['Movement Screen','Read & React Work','Speed & Agility','Coverage Drills','Testing Prep']
+    },
+    rb: {
+      icon: '⚡', label: 'Running Backs',
+      copy: 'Running backs cannot waste steps. Clean pathing changes everything. Burst, contact balance, and pass-game versatility define the complete back. The profile demands efficiency in every phase.',
+      traits: ['Burst','Path Efficiency','Contact Balance','Vision','Pass-Game','Pad Level'],
+      lane: ['Movement Screen','Footwork & Path','Speed & Burst','Pass Protection','Testing Prep']
+    },
+    draft: {
+      icon: '📋', label: 'Draft Prep',
+      copy: 'Draft preparation integrates every detail — speed, power, movement quality, testing precision, and positional readiness. The full staff coordinates to build the complete evaluation profile. Nothing is random.',
+      traits: ['40-Yard Dash','Vertical','Broad Jump','3-Cone','Shuttle','Position Drills','Bench Press'],
+      lane: ['Full Assessment','Position Breakdown','Speed & Power Block','Technical Refinement','Testing Day']
+    }
+  };
+
+  /* ── Coach Outcomes Data ── */
+  var coachOutcomes = {
+    'tj-brown': {
+      img: 'TJ.Brown WR.Coach.jpeg', name: 'TJ Brown', role: 'Wide Receivers / Tight Ends', sig: 'Separation & Receiver Movement',
+      specialty: ['Route Breaks','Release Detail','Transition','Stem Work'],
+      corrects: 'Route tempo, release timing, stem detail, transition speed — making each part of the route intentional.',
+      improves: 'Cleaner separation, sharper route breaks, stronger finish — receivers who look different on film.',
+      scouts: 'Scouts see a faster split, cleaner route break, stronger drill presence, and a polished route tree.',
+      athletes: [
+        {name:'Jalen Camp',detail:'Wide Receiver • Georgia Tech • 2021 Draft Class',outcome:'Polished route mechanics, clean release, sharper testing presence'},
+        {name:'Ahmarean Brown',detail:'WR • Georgia Tech / South Carolina • 2024 Draft',outcome:'Improved separation and route precision through focused position work'}
+      ]
+    },
+    'marcus-howard': {
+      img: 'Marcus.howard.jpeg', name: 'Marcus Howard', role: 'Defensive Line', sig: 'Front-Line Violence & First Step',
+      specialty: ['First Step','Leverage','Hand Usage','Rush Mechanics'],
+      corrects: 'Pad level, hand placement, first-step timing, rush angle — building a violent, repeatable approach.',
+      improves: 'Faster get-off, cleaner leverage, stronger hands at contact — front-seven dominance in drills.',
+      scouts: 'Scouts see an explosive first step, dominant drill work, power benchmarks, and consistent motor.',
+      athletes: [
+        {name:'Travis Bell',detail:'DL • Kennesaw State • 2023 Draft Class',outcome:'Improved first-step explosiveness and hand technique'},
+        {name:'Robert Cooper',detail:'DT • Florida State • 2023 Draft Class',outcome:'Stronger leverage, cleaner movement, more complete DL profile'}
+      ]
+    },
+    'ben-grubbs': {
+      img: 'Ben.Grubbs.jpeg', name: 'Ben Grubbs', role: 'Offensive Line', sig: 'Protection Mechanics & Strike Timing',
+      specialty: ['Set Mechanics','Strike Timing','Posture','Mirror Technique'],
+      corrects: 'Base width, hand strike timing, set posture, mirror technique — building reliable OL fundamentals.',
+      improves: 'Cleaner technique, better leverage, stronger testing carryover — linemen who pass the eye test.',
+      scouts: 'Scouts see sharper OL drills, cleaner foot movement, confident presentation, and trustworthy mechanics.',
+      athletes: [
+        {name:'Torricelli Simpkins III',detail:'OL • NCCU / South Carolina • 2025 Draft',outcome:'Improved technique, sharper drills, more confident physical presence'},
+        {name:'Jack Coco',detail:'Long Snapper • Georgia Tech • 2022 Draft',outcome:'Clean technique fundamentals, reliable under evaluation pressure'}
+      ]
+    },
+    'tj-heath': {
+      img: 'TJ.Heath.jpeg', name: 'TJ Heath', role: 'Safeties / Defensive Backs', sig: 'Range, Transition, Finish',
+      specialty: ['Pedal Mechanics','Transition','Range','Ball Skills'],
+      corrects: 'Pedal depth, transition speed, hip fluidity, ball tracking — refining every coverage mechanic.',
+      improves: 'Cleaner movement, faster breaks, sharper finish on the ball — DBs who play with confidence.',
+      scouts: 'Scouts see smooth transition, clean DB drills, confident range in space, and reliable coverage presence.',
+      athletes: [
+        {name:'Shannon Smith',detail:'DB • Trained at PPF Athletics',outcome:'Improved transition mechanics and coverage confidence'},
+        {name:'Deshon Stoudermire',detail:'DB • Trained at PPF Athletics',outcome:'Sharper pedal work, cleaner break on the ball'}
+      ]
+    },
+    'coach-allen': {
+      img: 'Coach.Allen.jpeg', name: 'Coach Allen', role: 'Linebackers', sig: 'Control in Space',
+      specialty: ['Read-Step','COD','Coverage','Strike Timing'],
+      corrects: 'Read-step discipline, change of direction, strike timing — building complete linebacker movement.',
+      improves: 'Range, coverage movement, box-to-space detail — linebackers who evaluate as complete defenders.',
+      scouts: 'Scouts see cleaner LB drills, faster lateral cuts, confident space control, and decisive reads.',
+      athletes: [
+        {name:'Braelen Oliver',detail:'LB • Trained at PPF Athletics',outcome:'Improved read-step mechanics and lateral agility'},
+        {name:'Mike Allen',detail:'LB • Trained at PPF Athletics',outcome:'Better coverage movement and space discipline'}
+      ]
+    },
+    'marquell-beckwith': {
+      img: 'Coach Marquell Beckwith.jpeg', name: 'Marquell Beckwith', role: 'Running Backs', sig: 'Burst, Path, Contact Balance',
+      specialty: ['Burst','Pad Level','Path Efficiency','Contact Balance'],
+      corrects: 'Pad level, path efficiency, lateral movement, contact timing — making every step count.',
+      improves: 'Burst, contact balance, pass-game movement, backfield detail — backs who evaluate as complete.',
+      scouts: 'Scouts see explosive cuts, cleaner backfield work, sharper evaluation tape, and efficient pathing.',
+      athletes: [
+        {name:'Nathan Cottrell',detail:'RB • Georgia Tech • 2020 Draft Class',outcome:'Improved burst and path efficiency through focused back work'},
+        {name:'Carlos Dunovant',detail:'RB • Trained at PPF Athletics',outcome:'Cleaner pathing, better contact balance, sharper cuts'}
+      ]
+    }
+  };
+
+  /* ── Position Filter (Enhanced) ── */
   filterBtns.forEach(function(btn){
     btn.addEventListener('click',function(){
       var pos = btn.dataset.pos;
@@ -789,7 +914,47 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       if(pos === 'all'){
         hero.classList.remove('cc-dim','cc-highlight');
         cards.forEach(function(c){ c.classList.remove('cc-dim','cc-highlight'); });
+        posContext.classList.remove('cc-pos-active');
+        /* Reset orbital */
+        orbitalNodes.forEach(function(n){ n.classList.remove('cc-orbit-dim'); });
+        orbitalLines.forEach(function(l){ l.classList.remove('cc-orbit-dim','cc-orbit-active'); });
         return;
+      }
+
+      /* Show position context strip */
+      var data = positionData[pos];
+      if(data){
+        document.getElementById('ccPosIcon').textContent = data.icon;
+        document.getElementById('ccPosLabel').textContent = data.label;
+        document.getElementById('ccPosCopy').textContent = data.copy;
+        /* Trait chips */
+        var traitsEl = document.getElementById('ccPosTraits');
+        traitsEl.innerHTML = '';
+        data.traits.forEach(function(t,i){
+          var chip = document.createElement('span');
+          chip.className = 'cc-pos-trait';
+          chip.textContent = t;
+          chip.style.animationDelay = (i * 60) + 'ms';
+          traitsEl.appendChild(chip);
+        });
+        /* Profile build lane */
+        var laneSteps = document.getElementById('ccPosLaneSteps');
+        laneSteps.innerHTML = '';
+        data.lane.forEach(function(step,i){
+          if(i > 0){
+            var arrow = document.createElement('span');
+            arrow.className = 'cc-pos-lane-arrow';
+            arrow.textContent = '→';
+            arrow.style.animationDelay = (i * 80) + 'ms';
+            laneSteps.appendChild(arrow);
+          }
+          var el = document.createElement('span');
+          el.className = 'cc-pos-lane-step';
+          el.textContent = step;
+          el.style.animationDelay = (i * 80) + 'ms';
+          laneSteps.appendChild(el);
+        });
+        posContext.classList.add('cc-pos-active');
       }
 
       /* Hero (Richard Camp) matches all positions */
@@ -802,6 +967,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
         hero.classList.remove('cc-highlight');
       }
 
+      /* Filter cards */
       cards.forEach(function(c){
         var cPositions = (c.dataset.positions || '').split(',');
         if(cPositions.indexOf(pos) !== -1){
@@ -810,6 +976,34 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
         } else {
           c.classList.add('cc-dim');
           c.classList.remove('cc-highlight');
+        }
+      });
+
+      /* Filter orbital nodes & lines */
+      orbitalNodes.forEach(function(node){
+        var coachId = node.dataset.coach;
+        var matchCard = section.querySelector('.cc-card[data-coach="' + coachId + '"]');
+        if(matchCard){
+          var cardPos = (matchCard.dataset.positions || '').split(',');
+          if(cardPos.indexOf(pos) !== -1){
+            node.classList.remove('cc-orbit-dim');
+          } else {
+            node.classList.add('cc-orbit-dim');
+          }
+        }
+      });
+      orbitalLines.forEach(function(line){
+        var coachId = line.dataset.coach;
+        var matchCard = section.querySelector('.cc-card[data-coach="' + coachId + '"]');
+        if(matchCard){
+          var cardPos = (matchCard.dataset.positions || '').split(',');
+          if(cardPos.indexOf(pos) !== -1){
+            line.classList.remove('cc-orbit-dim');
+            line.classList.add('cc-orbit-active');
+          } else {
+            line.classList.add('cc-orbit-dim');
+            line.classList.remove('cc-orbit-active');
+          }
         }
       });
     });
@@ -851,6 +1045,219 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       p.style.boxShadow = 'none';
     });
   });
+
+  /* ── Parallax on Portraits (desktop only) ── */
+  if(window.matchMedia('(pointer:fine)').matches){
+    var parallaxEls = section.querySelectorAll('[data-parallax]');
+    section.addEventListener('mousemove',function(e){
+      var rect = section.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      parallaxEls.forEach(function(el){
+        var strength = parseFloat(el.dataset.parallax) || 0.03;
+        var img = el.querySelector('img');
+        if(img){
+          img.style.transform = 'scale(1.02) translate(' + (x * strength * 100) + 'px,' + (y * strength * 100) + 'px)';
+        }
+      });
+    });
+  }
+
+  /* ── Pipeline Step Hover → Coach Highlighting ── */
+  var pipeSteps = section.querySelectorAll('.cc-pipe-step');
+  pipeSteps.forEach(function(step){
+    step.addEventListener('mouseenter',function(){
+      var coaches = (step.dataset.pipeCoaches || '').split(',');
+      step.classList.add('cc-pipe-active');
+      cards.forEach(function(c){
+        if(coaches.indexOf(c.dataset.coach) !== -1){
+          c.style.boxShadow = '0 0 30px rgba(255,106,0,.12)';
+          c.style.borderColor = 'rgba(255,106,0,.2)';
+        }
+      });
+      if(coaches.indexOf('richard-camp') !== -1){
+        hero.style.boxShadow = '0 30px 80px rgba(0,0,0,.5),0 0 50px rgba(255,106,0,.12)';
+      }
+    });
+    step.addEventListener('mouseleave',function(){
+      step.classList.remove('cc-pipe-active');
+      cards.forEach(function(c){
+        c.style.boxShadow = '';
+        c.style.borderColor = '';
+      });
+      hero.style.boxShadow = '';
+    });
+  });
+
+  /* ── Orbital Node Hover ── */
+  orbitalNodes.forEach(function(node){
+    node.addEventListener('mouseenter',function(){
+      var coachId = node.dataset.coach;
+      var matchLine = section.querySelector('.cc-orbit-line[data-coach="' + coachId + '"]');
+      if(matchLine) matchLine.classList.add('cc-orbit-active');
+    });
+    node.addEventListener('mouseleave',function(){
+      var coachId = node.dataset.coach;
+      var matchLine = section.querySelector('.cc-orbit-line[data-coach="' + coachId + '"]');
+      if(matchLine) matchLine.classList.remove('cc-orbit-active');
+    });
+    /* Click orbital node → scroll to card */
+    node.addEventListener('click',function(){
+      var coachId = node.dataset.coach;
+      var matchCard = section.querySelector('.cc-card[data-coach="' + coachId + '"]');
+      if(matchCard){
+        matchCard.scrollIntoView({behavior:'smooth',block:'center'});
+        matchCard.style.boxShadow = '0 0 40px rgba(255,106,0,.2)';
+        setTimeout(function(){ matchCard.style.boxShadow = ''; }, 1500);
+      }
+    });
+  });
+
+  /* ── Coach Card → Outcomes Overlay ── */
+  var outOverlay = document.getElementById('ccOutcomes');
+  var outCloseBtn = outOverlay ? outOverlay.querySelector('.cc-outcomes-close') : null;
+  var outBackdrop = outOverlay ? outOverlay.querySelector('.cc-outcomes-backdrop') : null;
+
+  function openOutcomes(coachId){
+    var data = coachOutcomes[coachId];
+    if(!data || !outOverlay) return;
+
+    document.getElementById('ccOutImg').src = data.img;
+    document.getElementById('ccOutImg').alt = data.name;
+    document.getElementById('ccOutName').textContent = data.name;
+    document.getElementById('ccOutRole').textContent = data.role;
+    document.getElementById('ccOutSig').textContent = '"' + data.sig + '"';
+
+    /* Specialty chips */
+    var specEl = document.getElementById('ccOutSpecialty');
+    specEl.innerHTML = '';
+    data.specialty.forEach(function(s,i){
+      var chip = document.createElement('span');
+      chip.className = 'cc-chip';
+      chip.textContent = s;
+      chip.style.animationDelay = (i * 60) + 'ms';
+      specEl.appendChild(chip);
+    });
+
+    document.getElementById('ccOutCorrects').textContent = data.corrects;
+    document.getElementById('ccOutImproves').textContent = data.improves;
+    document.getElementById('ccOutScouts').textContent = data.scouts;
+
+    /* Athlete outcomes */
+    var athEl = document.getElementById('ccOutAthletes');
+    athEl.innerHTML = '';
+    data.athletes.forEach(function(a){
+      var div = document.createElement('div');
+      div.className = 'cc-outcomes-athlete';
+      div.innerHTML = '<strong>' + a.name + '</strong>' + a.detail + '<span>' + a.outcome + '</span>';
+      athEl.appendChild(div);
+    });
+
+    outOverlay.classList.add('cc-outcomes-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeOutcomes(){
+    if(!outOverlay) return;
+    outOverlay.classList.remove('cc-outcomes-open');
+    document.body.style.overflow = '';
+  }
+
+  /* Attach expand buttons */
+  var expandBtns = section.querySelectorAll('.cc-card-expand');
+  expandBtns.forEach(function(btn){
+    btn.addEventListener('click',function(e){
+      e.stopPropagation();
+      var card = btn.closest('.cc-card');
+      if(card) openOutcomes(card.dataset.coach);
+    });
+  });
+
+  if(outCloseBtn) outCloseBtn.addEventListener('click', closeOutcomes);
+  if(outBackdrop) outBackdrop.addEventListener('click', closeOutcomes);
+  document.addEventListener('keydown',function(e){
+    if(e.key === 'Escape') closeOutcomes();
+  });
+
+  /* ── Route Canvas Animation ── */
+  var canvas = document.getElementById('ccRouteCanvas');
+  if(canvas && window.matchMedia('(pointer:fine)').matches){
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var animFrame;
+
+    function resizeCanvas(){
+      canvas.width = section.offsetWidth;
+      canvas.height = section.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    function createParticle(){
+      return {
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        size: Math.random() * 1.5 + 0.5,
+        opacity: Math.random() * 0.15 + 0.02,
+        life: Math.random() * 200 + 100
+      };
+    }
+
+    for(var i = 0; i < 40; i++) particles.push(createParticle());
+
+    function animateRoutes(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for(var i = 0; i < particles.length; i++){
+        var p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+
+        if(p.life <= 0 || p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height){
+          particles[i] = createParticle();
+          continue;
+        }
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,106,0,' + p.opacity + ')';
+        ctx.fill();
+
+        /* Draw faint connecting lines between nearby particles */
+        for(var j = i + 1; j < particles.length; j++){
+          var p2 = particles[j];
+          var dx = p.x - p2.x;
+          var dy = p.y - p2.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if(dist < 120){
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = 'rgba(255,106,0,' + (0.03 * (1 - dist / 120)) + ')';
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animFrame = requestAnimationFrame(animateRoutes);
+    }
+
+    /* Only animate when section is visible */
+    var canvasObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          animateRoutes();
+        } else {
+          cancelAnimationFrame(animFrame);
+        }
+      });
+    },{threshold:0.1});
+    canvasObserver.observe(section);
+  }
 
 })();
 
