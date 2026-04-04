@@ -768,12 +768,125 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
 })();
 
+/* ── Shared Draft Data (used by both Command Center and Draft Room) ── */
+var draftData = [
+  {name:'Jalen Camp',pos:'WR',school:'Georgia Tech',photo:'Jalen.Camp.alumni.jpeg',
+   ras:9.78,forty:4.39,split:1.52,vert:39.5,broad:126,bench:30,weight:228,
+   classYear:'2021',proOutcome:'Houston Texans',
+   bestTrait:'Elite burst-to-size ratio',devEdge:'Ball tracking under pressure',
+   summary:'Size-speed combination at receiver is rare. Camp posted elite RAS numbers across the board with verified 40 speed and upper-body output that translated to an NFL opportunity.',
+   why:'This profile matters because it proves that combine-caliber measurables built through focused preparation create real NFL pipeline value.'},
+  {name:'Jack Coco',pos:'LS',school:'Georgia Tech',photo:'Jack.Coco.png',
+   ras:9.92,forty:null,split:null,vert:null,broad:null,bench:null,weight:245,
+   classYear:'2022',proOutcome:'NFL Active',
+   bestTrait:'Positional RAS dominance',devEdge:'Specialist consistency',
+   summary:'Top-tier RAS profile among long snappers in modern NFL Combine history. Precision specialist with verified athletic output well beyond positional norms.',
+   why:'This profile matters because elite specialist value at the next level is driven by athletic upside that translates to coverage units and special teams versatility.'},
+  {name:'Sean Martin',pos:'DL',school:'West Virginia',photo:'Sean Martin.jpeg',
+   ras:9.68,forty:4.88,split:1.68,vert:34,broad:118,bench:28,weight:293,
+   classYear:'2024',proOutcome:'NFL Combine Invite',
+   bestTrait:'Interior explosion at size',devEdge:'First-step leverage',
+   summary:'NFL Combine participant with rare size-speed combination for interior defensive line. Bench press output, forty time, and overall RAS confirm front-line physical tools.',
+   why:'This profile matters because verified combine measurables at 293 pounds show a projection window that most interior linemen never reach.'},
+  {name:'DK Kaufman',pos:'DB',school:'NC State',photo:'Dk Kaufman.jpeg',
+   ras:9.35,forty:4.45,split:1.53,vert:38,broad:122,bench:16,weight:198,
+   classYear:'2024',proOutcome:'Pro Day Standout',
+   bestTrait:'Vertical explosion and range',devEdge:'Transitional burst in coverage',
+   summary:'Elite vertical jump and top-shelf RAS score confirm a secondary profile built on explosion and coverage range. Movement tools project at the next level.',
+   why:'This profile matters because 38-inch vertical paired with sub-4.5 speed creates a rare coverage ceiling that scouts prioritize at the safety and nickel positions.'},
+  {name:'Dymere Miller',pos:'WR',school:'Rutgers',photo:'Dymere.Miller.alumni.jpeg',
+   ras:9.01,forty:4.32,split:1.48,vert:37,broad:124,bench:12,weight:185,
+   classYear:'2023',proOutcome:'Professional Opportunity',
+   bestTrait:'Verified top-tier speed',devEdge:'Route separation burst',
+   summary:'4.32 forty and 9.01 RAS confirm a rare speed profile at receiver. Separation ability is the foundation of professional-level route running.',
+   why:'This profile matters because verified sub-4.35 speed is an elite threshold that creates schematic advantages at every level of football.'},
+  {name:'Kyler Baugh',pos:'DT',school:'Minnesota',photo:'Kyler.Baugh.jpeg',
+   ras:8.56,forty:4.91,split:1.71,vert:33.5,broad:112,bench:34,weight:303,
+   classYear:'2024',proOutcome:'Pro Day Standout',
+   bestTrait:'Upper-body power at premium weight',devEdge:'Anchor strength and interior push',
+   summary:'34 bench reps at 303 pounds with a 4.91 forty. Rare power output combined with movement ability for a true interior presence. RAS confirms well-rounded physical tools.',
+   why:'This profile matters because 34 reps at 300+ pounds represents front-line power that translates directly to interior dominance at the professional level.'},
+  {name:'Cam Bright',pos:'LB',school:'Pittsburgh',photo:'Cam.bright.jpeg',
+   ras:8.45,forty:4.58,split:1.58,vert:35,broad:119,bench:33,weight:238,
+   classYear:'2023',proOutcome:'Professional Opportunity',
+   bestTrait:'Upper-body output for position',devEdge:'Strike power and block shedding',
+   summary:'33 bench reps at the linebacker position puts Bright in rare territory for upper-body output. Physical tools and RAS confirm a profile built for contact.',
+   why:'This profile matters because linebacker bench press output at this level signals the kind of play strength that defines a defensive front.'},
+  {name:'Omar Dollison',pos:'WR',school:'James Madison',photo:'7c46366d-87fd-4f79-81f2-f22e4c704154.png',
+   ras:8.35,forty:4.46,split:1.55,vert:36.5,broad:121,bench:14,weight:192,
+   classYear:'2024',proOutcome:'Pro Opportunity',
+   bestTrait:'Speed and vertical burst',devEdge:'Downfield tracking and adjustment',
+   summary:'4.46 speed and 8.35 RAS create a receiver profile with verified pace and vertical ability. Measurable tools confirm a skill set built for separation.',
+   why:'This profile matters because the speed-to-RAS combination projects as a reliable route runner with enough burst to threaten vertically.'},
+  {name:'Travis Bell',pos:'DT',school:'Kennesaw State',photo:'Travis.Bell.2.jpeg',
+   ras:8.27,forty:5.05,split:1.75,vert:30,broad:108,bench:30,weight:315,
+   classYear:'2023',proOutcome:'Professional Opportunity',
+   bestTrait:'Rare size with bench output',devEdge:'Anchor presence at point of attack',
+   summary:'30 bench reps at 315 pounds with a strong RAS. Interior mass combined with power output makes this a projection profile for trench dominance.',
+   why:'This profile matters because size-and-power at this weight class is the foundation for run defense at the professional level.'},
+  {name:'Mike Allen',pos:'DL',school:'Western Kentucky',photo:'Mike Allen.jpeg',
+   ras:8.09,forty:4.82,split:1.66,vert:32,broad:114,bench:24,weight:278,
+   classYear:'2023',proOutcome:'Pro Opportunity',
+   bestTrait:'Versatile front-line tools',devEdge:'Pass rush motor and technique ceiling',
+   summary:'8.09 RAS at 278 pounds with verified athletic testing puts Mike Allen in the conversation as a versatile defensive lineman with professional physical tools.',
+   why:'This profile matters because defensive line depth requires exactly this blend of size, movement, and verified measurable output.'},
+  {name:'Ahmarean Brown',pos:'WR',school:'Georgia Tech',photo:'AB.Brown.png',
+   ras:null,forty:4.29,split:1.46,vert:38,broad:125,bench:10,weight:180,
+   classYear:'2023',proOutcome:'Pro Opportunity',
+   bestTrait:'Elite verified speed',devEdge:'Explosive first step off the line',
+   summary:'4.29 forty confirms one of the fastest verified receiver profiles in the PPF system. Speed at this level is a game-changer for offensive design.',
+   why:'This profile matters because 4.29 speed is an elite threshold that creates immediate value as a vertical threat at any level of professional football.'},
+  {name:'Robert Cooper',pos:'DT',school:'Florida State',photo:'Robert.Cooper.jpeg',
+   ras:null,forty:5.1,split:1.78,vert:28,broad:104,bench:26,weight:320,
+   classYear:'2024',proOutcome:'Developmental',
+   bestTrait:'True interior mass',devEdge:'Power-at-weight projection',
+   summary:'320 pounds with verified strength output. Interior presence at this size creates natural advantages at the point of attack. Development projection is built on frame and power.',
+   why:'This profile matters because true-size defensive tackles with bench output are the rarest commodity in professional football pipeline development.'},
+  {name:'Nathan Cottrell',pos:'RB',school:'Georgia Tech',photo:'Nate.Cottrell.jpeg',
+   ras:null,forty:4.38,split:1.5,vert:36,broad:122,bench:29,weight:205,
+   classYear:'2020',proOutcome:'Jacksonville Jaguars',
+   bestTrait:'Speed-and-power backfield profile',devEdge:'Contact balance at speed',
+   summary:'4.38 forty, 29 bench reps, and an NFL roster appearance confirm a running back profile with rare dual-threat measurables. Speed and power in one frame.',
+   why:'This profile matters because running backs who combine sub-4.4 speed with near-30 bench reps carry a projection floor that translates to professional rosters.'},
+  {name:'Shawn Williams',pos:'S',school:'Georgia',photo:'Shawn.williams.alumni.jpeg',
+   ras:null,forty:4.52,split:1.56,vert:36.5,broad:120,bench:18,weight:212,
+   classYear:'2013',proOutcome:'Cincinnati Bengals (9 seasons)',
+   bestTrait:'NFL-proven safety profile',devEdge:'Range and instincts over numbers',
+   summary:'Nine NFL seasons with the Cincinnati Bengals validate a safety profile that combined physical tools with elite football intelligence. PPF pipeline verified at the highest level.',
+   why:'This profile matters because it is the ultimate proof of concept — a PPF-connected athlete who built a long professional career on verified preparation.'},
+  {name:'Martez Manuel',pos:'S',school:'Missouri',photo:'Martez.Manuel.jpeg',
+   ras:null,forty:4.47,split:1.54,vert:37,broad:122,bench:16,weight:210,
+   classYear:'2024',proOutcome:'Pro Day Standout',
+   bestTrait:'Downhill speed and range',devEdge:'Hybrid safety-linebacker versatility',
+   summary:'4.47 speed at 210 pounds with a verified vertical and broad confirm a safety profile that plays bigger than listed size. Movement tools project across multiple defensive roles.',
+   why:'This profile matters because safeties who test with both speed and explosion create scheme flexibility that professional defensive coordinators value.'},
+  {name:'Torricelli Simpkins',pos:'OL',school:'South Carolina',photo:'Torricelli.Simpkins.alumni.new.jpg',
+   ras:null,forty:5.2,split:1.82,vert:29,broad:102,bench:24,weight:312,
+   classYear:'2023',proOutcome:'Professional Opportunity',
+   bestTrait:'Big-man movement at size',devEdge:'Lateral reach and anchor width',
+   summary:'312 pounds with verified vertical and bench output. Offensive line profiles at this weight with documented athletic testing show the kind of movement that translates to protection.',
+   why:'This profile matters because offensive linemen who test with verified measurables at 310+ carry higher projection ceilings than size-only prospects.'},
+  {name:'Zeke Correll',pos:'OL',school:'Notre Dame',photo:'Zeke.Correll.new.jpg',
+   ras:null,forty:5.15,split:1.8,vert:27,broad:100,bench:22,weight:305,
+   classYear:'2023',proOutcome:'Professional Opportunity',
+   bestTrait:'Pedigree and technique base',devEdge:'Interior awareness and combination blocking',
+   summary:'Notre Dame offensive line pedigree with verified size and documented professional interest. Interior line development backed by elite coaching and program background.',
+   why:'This profile matters because Power 5 offensive line experience combined with documented measurables and program background create a professional floor.'}
+];
+
 /* ══════════════════════════════════════════════════════════
    PPF DRAFT COMMAND CENTER — Engine
    ══════════════════════════════════════════════════════════ */
 (function(){
   var section = document.querySelector('.dc-section');
   if(!section) return;
+
+  /* Inject reverse panel animation keyframes */
+  var styleSheet = document.createElement('style');
+  styleSheet.textContent = 
+    '@keyframes dcPanelInReverse{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}' +
+    '@keyframes dcPanelOutReverse{from{opacity:1;transform:none}to{opacity:0;transform:translateX(30px)}}';
+  document.head.appendChild(styleSheet);
 
   /* ── Featured Athlete Data (from existing HTML content) ── */
   var featuredAthletes = [
@@ -925,34 +1038,61 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     window.addEventListener('resize', resizeCanvas);
   }
 
+  /* ── Cursor Proximity Glow ─────────────────────────────── */
+  var cursorGlow = document.getElementById('dcCursorGlow');
+  if(cursorGlow){
+    section.addEventListener('mousemove', function(e){
+      var rect = section.getBoundingClientRect();
+      cursorGlow.style.left = (e.clientX - rect.left) + 'px';
+      cursorGlow.style.top = (e.clientY - rect.top) + 'px';
+    });
+  }
+
   /* ── Tab Switching (Command Control Strip) ─────────────── */
   var dcTabs = section.querySelectorAll('.dc-tab');
   var dcPanels = section.querySelectorAll('.dc-panel');
 
-  dcTabs.forEach(function(tab){
+  var lastTabIndex = 0;
+  var tabOrder = ['featured','alumni','room','metrics'];
+
+  dcTabs.forEach(function(tab, tabIdx){
     tab.addEventListener('click', function(){
       var targetTab = tab.getAttribute('data-tab');
       var targetPanel = document.getElementById('dc-' + targetTab);
       if(!targetPanel) return;
+      var newIdx = tabOrder.indexOf(targetTab);
 
-      /* Deactivate all tabs */
       dcTabs.forEach(function(t){ t.classList.remove('active'); });
       tab.classList.add('active');
 
-      /* Animate out current panel, then show new one */
       var currentPanel = section.querySelector('.dc-panel:not(.dc-hidden)');
       if(currentPanel && currentPanel !== targetPanel){
-        currentPanel.classList.add('dc-exiting');
+        /* Directional exit */
+        var goRight = newIdx > lastTabIndex;
+        currentPanel.style.animation = 'none';
+        currentPanel.offsetHeight; /* reflow */
+        currentPanel.style.animation = goRight ? 
+          'dcPanelOut .4s ease both' : 
+          'dcPanelOutReverse .4s ease both';
+        
         setTimeout(function(){
-          dcPanels.forEach(function(p){ p.classList.add('dc-hidden'); p.classList.remove('dc-exiting'); });
+          dcPanels.forEach(function(p){ 
+            p.classList.add('dc-hidden'); 
+            p.style.animation = ''; 
+          });
           targetPanel.classList.remove('dc-hidden');
-          /* Trigger metric animations when metrics tab opens */
+          targetPanel.style.animation = 'none';
+          targetPanel.offsetHeight;
+          targetPanel.style.animation = goRight ?
+            'dcPanelIn .45s var(--ease-out-expo) both' :
+            'dcPanelInReverse .45s var(--ease-out-expo) both';
+          
           if(targetTab === 'metrics'){
             triggerMetricAnimations();
           }
-          /* Re-stagger card animations */
           restaggerCards(targetPanel);
-        }, 300);
+          lastTabIndex = newIdx;
+        }, 400);
       }
     });
   });
@@ -1012,6 +1152,11 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       if(posEl) posEl.textContent = a.pos;
       if(schoolEl) schoolEl.textContent = a.school;
       if(proEl) proEl.textContent = a.pro;
+
+      var routeSchool = document.getElementById('dcRouteSchool');
+      var routePro = document.getElementById('dcRoutePro');
+      if(routeSchool) routeSchool.textContent = a.school;
+      if(routePro) routePro.textContent = a.pro;
       if(bioEl) bioEl.textContent = a.bio;
       if(linkEl){ linkEl.href = a.link; linkEl.textContent = a.linkText; }
 
@@ -1062,7 +1207,9 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
 
   /* ── DraftData lookup map for O(1) access ───────────────── */
   var draftDataMap = {};
-  draftData.forEach(function(a){ draftDataMap[a.name] = a; });
+  if(typeof draftData !== 'undefined' && Array.isArray(draftData)){
+    draftData.forEach(function(a){ draftDataMap[a.name] = a; });
+  }
 
   /* ── Alumni Legacy Grid Rendering ─────────────────────── */
   function renderAlumniGrid(data){
@@ -1135,7 +1282,17 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
             '<span class="dc-legacy-badge">' + esc(item.school) + '</span>' +
           '</div>' +
         '</div>';
-      card.addEventListener('click', function(){ openBoardLock(item); });
+      card.addEventListener('click', function(e){
+        if(e.shiftKey || e.ctrlKey || e.metaKey){
+          toggleCompare(item);
+        } else {
+          openBoardLock(item);
+        }
+      });
+      card.addEventListener('contextmenu', function(e){
+        e.preventDefault();
+        toggleCompare(item);
+      });
       grid.appendChild(card);
     });
     restaggerCards(grid);
@@ -1181,11 +1338,12 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   function sortData(data, key){
     return data.slice().sort(function(a, b){
       if(key === 'position') return (a.position || '').localeCompare(b.position || '');
+      if(key === 'school') return (a.school || '').localeCompare(b.school || '');
       return (a.name || '').localeCompare(b.name || '');
     });
   }
 
-  /* View toggle (grid/compact) */
+  /* View toggle (grid/compact/dossier) */
   var viewBtns = section.querySelectorAll('.dc-view-btn');
   viewBtns.forEach(function(btn){
     btn.addEventListener('click', function(){
@@ -1193,13 +1351,123 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       btn.classList.add('active');
       var grid = document.getElementById('dcRoomGrid');
       if(!grid) return;
-      if(btn.getAttribute('data-view') === 'compact'){
-        grid.classList.add('dc-compact');
-      } else {
-        grid.classList.remove('dc-compact');
-      }
+      var view = btn.getAttribute('data-view');
+      grid.classList.remove('dc-compact', 'dc-dossier');
+      if(view === 'compact') grid.classList.add('dc-compact');
+      else if(view === 'dossier') grid.classList.add('dc-dossier');
     });
   });
+
+  /* ── Compare Mode ──────────────────────────────────────── */
+  var compareSlots = [];
+  var compareDock = document.getElementById('dcCompareDock');
+  var compareSlotsEl = document.getElementById('dcCompareSlots');
+  var compareBtn = document.getElementById('dcCompareBtn');
+  var compareClear = document.getElementById('dcCompareClear');
+
+  function toggleCompare(item){
+    var idx = compareSlots.findIndex(function(s){ return s.name === item.name; });
+    if(idx > -1){
+      compareSlots.splice(idx, 1);
+    } else {
+      if(compareSlots.length >= 3) return; /* Max 3 */
+      compareSlots.push(item);
+    }
+    updateCompareDock();
+    updateCompareHighlights();
+  }
+
+  function updateCompareDock(){
+    if(!compareDock || !compareSlotsEl) return;
+    if(compareSlots.length > 0){
+      compareDock.classList.add('dc-dock-visible');
+    } else {
+      compareDock.classList.remove('dc-dock-visible');
+    }
+    compareSlotsEl.innerHTML = '';
+    compareSlots.forEach(function(item, i){
+      var photo = playerPhotos[item.name] || item.photo || '';
+      var slot = document.createElement('div');
+      slot.className = 'dc-compare-slot';
+      slot.innerHTML = (photo ? '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '"/>' : '') +
+        '<span class="dc-slot-remove" data-idx="' + i + '">&times;</span>';
+      slot.querySelector('.dc-slot-remove').addEventListener('click', function(e){
+        e.stopPropagation();
+        var removeIdx = compareSlots.findIndex(function(s){ return s.name === item.name; });
+        if(removeIdx > -1) compareSlots.splice(removeIdx, 1);
+        updateCompareDock();
+        updateCompareHighlights();
+      });
+      compareSlotsEl.appendChild(slot);
+    });
+  }
+
+  function updateCompareHighlights(){
+    section.querySelectorAll('.dc-athlete-card').forEach(function(card){
+      var name = card.querySelector('h4') ? card.querySelector('h4').textContent : '';
+      var isSelected = compareSlots.some(function(s){ return s.name === name; });
+      card.classList.toggle('dc-selected', isSelected);
+    });
+  }
+
+  if(compareBtn){
+    compareBtn.addEventListener('click', function(){
+      if(compareSlots.length < 2) return;
+      openCompareView();
+    });
+  }
+  if(compareClear){
+    compareClear.addEventListener('click', function(){
+      compareSlots = [];
+      updateCompareDock();
+      updateCompareHighlights();
+    });
+  }
+
+  function openCompareView(){
+    if(!lockOverlay || !lockContent) return;
+    var html = '<button class="dc-lock-close" aria-label="Close">&times;</button>';
+    html += '<h3 style="font-size:24px;font-weight:900;color:#fff;margin:0 0 20px;letter-spacing:-.03em">Athlete Comparison</h3>';
+    html += '<div style="display:grid;grid-template-columns:repeat(' + compareSlots.length + ',1fr);gap:16px">';
+    
+    compareSlots.forEach(function(item){
+      var d = findDraftData(item.name);
+      var photo = playerPhotos[item.name] || item.photo || '';
+      var statsHtml = '';
+      if(d){
+        var metrics = [
+          {label:'40-Yard',val:d.forty},
+          {label:'Vertical',val:d.vert ? d.vert + '″' : null},
+          {label:'Bench',val:d.bench ? d.bench + ' reps' : null},
+          {label:'Broad',val:d.broad ? d.broad + '″' : null},
+          {label:'Weight',val:d.weight ? d.weight + ' lbs' : null},
+          {label:'RAS',val:d.ras}
+        ];
+        metrics.forEach(function(m){
+          if(m.val != null){
+            statsHtml += '<div class="dc-lock-stat"><strong>' + m.val + '</strong><span>' + m.label + '</span></div>';
+          }
+        });
+      }
+      html += '<div style="text-align:center">' +
+        '<div style="width:100px;height:100px;border-radius:16px;overflow:hidden;margin:0 auto 12px;border:2px solid rgba(255,106,0,.2)">' +
+          (photo ? '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '" style="width:100%;height:100%;object-fit:cover"/>' : '') +
+        '</div>' +
+        '<h4 style="font-size:18px;font-weight:900;color:#fff;margin:0 0 4px">' + esc(item.name) + '</h4>' +
+        '<p style="font-size:12px;color:var(--muted);margin:0 0 12px">' + esc(item.position) + ' · ' + esc(item.school) + '</p>' +
+        '<div class="dc-lock-stats" style="grid-template-columns:1fr">' + statsHtml + '</div>' +
+      '</div>';
+    });
+    html += '</div>';
+    
+    lockContent.innerHTML = html;
+    lockOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    lockContent.querySelector('.dc-lock-close').addEventListener('click', closeBoardLock);
+    lockOverlay.addEventListener('click', function handler(e){
+      if(e.target === lockOverlay){ closeBoardLock(); lockOverlay.removeEventListener('click', handler); }
+    });
+  }
 
   /* ── Metric Leaders Animations ────────────────────────── */
   function triggerMetricAnimations(){
@@ -1300,6 +1568,20 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
         '</div>' +
       '</div>' +
       (statsHtml ? '<div class="dc-lock-stats">' + statsHtml + '</div>' : '');
+
+    /* Add route line if school and pro data exist */
+    var routeHtml = '';
+    if(item.school || item.pro){
+      routeHtml = '<div class="dc-lock-route">' +
+        '<span class="dc-lock-route-node dc-node-school">' + esc(item.school || '') + '</span>' +
+        '<div class="dc-lock-route-line"></div>' +
+        (item.pro ? '<span class="dc-lock-route-node dc-node-pro">' + esc(item.pro) + '</span>' : '') +
+      '</div>';
+    }
+    var headerEl = lockContent.querySelector('.dc-lock-header');
+    if(headerEl && routeHtml){
+      headerEl.insertAdjacentHTML('afterend', routeHtml);
+    }
 
     lockOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -2645,111 +2927,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
 /* ── Draft Room — PPF Scout Console ──────────────────────── */
 (function(){
 
-/* ── Enhanced Draft Data ──────────────────────────────────── */
-var draftData = [
-  {name:'Jalen Camp',pos:'WR',school:'Georgia Tech',photo:'Jalen.Camp.alumni.jpeg',
-   ras:9.78,forty:4.39,split:1.52,vert:39.5,broad:126,bench:30,weight:228,
-   classYear:'2021',proOutcome:'Houston Texans',
-   bestTrait:'Elite burst-to-size ratio',devEdge:'Ball tracking under pressure',
-   summary:'Size-speed combination at receiver is rare. Camp posted elite RAS numbers across the board with verified 40 speed and upper-body output that translated to an NFL opportunity.',
-   why:'This profile matters because it proves that combine-caliber measurables built through focused preparation create real NFL pipeline value.'},
-  {name:'Jack Coco',pos:'LS',school:'Georgia Tech',photo:'Jack.Coco.png',
-   ras:9.92,forty:null,split:null,vert:null,broad:null,bench:null,weight:245,
-   classYear:'2022',proOutcome:'NFL Active',
-   bestTrait:'Positional RAS dominance',devEdge:'Specialist consistency',
-   summary:'Top-tier RAS profile among long snappers in modern NFL Combine history. Precision specialist with verified athletic output well beyond positional norms.',
-   why:'This profile matters because elite specialist value at the next level is driven by athletic upside that translates to coverage units and special teams versatility.'},
-  {name:'Sean Martin',pos:'DL',school:'West Virginia',photo:'Sean Martin.jpeg',
-   ras:9.68,forty:4.88,split:1.68,vert:34,broad:118,bench:28,weight:293,
-   classYear:'2024',proOutcome:'NFL Combine Invite',
-   bestTrait:'Interior explosion at size',devEdge:'First-step leverage',
-   summary:'NFL Combine participant with rare size-speed combination for interior defensive line. Bench press output, forty time, and overall RAS confirm front-line physical tools.',
-   why:'This profile matters because verified combine measurables at 293 pounds show a projection window that most interior linemen never reach.'},
-  {name:'DK Kaufman',pos:'DB',school:'NC State',photo:'Dk Kaufman.jpeg',
-   ras:9.35,forty:4.45,split:1.53,vert:38,broad:122,bench:16,weight:198,
-   classYear:'2024',proOutcome:'Pro Day Standout',
-   bestTrait:'Vertical explosion and range',devEdge:'Transitional burst in coverage',
-   summary:'Elite vertical jump and top-shelf RAS score confirm a secondary profile built on explosion and coverage range. Movement tools project at the next level.',
-   why:'This profile matters because 38-inch vertical paired with sub-4.5 speed creates a rare coverage ceiling that scouts prioritize at the safety and nickel positions.'},
-  {name:'Dymere Miller',pos:'WR',school:'Rutgers',photo:'Dymere.Miller.alumni.jpeg',
-   ras:9.01,forty:4.32,split:1.48,vert:37,broad:124,bench:12,weight:185,
-   classYear:'2023',proOutcome:'Professional Opportunity',
-   bestTrait:'Verified top-tier speed',devEdge:'Route separation burst',
-   summary:'4.32 forty and 9.01 RAS confirm a rare speed profile at receiver. Separation ability is the foundation of professional-level route running.',
-   why:'This profile matters because verified sub-4.35 speed is an elite threshold that creates schematic advantages at every level of football.'},
-  {name:'Kyler Baugh',pos:'DT',school:'Minnesota',photo:'Kyler.Baugh.jpeg',
-   ras:8.56,forty:4.91,split:1.71,vert:33.5,broad:112,bench:34,weight:303,
-   classYear:'2024',proOutcome:'Pro Day Standout',
-   bestTrait:'Upper-body power at premium weight',devEdge:'Anchor strength and interior push',
-   summary:'34 bench reps at 303 pounds with a 4.91 forty. Rare power output combined with movement ability for a true interior presence. RAS confirms well-rounded physical tools.',
-   why:'This profile matters because 34 reps at 300+ pounds represents front-line power that translates directly to interior dominance at the professional level.'},
-  {name:'Cam Bright',pos:'LB',school:'Pittsburgh',photo:'Cam.bright.jpeg',
-   ras:8.45,forty:4.58,split:1.58,vert:35,broad:119,bench:33,weight:238,
-   classYear:'2023',proOutcome:'Professional Opportunity',
-   bestTrait:'Upper-body output for position',devEdge:'Strike power and block shedding',
-   summary:'33 bench reps at the linebacker position puts Bright in rare territory for upper-body output. Physical tools and RAS confirm a profile built for contact.',
-   why:'This profile matters because linebacker bench press output at this level signals the kind of play strength that defines a defensive front.'},
-  {name:'Omar Dollison',pos:'WR',school:'James Madison',photo:'7c46366d-87fd-4f79-81f2-f22e4c704154.png',
-   ras:8.35,forty:4.46,split:1.55,vert:36.5,broad:121,bench:14,weight:192,
-   classYear:'2024',proOutcome:'Pro Opportunity',
-   bestTrait:'Speed and vertical burst',devEdge:'Downfield tracking and adjustment',
-   summary:'4.46 speed and 8.35 RAS create a receiver profile with verified pace and vertical ability. Measurable tools confirm a skill set built for separation.',
-   why:'This profile matters because the speed-to-RAS combination projects as a reliable route runner with enough burst to threaten vertically.'},
-  {name:'Travis Bell',pos:'DT',school:'Kennesaw State',photo:'Travis.Bell.2.jpeg',
-   ras:8.27,forty:5.05,split:1.75,vert:30,broad:108,bench:30,weight:315,
-   classYear:'2023',proOutcome:'Professional Opportunity',
-   bestTrait:'Rare size with bench output',devEdge:'Anchor presence at point of attack',
-   summary:'30 bench reps at 315 pounds with a strong RAS. Interior mass combined with power output makes this a projection profile for trench dominance.',
-   why:'This profile matters because size-and-power at this weight class is the foundation for run defense at the professional level.'},
-  {name:'Mike Allen',pos:'DL',school:'Western Kentucky',photo:'Mike Allen.jpeg',
-   ras:8.09,forty:4.82,split:1.66,vert:32,broad:114,bench:24,weight:278,
-   classYear:'2023',proOutcome:'Pro Opportunity',
-   bestTrait:'Versatile front-line tools',devEdge:'Pass rush motor and technique ceiling',
-   summary:'8.09 RAS at 278 pounds with verified athletic testing puts Mike Allen in the conversation as a versatile defensive lineman with professional physical tools.',
-   why:'This profile matters because defensive line depth requires exactly this blend of size, movement, and verified measurable output.'},
-  {name:'Ahmarean Brown',pos:'WR',school:'Georgia Tech',photo:'AB.Brown.png',
-   ras:null,forty:4.29,split:1.46,vert:38,broad:125,bench:10,weight:180,
-   classYear:'2023',proOutcome:'Pro Opportunity',
-   bestTrait:'Elite verified speed',devEdge:'Explosive first step off the line',
-   summary:'4.29 forty confirms one of the fastest verified receiver profiles in the PPF system. Speed at this level is a game-changer for offensive design.',
-   why:'This profile matters because 4.29 speed is an elite threshold that creates immediate value as a vertical threat at any level of professional football.'},
-  {name:'Robert Cooper',pos:'DT',school:'Florida State',photo:'Robert.Cooper.jpeg',
-   ras:null,forty:5.1,split:1.78,vert:28,broad:104,bench:26,weight:320,
-   classYear:'2024',proOutcome:'Developmental',
-   bestTrait:'True interior mass',devEdge:'Power-at-weight projection',
-   summary:'320 pounds with verified strength output. Interior presence at this size creates natural advantages at the point of attack. Development projection is built on frame and power.',
-   why:'This profile matters because true-size defensive tackles with bench output are the rarest commodity in professional football pipeline development.'},
-  {name:'Nathan Cottrell',pos:'RB',school:'Georgia Tech',photo:'Nate.Cottrell.jpeg',
-   ras:null,forty:4.38,split:1.5,vert:36,broad:122,bench:29,weight:205,
-   classYear:'2020',proOutcome:'Jacksonville Jaguars',
-   bestTrait:'Speed-and-power backfield profile',devEdge:'Contact balance at speed',
-   summary:'4.38 forty, 29 bench reps, and an NFL roster appearance confirm a running back profile with rare dual-threat measurables. Speed and power in one frame.',
-   why:'This profile matters because running backs who combine sub-4.4 speed with near-30 bench reps carry a projection floor that translates to professional rosters.'},
-  {name:'Shawn Williams',pos:'S',school:'Georgia',photo:'Shawn.williams.alumni.jpeg',
-   ras:null,forty:4.52,split:1.56,vert:36.5,broad:120,bench:18,weight:212,
-   classYear:'2013',proOutcome:'Cincinnati Bengals (9 seasons)',
-   bestTrait:'NFL-proven safety profile',devEdge:'Range and instincts over numbers',
-   summary:'Nine NFL seasons with the Cincinnati Bengals validate a safety profile that combined physical tools with elite football intelligence. PPF pipeline verified at the highest level.',
-   why:'This profile matters because it is the ultimate proof of concept — a PPF-connected athlete who built a long professional career on verified preparation.'},
-  {name:'Martez Manuel',pos:'S',school:'Missouri',photo:'Martez.Manuel.jpeg',
-   ras:null,forty:4.47,split:1.54,vert:37,broad:122,bench:16,weight:210,
-   classYear:'2024',proOutcome:'Pro Day Standout',
-   bestTrait:'Downhill speed and range',devEdge:'Hybrid safety-linebacker versatility',
-   summary:'4.47 speed at 210 pounds with a verified vertical and broad confirm a safety profile that plays bigger than listed size. Movement tools project across multiple defensive roles.',
-   why:'This profile matters because safeties who test with both speed and explosion create scheme flexibility that professional defensive coordinators value.'},
-  {name:'Torricelli Simpkins',pos:'OL',school:'South Carolina',photo:'Torricelli.Simpkins.alumni.new.jpg',
-   ras:null,forty:5.2,split:1.82,vert:29,broad:102,bench:24,weight:312,
-   classYear:'2023',proOutcome:'Professional Opportunity',
-   bestTrait:'Big-man movement at size',devEdge:'Lateral reach and anchor width',
-   summary:'312 pounds with verified vertical and bench output. Offensive line profiles at this weight with documented athletic testing show the kind of movement that translates to protection.',
-   why:'This profile matters because offensive linemen who test with verified measurables at 310+ carry higher projection ceilings than size-only prospects.'},
-  {name:'Zeke Correll',pos:'OL',school:'Notre Dame',photo:'Zeke.Correll.new.jpg',
-   ras:null,forty:5.15,split:1.8,vert:27,broad:100,bench:22,weight:305,
-   classYear:'2023',proOutcome:'Professional Opportunity',
-   bestTrait:'Pedigree and technique base',devEdge:'Interior awareness and combination blocking',
-   summary:'Notre Dame offensive line pedigree with verified size and documented professional interest. Interior line development backed by elite coaching and program background.',
-   why:'This profile matters because Power 5 offensive line experience combined with documented measurables and program background create a professional floor.'}
-];
+
 
 /* ── Position Intel Data ──────────────────────────────────── */
 var positionIntel = {

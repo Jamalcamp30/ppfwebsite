@@ -282,6 +282,11 @@
     <canvas class="dc-grid-canvas" id="dcGridCanvas"></canvas>
     <div class="dc-scan-line"></div>
     <div class="dc-ambient"></div>
+    <div class="dc-cursor-glow" id="dcCursorGlow"></div>
+    <div class="dc-reactive-bg">
+      <div class="dc-field-lines"></div>
+      <div class="dc-timing-marks"></div>
+    </div>
   </div>
 
   <div class="container dc-container">
@@ -356,6 +361,12 @@
               <span class="dc-hero-tag" id="dcHeroSchool">Georgia Tech</span>
               <span class="dc-hero-tag dc-pro-tag" id="dcHeroPro">Jacksonville Jaguars</span>
             </div>
+            <div class="dc-hero-route-line" id="dcHeroRoute">
+              <span class="dc-hero-route-dot"></span>
+              <span class="dc-lock-route-node dc-node-school" id="dcRouteSchool">Georgia Tech</span>
+              <span class="dc-hero-route-arrow"></span>
+              <span class="dc-lock-route-node dc-node-pro" id="dcRoutePro">Jacksonville Jaguars</span>
+            </div>
             <p class="dc-hero-bio" id="dcHeroBio">Explosive size-speed profile with verified jump ability, bench strength, and receiver measurables that command attention across the board.</p>
             <div class="dc-hero-stats" id="dcHeroStats">
               <div class="dc-stat-chip"><span class="dc-chip-val">39.5″</span><span class="dc-chip-label">Vertical</span><div class="dc-chip-bar" data-pct="95"></div></div>
@@ -413,11 +424,15 @@
           <button class="dc-view-btn" data-view="compact" title="Compact view">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><line x1="1" y1="3" x2="15" y2="3" stroke="currentColor" stroke-width="1.2"/><line x1="1" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.2"/><line x1="1" y1="13" x2="15" y2="13" stroke="currentColor" stroke-width="1.2"/></svg>
           </button>
+          <button class="dc-view-btn" data-view="dossier" title="Dossier view">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="14" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><rect x="1" y="9" width="14" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/></svg>
+          </button>
         </div>
         <div class="dc-sort" id="dcSort">
           <select class="dc-sort-select" id="dcSortSelect">
             <option value="name">Sort: Name</option>
             <option value="position">Sort: Position</option>
+            <option value="school">Sort: School</option>
           </select>
         </div>
       </div>
@@ -537,6 +552,13 @@
   <!-- Board Lock Overlay -->
   <div class="dc-board-lock" id="dcBoardLock">
     <div class="dc-lock-content" id="dcLockContent"></div>
+  </div>
+
+  <!-- Compare Dock -->
+  <div class="dc-compare-dock" id="dcCompareDock">
+    <div class="dc-compare-slots" id="dcCompareSlots"></div>
+    <button class="dc-compare-btn" id="dcCompareBtn">Compare</button>
+    <button class="dc-compare-btn" id="dcCompareClear" style="background:rgba(255,255,255,.08);color:#fff">Clear</button>
   </div>
 </section>
 <section class="section" id="ras-board">
