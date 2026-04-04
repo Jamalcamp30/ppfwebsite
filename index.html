@@ -849,34 +849,203 @@
   </div>
 </section>
 
+<!-- Draft Room Entry Overlay -->
+<div class="dr-entry-overlay" id="dr-entry-overlay" aria-hidden="true">
+  <div class="dr-entry-vignette"></div>
+  <div class="dr-entry-content">
+    <div class="dr-entry-scanlines"></div>
+    <div class="dr-entry-logo">PPF</div>
+    <div class="dr-entry-title">DRAFT ROOM</div>
+    <div class="dr-entry-sub">Scouting Console Initializing…</div>
+    <div class="dr-entry-bar"><span></span></div>
+  </div>
+</div>
+
 <!-- Draft Room Mode -->
 <section class="section draft-room-section" id="draft-room">
   <div class="container">
     <span class="eyebrow">Signature experience</span>
     <h2 class="section-title reveal">Draft Room Mode</h2>
     <p class="section-sub reveal">Step inside the evaluation. Filter, compare, and analyze PPF athletes the way a real draft room operates — position by position, number by number.</p>
-    <div class="draft-room-panel reveal">
-      <div class="draft-room-controls">
-        <div class="draft-room-filter-row">
-          <button class="draft-room-filter active" data-drfilter="all" type="button">All Positions</button>
-          <button class="draft-room-filter" data-drfilter="WR" type="button">WR</button>
-          <button class="draft-room-filter" data-drfilter="DB" type="button">DB</button>
-          <button class="draft-room-filter" data-drfilter="DL" type="button">DL</button>
-          <button class="draft-room-filter" data-drfilter="DT" type="button">DT</button>
-          <button class="draft-room-filter" data-drfilter="OL" type="button">OL</button>
-          <button class="draft-room-filter" data-drfilter="LB" type="button">LB</button>
-          <button class="draft-room-filter" data-drfilter="RB" type="button">RB</button>
-          <button class="draft-room-filter" data-drfilter="S" type="button">S</button>
+
+    <!-- Entry Button -->
+    <div class="dr-enter-wrap reveal" id="dr-enter-wrap">
+      <button class="dr-enter-btn" id="dr-enter-btn" type="button">
+        <span class="dr-enter-pulse"></span>
+        <span class="dr-enter-icon">◆</span>
+        <span class="dr-enter-text">ENTER DRAFT ROOM</span>
+      </button>
+      <p class="dr-enter-hint">Click to activate the PPF Scout Console</p>
+    </div>
+
+    <!-- Scout Console (hidden until entry) -->
+    <div class="dr-console hidden" id="dr-console">
+
+      <!-- Top Toolbar -->
+      <div class="dr-toolbar">
+        <div class="dr-view-tabs">
+          <button class="dr-view-tab active" data-view="board" type="button">
+            <span class="dr-tab-icon">▦</span> Board
+          </button>
+          <button class="dr-view-tab" data-view="heatmap" type="button">
+            <span class="dr-tab-icon">▥</span> Heatmap
+          </button>
+          <button class="dr-view-tab" data-view="build" type="button">
+            <span class="dr-tab-icon">▤</span> Build Board
+          </button>
         </div>
-        <button class="btn secondary draft-room-compare-btn" id="dr-compare-btn" type="button" disabled>
-          Compare Selected (0/2)
-        </button>
+        <div class="dr-toolbar-actions">
+          <button class="dr-compare-trigger" id="dr-compare-trigger" type="button" disabled>
+            <span class="dr-compare-icon">⚡</span>
+            Compare (<span id="dr-compare-count">0</span>/2)
+          </button>
+          <button class="dr-exit-btn" id="dr-exit-btn" type="button">✕ Exit</button>
+        </div>
       </div>
-      <div class="draft-room-grid" id="draft-room-grid"></div>
-      <div class="draft-room-compare" id="draft-room-compare"></div>
+
+      <!-- Pressure Traits Bar -->
+      <div class="dr-pressure-bar">
+        <span class="dr-pressure-label">Pressure Traits</span>
+        <div class="dr-pressure-btns">
+          <button class="dr-trait-btn" data-trait="speed" type="button">⚡ Speed</button>
+          <button class="dr-trait-btn" data-trait="explosion" type="button">💥 Explosion</button>
+          <button class="dr-trait-btn" data-trait="power" type="button">🔩 Power</button>
+          <button class="dr-trait-btn" data-trait="size" type="button">📏 Size</button>
+          <button class="dr-trait-btn" data-trait="movement" type="button">🌀 Movement</button>
+          <button class="dr-trait-btn" data-trait="positional" type="button">🎯 Positional Value</button>
+        </div>
+      </div>
+
+      <!-- Three Pane Layout -->
+      <div class="dr-panes">
+
+        <!-- LEFT PANE: Filters & Position Intel -->
+        <aside class="dr-pane-left" id="dr-pane-left">
+          <div class="dr-pane-left-scroll">
+
+            <div class="dr-filter-group">
+              <h4 class="dr-filter-title">Position</h4>
+              <div class="dr-pos-grid">
+                <button class="dr-pos-btn active" data-drpos="all" type="button">ALL</button>
+                <button class="dr-pos-btn" data-drpos="WR" type="button">WR</button>
+                <button class="dr-pos-btn" data-drpos="DB" type="button">DB</button>
+                <button class="dr-pos-btn" data-drpos="DL" type="button">DL</button>
+                <button class="dr-pos-btn" data-drpos="DT" type="button">DT</button>
+                <button class="dr-pos-btn" data-drpos="OL" type="button">OL</button>
+                <button class="dr-pos-btn" data-drpos="LB" type="button">LB</button>
+                <button class="dr-pos-btn" data-drpos="RB" type="button">RB</button>
+                <button class="dr-pos-btn" data-drpos="S" type="button">S</button>
+                <button class="dr-pos-btn" data-drpos="LS" type="button">LS</button>
+              </div>
+            </div>
+
+            <div class="dr-filter-group">
+              <h4 class="dr-filter-title">40-Yard Dash</h4>
+              <input type="range" class="dr-range" id="dr-forty-range" min="4.20" max="5.20" step="0.01" value="5.20">
+              <div class="dr-range-display">≤ <span id="dr-forty-val">5.20</span>s</div>
+            </div>
+
+            <div class="dr-filter-group">
+              <h4 class="dr-filter-title">Vertical Jump</h4>
+              <input type="range" class="dr-range" id="dr-vert-range" min="25" max="45" step="0.5" value="25">
+              <div class="dr-range-display">≥ <span id="dr-vert-val">25.0</span>"</div>
+            </div>
+
+            <div class="dr-filter-group">
+              <h4 class="dr-filter-title">Bench Press</h4>
+              <input type="range" class="dr-range" id="dr-bench-range" min="0" max="40" step="1" value="0">
+              <div class="dr-range-display">≥ <span id="dr-bench-val">0</span> reps</div>
+            </div>
+
+            <div class="dr-filter-group">
+              <h4 class="dr-filter-title">Weight</h4>
+              <input type="range" class="dr-range" id="dr-weight-range" min="170" max="340" step="1" value="170">
+              <div class="dr-range-display">≥ <span id="dr-weight-val">170</span> lbs</div>
+            </div>
+
+            <div class="dr-filter-group">
+              <h4 class="dr-filter-title">RAS Threshold</h4>
+              <input type="range" class="dr-range" id="dr-ras-range" min="0" max="10" step="0.01" value="0">
+              <div class="dr-range-display">≥ <span id="dr-ras-val">0.00</span></div>
+            </div>
+
+            <!-- What Moves the Board -->
+            <div class="dr-intel-section" id="dr-intel-section">
+              <h4 class="dr-filter-title">What Moves the Board</h4>
+              <div class="dr-intel-content" id="dr-intel-content">
+                <p class="dr-intel-placeholder">Select a position to see trait priorities</p>
+              </div>
+            </div>
+
+          </div>
+        </aside>
+
+        <!-- CENTER PANE: Board / Heatmap / Build -->
+        <main class="dr-pane-center">
+          <!-- Board View -->
+          <div class="dr-view-panel" id="dr-view-board">
+            <div class="dr-board-grid" id="dr-board-grid"></div>
+          </div>
+          <!-- Heatmap View -->
+          <div class="dr-view-panel hidden" id="dr-view-heatmap">
+            <div class="dr-heatmap-wrap" id="dr-heatmap-wrap"></div>
+          </div>
+          <!-- Build Board View -->
+          <div class="dr-view-panel hidden" id="dr-view-build">
+            <p class="dr-build-instruction">Drag athletes from the available pool into tiers to build your custom board.</p>
+            <div class="dr-build-tiers" id="dr-build-tiers"></div>
+            <div class="dr-build-source">
+              <h4 class="dr-build-source-title">Available Athletes</h4>
+              <div class="dr-build-source-grid" id="dr-build-source-grid"></div>
+            </div>
+          </div>
+        </main>
+
+        <!-- RIGHT PANE: Intel / Compare -->
+        <aside class="dr-pane-right" id="dr-pane-right">
+          <div class="dr-right-tabs">
+            <button class="dr-right-tab active" data-rtab="intel" type="button">Intel</button>
+            <button class="dr-right-tab" data-rtab="compare" type="button">Compare</button>
+          </div>
+          <!-- Intel Sub-Panel -->
+          <div class="dr-right-panel" id="dr-right-intel">
+            <div class="dr-intel-empty">
+              <div class="dr-intel-empty-icon">◆</div>
+              <p>Click any athlete card to see their scouting breakdown here.</p>
+            </div>
+          </div>
+          <!-- Compare Sub-Panel -->
+          <div class="dr-right-panel hidden" id="dr-right-compare">
+            <div class="dr-compare-empty">
+              <div class="dr-compare-empty-icon">⚡</div>
+              <p>Select 2 athletes on the board, then click Compare to activate the command center.</p>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+
+      <!-- Live Insight Bar -->
+      <div class="dr-insight-bar" id="dr-insight-bar">
+        <span class="dr-insight-diamond">◆</span>
+        <span class="dr-insight-text" id="dr-insight-text">Activate the board and select athletes to see live scouting intelligence.</span>
+      </div>
+
     </div>
   </div>
 </section>
+
+<!-- Player Dossier Overlay -->
+<div class="dr-dossier-overlay" id="dr-dossier-overlay" aria-hidden="true">
+  <div class="dr-dossier-backdrop" id="dr-dossier-backdrop"></div>
+  <div class="dr-dossier-panel" id="dr-dossier-panel"></div>
+</div>
+
+<!-- Compare Command Center Overlay -->
+<div class="dr-compare-overlay" id="dr-compare-overlay" aria-hidden="true">
+  <div class="dr-compare-backdrop" id="dr-compare-backdrop"></div>
+  <div class="dr-compare-panel" id="dr-compare-panel"></div>
+</div>
 
 <!-- Facility Gallery -->
 <section class="section" id="facility-gallery">
