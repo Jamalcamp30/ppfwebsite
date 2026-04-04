@@ -1499,7 +1499,6 @@ ul,ol{list-style:none}
 }
 .quote-card:hover{transform:translateY(-5px);border-color:rgba(255,122,26,.4);box-shadow:0 24px 50px rgba(0,0,0,.4),0 0 30px rgba(255,106,0,.06)}
 .quote-mark{display:none}
-}
 .quote-card h3{margin:0 0 8px;font-size:24px;letter-spacing:-.03em}
 .quote-meta{color:var(--orange);font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
 .quote-card p{margin:0;color:#e7e7ea;line-height:1.85;font-size:16px}
