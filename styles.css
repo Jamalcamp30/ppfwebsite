@@ -2852,7 +2852,6 @@ table th{color:var(--orange2)!important;font-weight:900}
   box-shadow:0 8px 24px rgba(255,106,0,.35);
   flex-shrink:0;
 }
-.rc-step-body{}
 .rc-step-label{
   font-size:18px;font-weight:900;letter-spacing:-.02em;margin:0 0 4px;
   text-transform:uppercase;

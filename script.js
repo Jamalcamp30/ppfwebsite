@@ -4899,8 +4899,8 @@ document.addEventListener('keydown', function(e){
         // move
         n.x += n.vx;
         n.y += n.vy;
-        if(n.x < 0 || n.x > w) n.vx *= -1;
-        if(n.y < 0 || n.y > h) n.vy *= -1;
+        if(n.x < 0 || n.x > w){ n.vx *= -1; n.x = Math.max(0, Math.min(w, n.x)); }
+        if(n.y < 0 || n.y > h){ n.vy *= -1; n.y = Math.max(0, Math.min(h, n.y)); }
       }
       requestAnimationFrame(draw);
     }
@@ -5031,8 +5031,9 @@ document.addEventListener('keydown', function(e){
     chips.forEach(function(chip){
       chip.addEventListener('mouseenter', function(){
         var system = chip.getAttribute('data-system');
+        var systemLower = system.toLowerCase();
         document.querySelectorAll('.rc-meta-tag').forEach(function(tag){
-          if(tag.textContent.toLowerCase().indexOf(system) !== -1){
+          if(tag.textContent.toLowerCase().indexOf(systemLower) !== -1){
             tag.style.background = 'rgba(255,106,0,.2)';
             tag.style.borderColor = 'rgba(255,106,0,.4)';
           }
