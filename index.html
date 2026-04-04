@@ -1819,149 +1819,383 @@
 </div>
 </section>
 
-<section class="section" id="recovery">
+<section class="section rc-section" id="recovery">
+<!-- Biometric animated background -->
+<canvas class="rc-bio-canvas" aria-hidden="true"></canvas>
+
 <div class="container">
-<span class="eyebrow">Performance Services</span>
-<h2 class="section-title reveal">Fuel. Recover. Perform.</h2>
-<p class="section-sub reveal">A fully integrated system built to support performance, recovery, and long-term durability. Every service is structured with precision and delivered through trusted specialists and performance-driven protocols.</p>
 
-<!-- Nutrition Immersive Card -->
-<div class="recovery-modalities-grid reveal">
-  <article class="recovery-modality-card">
-    <div class="modality-icon">🥗</div>
-    <div class="modality-content">
-      <div class="service-label">Nutrition &amp; Performance Fueling</div>
-      <h3>Structured. Personalized. Performance-Driven.</h3>
-      <p>A guided nutrition system designed to align directly with training demands, recovery needs, and individual goals.</p>
-      <ul class="service-bullets">
-        <li>Weekly Nutrition Protocol</li>
-        <li>Personalized Meal Planning (3–4 Weekly Options)</li>
-        <li>Performance-Based Macronutrient Structuring</li>
-        <li>Post-Training Recovery Shakes</li>
-        <li>Pre-Training Supplements &amp; Probiotics</li>
-      </ul>
-      <div class="modality-details">
-        <div class="modality-detail-item"><strong>What it covers</strong><span>Meal structure, recovery support, supplementation, and guided weekly accountability.</span></div>
-        <div class="modality-detail-item"><strong>Who it's for</strong><span>Athletes in combine prep, draft cycles, or long-term development blocks who need fueling precision.</span></div>
-        <div class="modality-detail-item"><strong>Why it matters</strong><span>Nutrition should reinforce the work, improve recovery quality, and keep performance trending the right way.</span></div>
-      </div>
-    </div>
-  </article>
-
-  <!-- Recovery Modality Cards -->
-  <article class="recovery-modality-card">
-    <div class="modality-icon">🦵</div>
-    <div class="modality-content">
-      <div class="service-label">Compression Therapy</div>
-      <h3>Pneumatic Recovery Boots</h3>
-      <p>Sequential compression that promotes circulation, reduces swelling, and accelerates lower-body recovery between sessions.</p>
-      <div class="modality-details">
-        <div class="modality-detail-item"><strong>What this does</strong><span>Enhances blood flow through sequential compression to flush metabolic waste and reduce soreness.</span></div>
-        <div class="modality-detail-item"><strong>When to use it</strong><span>Post-training, between sessions, and during heavy training blocks for lower-body recovery.</span></div>
-      </div>
-    </div>
-  </article>
-
-  <article class="recovery-modality-card">
-    <div class="modality-icon">⚡</div>
-    <div class="modality-content">
-      <div class="service-label">PEMF Therapy</div>
-      <h3>Pulsed Electromagnetic Field Recovery</h3>
-      <p>Advanced electromagnetic field therapy including amethyst infrared PEMF recovery mat and targeted PEMF loop therapy for deep-tissue recovery.</p>
-      <div class="modality-details">
-        <div class="modality-detail-item"><strong>What this does</strong><span>Stimulates cellular repair, reduces inflammation, and supports deep-tissue recovery at the cellular level.</span></div>
-        <div class="modality-detail-item"><strong>When to use it</strong><span>During recovery windows, injury rehab protocols, and for managing systemic inflammation.</span></div>
-      </div>
-    </div>
-  </article>
-
-  <article class="recovery-modality-card">
-    <div class="modality-icon">🔴</div>
-    <div class="modality-content">
-      <div class="service-label">Red Light Therapy</div>
-      <h3>Photobiomodulation Recovery</h3>
-      <p>Near-infrared and red light wavelengths designed to support tissue repair, reduce inflammation, and enhance recovery quality.</p>
-      <div class="modality-details">
-        <div class="modality-detail-item"><strong>What this does</strong><span>Promotes mitochondrial function and cellular energy production to accelerate tissue repair.</span></div>
-        <div class="modality-detail-item"><strong>When to use it</strong><span>Pre or post-training, for injury recovery, and as a regular maintenance modality.</span></div>
-      </div>
-    </div>
-  </article>
-
-  <article class="recovery-modality-card">
-    <div class="modality-icon">🔥</div>
-    <div class="modality-content">
-      <div class="service-label">Infrared Sauna</div>
-      <h3>Deep-Heat Recovery</h3>
-      <p>Infrared heat therapy that promotes detoxification, increases circulation, supports muscle recovery, and improves overall readiness.</p>
-      <div class="modality-details">
-        <div class="modality-detail-item"><strong>What this does</strong><span>Penetrating infrared heat increases core temperature, promotes sweating, and supports cardiovascular conditioning.</span></div>
-        <div class="modality-detail-item"><strong>When to use it</strong><span>Post-training recovery, rest days, and as part of a structured recovery rotation.</span></div>
-      </div>
-    </div>
-  </article>
-
-  <article class="recovery-modality-card">
-    <div class="modality-icon">❄️</div>
-    <div class="modality-content">
-      <div class="service-label">Cold Plunge</div>
-      <h3>Cold Immersion Therapy</h3>
-      <p>Cold water immersion for vasoconstriction, inflammation management, nervous system activation, and accelerated recovery.</p>
-      <div class="modality-details">
-        <div class="modality-detail-item"><strong>What this does</strong><span>Triggers vasoconstriction, reduces inflammation, and activates the nervous system for faster recovery.</span></div>
-        <div class="modality-detail-item"><strong>When to use it</strong><span>Post-training, after high-intensity sessions, and for nervous system reset between training blocks.</span></div>
-      </div>
-    </div>
-  </article>
+<!-- ── Hero Statement ─────────────────────────────────── -->
+<div class="rc-hero reveal">
+  <span class="eyebrow">PPF Performance Support System</span>
+  <h2 class="section-title rc-hero-title">Fuel. Recover. Rebuild.<br><span class="rc-accent">Return Ready.</span></h2>
+  <p class="section-sub rc-hero-sub">A direct performance support system built for output, repair, and readiness. Every layer of support is structured by training phase, aligned with demands, and delivered through trusted specialists. This is not an add-on — it is part of the standard.</p>
 </div>
 
-<!-- Recovery Journey Timeline -->
-<div class="recovery-timeline reveal">
-  <h3 class="recovery-timeline-title">The Recovery Journey</h3>
-  <div class="timeline-steps">
-    <div class="timeline-step">
-      <div class="timeline-number">01</div>
-      <div class="timeline-label">Train</div>
-      <div class="timeline-desc">High-output session</div>
+<!-- ── Live Status Chips ─────────────────────────────── -->
+<div class="rc-status-bar reveal">
+  <div class="rc-chip" data-system="circulation"><span class="rc-chip-dot"></span>Circulation</div>
+  <div class="rc-chip" data-system="inflammation"><span class="rc-chip-dot"></span>Inflammation</div>
+  <div class="rc-chip" data-system="tissue"><span class="rc-chip-dot"></span>Tissue Repair</div>
+  <div class="rc-chip" data-system="nervous"><span class="rc-chip-dot"></span>Nervous System</div>
+  <div class="rc-chip" data-system="fueling"><span class="rc-chip-dot"></span>Fueling</div>
+  <div class="rc-chip" data-system="rehab"><span class="rc-chip-dot"></span>Rehab Support</div>
+</div>
+
+<!-- ── Trusted Performance Partners ──────────────────── -->
+<div class="rc-partners reveal">
+  <div class="rc-partners-label">Trusted Performance Partners</div>
+  <div class="rc-partners-grid">
+    <div class="rc-partner-card">
+      <div class="rc-partner-pulse"></div>
+      <div class="rc-partner-badge">Direct Partner</div>
+      <div class="rc-partner-icon">🥘</div>
+      <h3 class="rc-partner-name">Nutrition &amp; Performance Fueling</h3>
+      <p class="rc-partner-org">Rebecca &amp; Richard Camp — PPF Athletics</p>
+      <p class="rc-partner-desc">Six years of draft prep and pro prep nutrition. Rebecca Camp has delivered raving reviews as the nutrition architect behind every PPF cycle. Combined with Richard Camp's deep understanding of body types, training demands, and intake precision — built from experience as a former athlete, military veteran, and professional bodybuilder — the fueling system leaves nothing to chance.</p>
+      <div class="rc-partner-tags">
+        <span>Integrated Specialist</span>
+        <span>6+ Years</span>
+        <span>Full Meal Prep</span>
+      </div>
     </div>
-    <div class="timeline-connector"></div>
-    <div class="timeline-step">
-      <div class="timeline-number">02</div>
-      <div class="timeline-label">Compress</div>
-      <div class="timeline-desc">Flush &amp; circulate</div>
-    </div>
-    <div class="timeline-connector"></div>
-    <div class="timeline-step">
-      <div class="timeline-number">03</div>
-      <div class="timeline-label">Restore</div>
-      <div class="timeline-desc">PEMF &amp; red light</div>
-    </div>
-    <div class="timeline-connector"></div>
-    <div class="timeline-step">
-      <div class="timeline-number">04</div>
-      <div class="timeline-label">Contrast</div>
-      <div class="timeline-desc">Sauna &amp; cold plunge</div>
-    </div>
-    <div class="timeline-connector"></div>
-    <div class="timeline-step">
-      <div class="timeline-number">05</div>
-      <div class="timeline-label">Fuel</div>
-      <div class="timeline-desc">Nutrition &amp; recovery shake</div>
-    </div>
-    <div class="timeline-connector"></div>
-    <div class="timeline-step">
-      <div class="timeline-number">06</div>
-      <div class="timeline-label">Ready</div>
-      <div class="timeline-desc">Prepared for next session</div>
+    <div class="rc-partner-card">
+      <div class="rc-partner-pulse"></div>
+      <div class="rc-partner-badge">Alliance Partner</div>
+      <div class="rc-partner-icon">🔬</div>
+      <h3 class="rc-partner-name">Recovery, Rehab &amp; Return-to-Play</h3>
+      <p class="rc-partner-org">R5 &amp; Alliance — Performance Network</p>
+      <p class="rc-partner-desc">Two specialized companies coexisting under one performance umbrella. R5 and Alliance handle everything from exotic recovery modalities to full rehabilitation pipelines — a one-stop, integrated support system for recovery, rehab, and return-to-play. Direct partner access with PPF means no gaps between training and repair.</p>
+      <div class="rc-partner-tags">
+        <span>Direct Partner Access</span>
+        <span>Rehab-to-Return Pipeline</span>
+        <span>Exotic Recovery</span>
+      </div>
     </div>
   </div>
 </div>
 
-<div class="performance-standard reveal">
-  <div class="standard-kicker">The Standard</div>
-  <h3>One System. No Gaps.</h3>
-  <p>Training, nutrition, and recovery are aligned under one structure—designed to maximize output, accelerate recovery, and sustain performance over time. Everything is intentional. Everything is built to perform.</p>
+<!-- ── Two Pillars: Fuel Lab + Recovery Lab ──────────── -->
+<div class="rc-labs reveal">
+  <div class="rc-labs-tabs">
+    <button class="rc-lab-tab active" data-lab="fuel">
+      <span class="rc-tab-icon">🧬</span>
+      <span class="rc-tab-text">Fuel Lab</span>
+    </button>
+    <button class="rc-lab-tab" data-lab="recover">
+      <span class="rc-tab-icon">⚕️</span>
+      <span class="rc-tab-text">Recovery &amp; Rehab Lab</span>
+    </button>
+  </div>
+
+  <!-- Fuel Lab Panel -->
+  <div class="rc-lab-panel active" id="rc-fuel-lab">
+    <div class="rc-lab-header">
+      <div class="rc-lab-kicker">Fuel Lab</div>
+      <h3 class="rc-lab-title">Structured. Personalized. Performance-Driven.</h3>
+      <p class="rc-lab-desc">A guided nutrition system designed to align directly with training demands, recovery needs, and individual goals. Built by Rebecca Camp with six years of draft prep cooking and nutrition architecture — and guided by Richard Camp's total-package understanding of athlete development.</p>
+    </div>
+    <div class="rc-lab-modules">
+      <div class="rc-lab-module">
+        <div class="rc-module-icon">📋</div>
+        <div class="rc-module-content">
+          <h4>Weekly Nutrition Protocol</h4>
+          <p>Structured meal cadence aligned with training volume, intensity, and recovery windows.</p>
+        </div>
+      </div>
+      <div class="rc-lab-module">
+        <div class="rc-module-icon">🍽️</div>
+        <div class="rc-module-content">
+          <h4>Personalized Meal Planning</h4>
+          <p>3–4 weekly options tailored to body type, output demands, and individual preference.</p>
+        </div>
+      </div>
+      <div class="rc-lab-module">
+        <div class="rc-module-icon">📊</div>
+        <div class="rc-module-content">
+          <h4>Performance-Based Macros</h4>
+          <p>Macronutrient structuring built around training-day demands and recovery-window optimization.</p>
+        </div>
+      </div>
+      <div class="rc-lab-module">
+        <div class="rc-module-icon">🥤</div>
+        <div class="rc-module-content">
+          <h4>Post-Training Recovery Shakes</h4>
+          <p>Immediate post-session fuel designed to accelerate repair and replenish glycogen stores.</p>
+        </div>
+      </div>
+      <div class="rc-lab-module">
+        <div class="rc-module-icon">💊</div>
+        <div class="rc-module-content">
+          <h4>Supplements &amp; Probiotics</h4>
+          <p>Pre-training supplementation and gut-health support to maximize absorption and readiness.</p>
+        </div>
+      </div>
+      <div class="rc-lab-module">
+        <div class="rc-module-icon">✅</div>
+        <div class="rc-module-content">
+          <h4>Accountability &amp; Check-In Rhythm</h4>
+          <p>Weekly touchpoints to track compliance, adjust intake, and keep fueling on target.</p>
+        </div>
+      </div>
+    </div>
+    <div class="rc-lab-cta">
+      <a href="#contact" class="btn primary">Start Nutrition Plan</a>
+    </div>
+  </div>
+
+  <!-- Recovery & Rehab Lab Panel -->
+  <div class="rc-lab-panel" id="rc-recover-lab">
+    <div class="rc-lab-header">
+      <div class="rc-lab-kicker">Recovery &amp; Rehab Lab</div>
+      <h3 class="rc-lab-title">Where Training Ends, Optimization Begins.</h3>
+      <p class="rc-lab-desc">An integrated recovery ecosystem with exotic modalities and clinical-grade rehab support — delivered in partnership with R5 and Alliance. Every modality is structured by phase, outcome, and individual need.</p>
+    </div>
+    <div class="rc-lab-modules">
+      <div class="rc-lab-module" data-modality="compression">
+        <div class="rc-module-icon">🦵</div>
+        <div class="rc-module-content">
+          <h4>Compression Therapy</h4>
+          <p>Sequential pneumatic compression that promotes circulation, flushes metabolic waste, and reduces lower-body soreness between sessions.</p>
+          <div class="rc-module-meta">
+            <span class="rc-meta-tag">Circulation</span>
+            <span class="rc-meta-tag">Post-Training</span>
+          </div>
+        </div>
+      </div>
+      <div class="rc-lab-module" data-modality="pemf">
+        <div class="rc-module-icon">⚡</div>
+        <div class="rc-module-content">
+          <h4>PEMF Therapy</h4>
+          <p>Pulsed electromagnetic field recovery — including amethyst infrared PEMF mat and targeted loop therapy — stimulating cellular repair and deep-tissue restoration.</p>
+          <div class="rc-module-meta">
+            <span class="rc-meta-tag">Tissue Repair</span>
+            <span class="rc-meta-tag">Inflammation</span>
+          </div>
+        </div>
+      </div>
+      <div class="rc-lab-module" data-modality="redlight">
+        <div class="rc-module-icon">🔴</div>
+        <div class="rc-module-content">
+          <h4>Red Light Therapy</h4>
+          <p>Photobiomodulation with near-infrared and red light wavelengths to promote mitochondrial function, accelerate tissue repair, and enhance recovery quality.</p>
+          <div class="rc-module-meta">
+            <span class="rc-meta-tag">Tissue Repair</span>
+            <span class="rc-meta-tag">Maintenance</span>
+          </div>
+        </div>
+      </div>
+      <div class="rc-lab-module" data-modality="sauna">
+        <div class="rc-module-icon">🔥</div>
+        <div class="rc-module-content">
+          <h4>Infrared Sauna</h4>
+          <p>Deep-penetrating infrared heat that promotes detoxification, increases circulation, supports cardiovascular conditioning, and accelerates readiness.</p>
+          <div class="rc-module-meta">
+            <span class="rc-meta-tag">Circulation</span>
+            <span class="rc-meta-tag">Detox</span>
+          </div>
+        </div>
+      </div>
+      <div class="rc-lab-module" data-modality="coldplunge">
+        <div class="rc-module-icon">❄️</div>
+        <div class="rc-module-content">
+          <h4>Cold Plunge</h4>
+          <p>Cold water immersion for vasoconstriction, nervous system activation, inflammation management, and accelerated systemic recovery.</p>
+          <div class="rc-module-meta">
+            <span class="rc-meta-tag">Nervous System</span>
+            <span class="rc-meta-tag">Inflammation</span>
+          </div>
+        </div>
+      </div>
+      <div class="rc-lab-module" data-modality="rehab">
+        <div class="rc-module-icon">🏥</div>
+        <div class="rc-module-content">
+          <h4>Rehab &amp; Return-to-Play</h4>
+          <p>Full rehabilitation pipeline in partnership with R5 &amp; Alliance — from injury assessment through structured return-to-play protocols and ongoing support.</p>
+          <div class="rc-module-meta">
+            <span class="rc-meta-tag">Rehab Support</span>
+            <span class="rc-meta-tag">Return-to-Play</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Temperature Contrast Strip -->
+    <div class="rc-contrast-strip">
+      <div class="rc-contrast-label">Contrast Protocol</div>
+      <div class="rc-contrast-bar">
+        <div class="rc-contrast-hot">🔥 Heat</div>
+        <div class="rc-contrast-gradient"></div>
+        <div class="rc-contrast-cold">❄️ Cold</div>
+      </div>
+      <p class="rc-contrast-desc">Sauna-to-cold-plunge sequencing activates vasodilation and vasoconstriction cycles — flushing waste, reducing inflammation, and resetting the nervous system for accelerated recovery.</p>
+    </div>
+    <div class="rc-lab-cta">
+      <a href="#contact" class="btn primary">Book Recovery</a>
+      <a href="#contact" class="btn secondary">Ask About Rehab</a>
+    </div>
+  </div>
 </div>
+
+<!-- ── Outcome-Driven Results ────────────────────────── -->
+<div class="rc-outcomes reveal">
+  <div class="rc-outcomes-header">
+    <span class="rc-outcomes-kicker">What You Get</span>
+    <h3 class="rc-outcomes-title">Results, Not Just Modalities</h3>
+    <p class="rc-outcomes-sub">Every recovery session is structured around the outcomes that matter — not just the tools used to achieve them.</p>
+  </div>
+  <div class="rc-outcomes-grid">
+    <button class="rc-outcome-card" data-outcome="soreness">
+      <div class="rc-outcome-icon">💪</div>
+      <h4>Reduce Soreness</h4>
+      <p>Compression, PEMF, cold plunge</p>
+    </button>
+    <button class="rc-outcome-card" data-outcome="tissue">
+      <div class="rc-outcome-icon">🧬</div>
+      <h4>Restore Tissue</h4>
+      <p>Red light, PEMF, infrared sauna</p>
+    </button>
+    <button class="rc-outcome-card" data-outcome="circulation">
+      <div class="rc-outcome-icon">🫀</div>
+      <h4>Improve Circulation</h4>
+      <p>Compression, infrared sauna, contrast</p>
+    </button>
+    <button class="rc-outcome-card" data-outcome="inflammation">
+      <div class="rc-outcome-icon">🧊</div>
+      <h4>Manage Inflammation</h4>
+      <p>Cold plunge, PEMF, red light</p>
+    </button>
+    <button class="rc-outcome-card" data-outcome="return">
+      <div class="rc-outcome-icon">⚡</div>
+      <h4>Return Faster</h4>
+      <p>Full protocol + rehab pipeline</p>
+    </button>
+    <button class="rc-outcome-card" data-outcome="composition">
+      <div class="rc-outcome-icon">📐</div>
+      <h4>Support Body Composition</h4>
+      <p>Nutrition + sauna + accountability</p>
+    </button>
+  </div>
+</div>
+
+<!-- ── Build Your Recovery Stack (Signature Interaction) ─ -->
+<div class="rc-stack-builder reveal">
+  <div class="rc-stack-header">
+    <span class="rc-stack-kicker">Interactive Tool</span>
+    <h3 class="rc-stack-title">Build Your Recovery Stack</h3>
+    <p class="rc-stack-sub">Select what you're experiencing. We'll recommend the right protocol.</p>
+  </div>
+  <div class="rc-stack-needs">
+    <button class="rc-need-btn" data-need="sore-legs">Sore Legs</button>
+    <button class="rc-need-btn" data-need="tissue-irritation">Tissue Irritation</button>
+    <button class="rc-need-btn" data-need="fatigue">Fatigue</button>
+    <button class="rc-need-btn" data-need="heavy-week">Heavy Training Week</button>
+    <button class="rc-need-btn" data-need="body-comp">Body Composition</button>
+    <button class="rc-need-btn" data-need="combine-prep">Combine Prep</button>
+    <button class="rc-need-btn" data-need="return-rehab">Return from Rehab</button>
+    <button class="rc-need-btn" data-need="nervous-reset">Nervous System Reset</button>
+  </div>
+  <div class="rc-stack-result" id="rc-stack-result">
+    <div class="rc-stack-empty">Select one or more needs above to build your stack.</div>
+  </div>
+</div>
+
+<!-- ── Cinematic Recovery Journey ────────────────────── -->
+<div class="rc-journey reveal">
+  <div class="rc-journey-header">
+    <span class="rc-journey-kicker">The Recovery Journey</span>
+    <h3 class="rc-journey-title">From Output to Ready</h3>
+  </div>
+  <div class="rc-journey-track">
+    <div class="rc-journey-step" data-step="1">
+      <div class="rc-step-number">01</div>
+      <div class="rc-step-body">
+        <h4 class="rc-step-label">Train</h4>
+        <p class="rc-step-outcome">High-output session complete. Body under stimulus.</p>
+      </div>
+      <div class="rc-step-visual rc-vis-train"></div>
+    </div>
+    <div class="rc-journey-connector"></div>
+    <div class="rc-journey-step" data-step="2">
+      <div class="rc-step-number">02</div>
+      <div class="rc-step-body">
+        <h4 class="rc-step-label">Assess</h4>
+        <p class="rc-step-outcome">Readiness check. Identify soreness, load, and recovery needs.</p>
+      </div>
+      <div class="rc-step-visual rc-vis-assess"></div>
+    </div>
+    <div class="rc-journey-connector"></div>
+    <div class="rc-journey-step" data-step="3">
+      <div class="rc-step-number">03</div>
+      <div class="rc-step-body">
+        <h4 class="rc-step-label">Restore</h4>
+        <p class="rc-step-outcome">Cellular repair, tissue support, inflammation management.</p>
+      </div>
+      <div class="rc-step-visual rc-vis-restore"></div>
+    </div>
+    <div class="rc-journey-connector"></div>
+    <div class="rc-journey-step" data-step="4">
+      <div class="rc-step-number">04</div>
+      <div class="rc-step-body">
+        <h4 class="rc-step-label">Contrast</h4>
+        <p class="rc-step-outcome">Sauna-to-cold-plunge. Vascular flush. Nervous system reset.</p>
+      </div>
+      <div class="rc-step-visual rc-vis-contrast"></div>
+    </div>
+    <div class="rc-journey-connector"></div>
+    <div class="rc-journey-step" data-step="5">
+      <div class="rc-step-number">05</div>
+      <div class="rc-step-body">
+        <h4 class="rc-step-label">Fuel</h4>
+        <p class="rc-step-outcome">Recovery shake. Macro support. Hydration protocol.</p>
+      </div>
+      <div class="rc-step-visual rc-vis-fuel"></div>
+    </div>
+    <div class="rc-journey-connector"></div>
+    <div class="rc-journey-step" data-step="6">
+      <div class="rc-step-number">06</div>
+      <div class="rc-step-body">
+        <h4 class="rc-step-label">Return Ready</h4>
+        <p class="rc-step-outcome">Restored state. Next-session readiness achieved.</p>
+      </div>
+      <div class="rc-step-visual rc-vis-ready"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Conversion CTA Row ────────────────────────────── -->
+<div class="rc-cta-row reveal">
+  <a href="#contact" class="rc-cta-card">
+    <span class="rc-cta-icon">🍽️</span>
+    <span class="rc-cta-text">Start Nutrition Plan</span>
+  </a>
+  <a href="#contact" class="rc-cta-card">
+    <span class="rc-cta-icon">🔬</span>
+    <span class="rc-cta-text">Book Recovery Session</span>
+  </a>
+  <a href="#contact" class="rc-cta-card">
+    <span class="rc-cta-icon">🏥</span>
+    <span class="rc-cta-text">Ask About Rehab</span>
+  </a>
+  <a href="#contact" class="rc-cta-card">
+    <span class="rc-cta-icon">📋</span>
+    <span class="rc-cta-text">Build My Support Plan</span>
+  </a>
+</div>
+
+<!-- ── Closing: One System. No Gaps. ─────────────────── -->
+<div class="rc-closing reveal">
+  <div class="rc-closing-inner">
+    <div class="standard-kicker">The Standard</div>
+    <h3>One System. No Gaps.</h3>
+    <p>Training, nutrition, recovery, and rehab support are aligned under one structure — with direct partner access to R5, Alliance, and six years of proven nutrition leadership by Rebecca and Richard Camp. Every layer of support is built to protect output, accelerate recovery, and keep the work moving forward.</p>
+    <div class="rc-closing-partners">
+      <span class="rc-closing-tag">PPF Athletics</span>
+      <span class="rc-closing-tag">R5</span>
+      <span class="rc-closing-tag">Alliance</span>
+    </div>
+  </div>
+</div>
+
 </div>
 </section>
 
