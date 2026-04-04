@@ -1285,7 +1285,8 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
         '<span class="dc-slot-remove" data-idx="' + i + '">&times;</span>';
       slot.querySelector('.dc-slot-remove').addEventListener('click', function(e){
         e.stopPropagation();
-        compareSlots.splice(i, 1);
+        var removeIdx = compareSlots.findIndex(function(s){ return s.name === item.name; });
+        if(removeIdx > -1) compareSlots.splice(removeIdx, 1);
         updateCompareDock();
         updateCompareHighlights();
       });
