@@ -1710,7 +1710,7 @@ function getBadges(a){
   if(a.weight !== null && a.weight >= 290) badges.push({cls:'dr-badge-front-line-size',label:'Front-Line Size'});
   if(a.ras !== null && a.ras >= 9.0) badges.push({cls:'dr-badge-high-carryover',label:'High-Carryover Profile'});
   if(a.ras !== null && a.ras >= 8.0 && a.ras < 9.0) badges.push({cls:'dr-badge-specialist',label:'Specialist Value'});
-  if(a.forty !== null && a.broad !== null && a.forty <= 4.5 && a.broad >= 120) badges.push({cls:'dr-badge-elite-burst',label:'Explosive Profile'});
+  if(a.forty !== null && a.broad !== null && a.forty <= 4.5 && a.broad >= 120) badges.push({cls:'dr-badge-explosive-profile',label:'Explosive Profile'});
   return badges;
 }
 
@@ -1757,7 +1757,12 @@ function traitScore(a, trait){
     case 'positional':
       var s = 0;
       if(a.ras !== null) s += a.ras * 7;
-      if(a.proOutcome && (a.proOutcome.indexOf('NFL') !== -1 || a.proOutcome.indexOf('Texans') !== -1 || a.proOutcome.indexOf('Jaguars') !== -1 || a.proOutcome.indexOf('Bengals') !== -1)) s += 20;
+      var nflKeywords = ['NFL','Texans','Jaguars','Bengals','Redblacks','Active'];
+      if(a.proOutcome){
+        for(var k = 0; k < nflKeywords.length; k++){
+          if(a.proOutcome.indexOf(nflKeywords[k]) !== -1){ s += 20; break; }
+        }
+      }
       return s;
     default: return 0;
   }
@@ -1809,6 +1814,8 @@ var tierDefs = [
   {id:'specialist',name:'Specialist Value'}
 ];
 tierDefs.forEach(function(t){ tierData[t.id] = []; });
+
+var VERDICT_THRESHOLD = 3;
 
 /* ── Sound Cue ────────────────────────────────────────────── */
 var draftChime = null;
@@ -2270,8 +2277,8 @@ function openCompare(){
     var sb = traitScore(b, v.trait);
     var cls = 'edge-tie';
     var winner = 'Tie';
-    if(sa > sb + 3){ cls = 'edge-a'; winner = a.name.split(' ').pop(); }
-    else if(sb > sa + 3){ cls = 'edge-b'; winner = b.name.split(' ').pop(); }
+    if(sa > sb + VERDICT_THRESHOLD){ cls = 'edge-a'; winner = a.name.split(' ').pop(); }
+    else if(sb > sa + VERDICT_THRESHOLD){ cls = 'edge-b'; winner = b.name.split(' ').pop(); }
     return '<div class="dr-verdict-item ' + cls + '">' + v.label + ': ' + winner + '</div>';
   }).join('');
 

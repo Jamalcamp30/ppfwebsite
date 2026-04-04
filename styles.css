@@ -1915,6 +1915,7 @@ table th{color:var(--orange2)!important;font-weight:900}
   display:inline-flex;align-items:center;gap:3px;
 }
 .dr-badge-elite-burst{background:rgba(255,200,0,.12);border:1px solid rgba(255,200,0,.25);color:#ffd060}
+.dr-badge-explosive-profile{background:rgba(255,140,0,.12);border:1px solid rgba(255,140,0,.25);color:#ffb060}
 .dr-badge-rare-power{background:rgba(255,60,60,.1);border:1px solid rgba(255,60,60,.2);color:#ff8888}
 .dr-badge-verified-speed{background:rgba(0,200,255,.1);border:1px solid rgba(0,200,255,.2);color:#66ddff}
 .dr-badge-front-line-size{background:rgba(160,120,255,.1);border:1px solid rgba(160,120,255,.2);color:#c0a0ff}
