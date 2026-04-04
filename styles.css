@@ -715,55 +715,78 @@ ul,ol{list-style:none}
 /* Signature Hover FX */
 .pi-signature-fx{
   position:absolute;inset:0;pointer-events:none;opacity:0;
-  transition:opacity .6s ease;overflow:hidden;
+  transition:opacity .5s ease;overflow:hidden;z-index:1;
 }
-.pi-metric-card:hover .pi-signature-fx{opacity:1}
-
-/* Speed signature: horizontal trails */
-.pi-metric-card[data-signature="speed"] .pi-signature-fx{
-  background:
-    linear-gradient(90deg,transparent 0%,rgba(255,106,0,.06) 30%,rgba(255,106,0,.02) 60%,transparent 100%);
-  animation:pi-speed-trail .8s ease-out;
-}
-@keyframes pi-speed-trail{
-  0%{transform:translateX(-100%)}
-  100%{transform:translateX(0)}
+.pi-metric-card:hover .pi-signature-fx,
+.pi-metric-card.pi-touch-active .pi-signature-fx{opacity:1}
+.pi-sig-canvas{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;
 }
 
-/* Vertical signature: rising grid */
-.pi-metric-card[data-signature="vertical"] .pi-signature-fx{
-  background:
-    repeating-linear-gradient(0deg,transparent,transparent 8px,rgba(255,106,0,.04) 8px,rgba(255,106,0,.04) 9px);
-  animation:pi-vert-rise 1s ease-out;
+/* ── Per-signature active-state CSS layers ───────────── */
+
+/* Speed: motion blur on number */
+.pi-metric-card[data-signature="speed"].pi-fx-active .pi-metric-value{
+  animation:pi-val-blur .6s ease-out forwards;
 }
-@keyframes pi-vert-rise{
-  0%{transform:translateY(100%)}
-  100%{transform:translateY(0)}
+@keyframes pi-val-blur{
+  0%{filter:blur(4px);transform:translateX(-8px)}
+  100%{filter:blur(0);transform:translateX(0)}
 }
 
-/* Power signature: pulse from center */
-.pi-metric-card[data-signature="power"] .pi-signature-fx::after{
-  content:"";position:absolute;top:50%;left:50%;width:200px;height:200px;
-  transform:translate(-50%,-50%);border-radius:50%;
-  background:radial-gradient(circle,rgba(255,106,0,.1),transparent 70%);
-  animation:pi-power-pulse 1s ease-out;
+/* Vertical: number floats upward */
+.pi-metric-card[data-signature="vertical"].pi-fx-active .pi-metric-value{
+  animation:pi-val-float 1.5s ease-in-out infinite alternate;
 }
-@keyframes pi-power-pulse{
-  0%{transform:translate(-50%,-50%) scale(0);opacity:1}
-  100%{transform:translate(-50%,-50%) scale(2);opacity:0}
+@keyframes pi-val-float{
+  0%{transform:translateY(0)}
+  100%{transform:translateY(-4px)}
 }
 
-/* RAS signature: circular ring */
-.pi-metric-card[data-signature="ras"] .pi-signature-fx::after{
-  content:"";position:absolute;top:50%;left:50%;width:120px;height:120px;
-  transform:translate(-50%,-50%);border-radius:50%;
-  border:3px solid rgba(255,106,0,.15);
-  animation:pi-ras-ring 1.2s ease-out;
+/* Power: card micro-shake + number punch */
+.pi-metric-card[data-signature="power"].pi-fx-active{
+  animation:pi-card-shake .12s ease-in-out 3;
 }
-@keyframes pi-ras-ring{
-  0%{transform:translate(-50%,-50%) scale(0);opacity:0}
-  30%{opacity:1}
-  100%{transform:translate(-50%,-50%) scale(2.5);opacity:0}
+.pi-metric-card[data-signature="power"].pi-fx-active .pi-metric-value{
+  animation:pi-val-punch .8s cubic-bezier(.2,.8,.2,1) forwards;
+}
+@keyframes pi-card-shake{
+  0%,100%{transform:translateY(-6px) scale(1.01) translateX(0)}
+  25%{transform:translateY(-6px) scale(1.01) translateX(-2px)}
+  75%{transform:translateY(-6px) scale(1.01) translateX(2px)}
+}
+@keyframes pi-val-punch{
+  0%{transform:scale(1.12);opacity:.7}
+  100%{transform:scale(1);opacity:1}
+}
+
+/* RAS: golden glow halo */
+.pi-metric-card[data-signature="ras"].pi-fx-active .pi-metric-value{
+  animation:pi-val-glow 2s ease-in-out infinite alternate;
+}
+@keyframes pi-val-glow{
+  0%{filter:drop-shadow(0 0 6px rgba(255,170,0,.3))}
+  100%{filter:drop-shadow(0 0 14px rgba(255,170,0,.6))}
+}
+
+/* Electric: flicker + static noise */
+.pi-metric-card[data-signature="electric"].pi-fx-active .pi-metric-value{
+  animation:pi-val-flicker .08s steps(2) 6;
+}
+@keyframes pi-val-flicker{
+  0%{opacity:1;transform:translateX(0)}
+  50%{opacity:.4;transform:translateX(1px)}
+  100%{opacity:1;transform:translateX(-1px)}
+}
+
+/* Gravity: number sinks heavy */
+.pi-metric-card[data-signature="gravity"].pi-fx-active .pi-metric-value{
+  animation:pi-val-heavy .7s cubic-bezier(.6,.05,.3,1) forwards;
+}
+@keyframes pi-val-heavy{
+  0%{transform:scale(.96) translateY(-3px);letter-spacing:-.06em}
+  100%{transform:scale(1) translateY(0);letter-spacing:-.04em}
 }
 
 /* Position Intelligence Toggle */
