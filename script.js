@@ -1154,12 +1154,16 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     });
 
     outOverlay.classList.add('cc-outcomes-open');
+    outOverlay.setAttribute('aria-hidden','false');
     document.body.style.overflow = 'hidden';
+    /* Focus the close button for accessibility */
+    if(outCloseBtn) outCloseBtn.focus();
   }
 
   function closeOutcomes(){
     if(!outOverlay) return;
     outOverlay.classList.remove('cc-outcomes-open');
+    outOverlay.setAttribute('aria-hidden','true');
     document.body.style.overflow = '';
   }
 
@@ -1246,12 +1250,15 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       animFrame = requestAnimationFrame(animateRoutes);
     }
 
-    /* Only animate when section is visible */
+    /* Only animate when section is visible; prevent multiple loops */
+    var isAnimating = false;
     var canvasObserver = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
-        if(entry.isIntersecting){
+        if(entry.isIntersecting && !isAnimating){
+          isAnimating = true;
           animateRoutes();
-        } else {
+        } else if(!entry.isIntersecting){
+          isAnimating = false;
           cancelAnimationFrame(animFrame);
         }
       });

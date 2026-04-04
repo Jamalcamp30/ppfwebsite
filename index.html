@@ -1632,12 +1632,12 @@
 </div>
 
 <!-- ── Coached Outcomes Overlay ─────────────────────────── -->
-<div class="cc-outcomes-overlay" id="ccOutcomes">
+<div class="cc-outcomes-overlay" id="ccOutcomes" role="dialog" aria-hidden="true" aria-label="Coach outcomes panel">
   <div class="cc-outcomes-backdrop"></div>
   <div class="cc-outcomes-panel">
     <button class="cc-outcomes-close" aria-label="Close outcomes panel">&times;</button>
     <div class="cc-outcomes-header">
-      <img class="cc-outcomes-img" id="ccOutImg" src="" alt="">
+      <img class="cc-outcomes-img" id="ccOutImg" src="" alt="Coach portrait" onerror="this.style.display='none'">
       <div class="cc-outcomes-meta">
         <h4 class="cc-outcomes-name" id="ccOutName"></h4>
         <span class="cc-outcomes-role" id="ccOutRole"></span>
