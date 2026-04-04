@@ -1516,121 +1516,1091 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   });
 })();
 
-/* ── Draft Room Mode ─────────────────────────────────────── */
+/* ── Draft Room — PPF Scout Console ──────────────────────── */
 (function(){
-  var grid = document.getElementById('draft-room-grid');
-  var compareBtn = document.getElementById('dr-compare-btn');
-  var comparePanel = document.getElementById('draft-room-compare');
-  if(!grid) return;
 
-  var draftData = [
-    {name:'Jalen Camp',pos:'WR',school:'Georgia Tech',photo:'Jalen.Camp.alumni.jpeg',ras:'9.78',forty:'4.39',vert:'39.5"',bench:'30 reps'},
-    {name:'Jack Coco',pos:'LS',school:'Georgia Tech',photo:'Jack.Coco.png',ras:'9.92',forty:'—',vert:'—',bench:'—'},
-    {name:'Sean Martin',pos:'DL',school:'West Virginia',photo:'Sean Martin.jpeg',ras:'9.68',forty:'4.88',vert:'—',bench:'28 reps'},
-    {name:'DK Kaufman',pos:'DB',school:'NC State',photo:'Dk Kaufman.jpeg',ras:'9.35',forty:'—',vert:'38"',bench:'—'},
-    {name:'Dymere Miller',pos:'WR',school:'Rutgers',photo:'Dymere.Miller.alumni.jpeg',ras:'9.01',forty:'4.32',vert:'—',bench:'—'},
-    {name:'Kyler Baugh',pos:'DT',school:'Minnesota',photo:'Kyler.Baugh.jpeg',ras:'8.56',forty:'4.91',vert:'33.5"',bench:'34 reps'},
-    {name:'Cam Bright',pos:'LB',school:'Pittsburgh',photo:'Cam.bright.jpeg',ras:'8.45',forty:'—',vert:'—',bench:'33 reps'},
-    {name:'Omar Dollison',pos:'WR',school:'James Madison',photo:'7c46366d-87fd-4f79-81f2-f22e4c704154.png',ras:'8.35',forty:'4.46',vert:'—',bench:'—'},
-    {name:'Travis Bell',pos:'DT',school:'Kennesaw State',photo:'Travis.Bell.2.jpeg',ras:'8.27',forty:'—',vert:'—',bench:'30 reps'},
-    {name:'Mike Allen',pos:'DL',school:'Western Kentucky',photo:'Mike Allen.jpeg',ras:'8.09',forty:'—',vert:'—',bench:'—'},
-    {name:'Ahmarean Brown',pos:'WR',school:'Georgia Tech',photo:'AB.Brown.png',ras:'—',forty:'4.29',vert:'—',bench:'—'},
-    {name:'Robert Cooper',pos:'DT',school:'Florida State',photo:'Robert.Cooper.jpeg',ras:'—',forty:'—',vert:'—',bench:'—'},
-    {name:'Nathan Cottrell',pos:'RB',school:'Georgia Tech',photo:'Nate.Cottrell.jpeg',ras:'—',forty:'4.38',vert:'—',bench:'29 reps'},
-    {name:'Shawn Williams',pos:'S',school:'Georgia',photo:'Shawn.williams.alumni.jpeg',ras:'—',forty:'—',vert:'—',bench:'—'},
-    {name:'Martez Manuel',pos:'S',school:'Missouri',photo:'Martez.Manuel.jpeg',ras:'—',forty:'4.47',vert:'—',bench:'—'},
-    {name:'Torricelli Simpkins',pos:'OL',school:'South Carolina',photo:'Torricelli.Simpkins.alumni.new.jpg',ras:'—',forty:'—',vert:'29"',bench:'—'},
-    {name:'Zeke Correll',pos:'OL',school:'Notre Dame',photo:'Zeke.Correll.new.jpg',ras:'—',forty:'—',vert:'—',bench:'—'}
+/* ── Enhanced Draft Data ──────────────────────────────────── */
+var draftData = [
+  {name:'Jalen Camp',pos:'WR',school:'Georgia Tech',photo:'Jalen.Camp.alumni.jpeg',
+   ras:9.78,forty:4.39,split:1.52,vert:39.5,broad:126,bench:30,weight:228,
+   classYear:'2021',proOutcome:'Houston Texans',
+   bestTrait:'Elite burst-to-size ratio',devEdge:'Ball tracking under pressure',
+   summary:'Size-speed combination at receiver is rare. Camp posted elite RAS numbers across the board with verified 40 speed and upper-body output that translated to an NFL opportunity.',
+   why:'This profile matters because it proves that combine-caliber measurables built through focused preparation create real NFL pipeline value.'},
+  {name:'Jack Coco',pos:'LS',school:'Georgia Tech',photo:'Jack.Coco.png',
+   ras:9.92,forty:null,split:null,vert:null,broad:null,bench:null,weight:245,
+   classYear:'2022',proOutcome:'NFL Active',
+   bestTrait:'Positional RAS dominance',devEdge:'Specialist consistency',
+   summary:'Top-tier RAS profile among long snappers in modern NFL Combine history. Precision specialist with verified athletic output well beyond positional norms.',
+   why:'This profile matters because elite specialist value at the next level is driven by athletic upside that translates to coverage units and special teams versatility.'},
+  {name:'Sean Martin',pos:'DL',school:'West Virginia',photo:'Sean Martin.jpeg',
+   ras:9.68,forty:4.88,split:1.68,vert:34,broad:118,bench:28,weight:293,
+   classYear:'2024',proOutcome:'NFL Combine Invite',
+   bestTrait:'Interior explosion at size',devEdge:'First-step leverage',
+   summary:'NFL Combine participant with rare size-speed combination for interior defensive line. Bench press output, forty time, and overall RAS confirm front-line physical tools.',
+   why:'This profile matters because verified combine measurables at 293 pounds show a projection window that most interior linemen never reach.'},
+  {name:'DK Kaufman',pos:'DB',school:'NC State',photo:'Dk Kaufman.jpeg',
+   ras:9.35,forty:4.45,split:1.53,vert:38,broad:122,bench:16,weight:198,
+   classYear:'2024',proOutcome:'Pro Day Standout',
+   bestTrait:'Vertical explosion and range',devEdge:'Transitional burst in coverage',
+   summary:'Elite vertical jump and top-shelf RAS score confirm a secondary profile built on explosion and coverage range. Movement tools project at the next level.',
+   why:'This profile matters because 38-inch vertical paired with sub-4.5 speed creates a rare coverage ceiling that scouts prioritize at the safety and nickel positions.'},
+  {name:'Dymere Miller',pos:'WR',school:'Rutgers',photo:'Dymere.Miller.alumni.jpeg',
+   ras:9.01,forty:4.32,split:1.48,vert:37,broad:124,bench:12,weight:185,
+   classYear:'2023',proOutcome:'Professional Opportunity',
+   bestTrait:'Verified top-tier speed',devEdge:'Route separation burst',
+   summary:'4.32 forty and 9.01 RAS confirm a rare speed profile at receiver. Separation ability is the foundation of professional-level route running.',
+   why:'This profile matters because verified sub-4.35 speed is an elite threshold that creates schematic advantages at every level of football.'},
+  {name:'Kyler Baugh',pos:'DT',school:'Minnesota',photo:'Kyler.Baugh.jpeg',
+   ras:8.56,forty:4.91,split:1.71,vert:33.5,broad:112,bench:34,weight:303,
+   classYear:'2024',proOutcome:'Pro Day Standout',
+   bestTrait:'Upper-body power at premium weight',devEdge:'Anchor strength and interior push',
+   summary:'34 bench reps at 303 pounds with a 4.91 forty. Rare power output combined with movement ability for a true interior presence. RAS confirms well-rounded physical tools.',
+   why:'This profile matters because 34 reps at 300+ pounds represents front-line power that translates directly to interior dominance at the professional level.'},
+  {name:'Cam Bright',pos:'LB',school:'Pittsburgh',photo:'Cam.bright.jpeg',
+   ras:8.45,forty:4.58,split:1.58,vert:35,broad:119,bench:33,weight:238,
+   classYear:'2023',proOutcome:'Professional Opportunity',
+   bestTrait:'Upper-body output for position',devEdge:'Strike power and block shedding',
+   summary:'33 bench reps at the linebacker position puts Bright in rare territory for upper-body output. Physical tools and RAS confirm a profile built for contact.',
+   why:'This profile matters because linebacker bench press output at this level signals the kind of play strength that defines a defensive front.'},
+  {name:'Omar Dollison',pos:'WR',school:'James Madison',photo:'7c46366d-87fd-4f79-81f2-f22e4c704154.png',
+   ras:8.35,forty:4.46,split:1.55,vert:36.5,broad:121,bench:14,weight:192,
+   classYear:'2024',proOutcome:'Pro Opportunity',
+   bestTrait:'Speed and vertical burst',devEdge:'Downfield tracking and adjustment',
+   summary:'4.46 speed and 8.35 RAS create a receiver profile with verified pace and vertical ability. Measurable tools confirm a skill set built for separation.',
+   why:'This profile matters because the speed-to-RAS combination projects as a reliable route runner with enough burst to threaten vertically.'},
+  {name:'Travis Bell',pos:'DT',school:'Kennesaw State',photo:'Travis.Bell.2.jpeg',
+   ras:8.27,forty:5.05,split:1.75,vert:30,broad:108,bench:30,weight:315,
+   classYear:'2023',proOutcome:'Professional Opportunity',
+   bestTrait:'Rare size with bench output',devEdge:'Anchor presence at point of attack',
+   summary:'30 bench reps at 315 pounds with a strong RAS. Interior mass combined with power output makes this a projection profile for trench dominance.',
+   why:'This profile matters because size-and-power at this weight class is the foundation for run defense at the professional level.'},
+  {name:'Mike Allen',pos:'DL',school:'Western Kentucky',photo:'Mike Allen.jpeg',
+   ras:8.09,forty:4.82,split:1.66,vert:32,broad:114,bench:24,weight:278,
+   classYear:'2023',proOutcome:'Pro Opportunity',
+   bestTrait:'Versatile front-line tools',devEdge:'Pass rush motor and technique ceiling',
+   summary:'8.09 RAS at 278 pounds with verified athletic testing puts Mike Allen in the conversation as a versatile defensive lineman with professional physical tools.',
+   why:'This profile matters because defensive line depth requires exactly this blend of size, movement, and verified measurable output.'},
+  {name:'Ahmarean Brown',pos:'WR',school:'Georgia Tech',photo:'AB.Brown.png',
+   ras:null,forty:4.29,split:1.46,vert:38,broad:125,bench:10,weight:180,
+   classYear:'2023',proOutcome:'Pro Opportunity',
+   bestTrait:'Elite verified speed',devEdge:'Explosive first step off the line',
+   summary:'4.29 forty confirms one of the fastest verified receiver profiles in the PPF system. Speed at this level is a game-changer for offensive design.',
+   why:'This profile matters because 4.29 speed is an elite threshold that creates immediate value as a vertical threat at any level of professional football.'},
+  {name:'Robert Cooper',pos:'DT',school:'Florida State',photo:'Robert.Cooper.jpeg',
+   ras:null,forty:5.1,split:1.78,vert:28,broad:104,bench:26,weight:320,
+   classYear:'2024',proOutcome:'Developmental',
+   bestTrait:'True interior mass',devEdge:'Power-at-weight projection',
+   summary:'320 pounds with verified strength output. Interior presence at this size creates natural advantages at the point of attack. Development projection is built on frame and power.',
+   why:'This profile matters because true-size defensive tackles with bench output are the rarest commodity in professional football pipeline development.'},
+  {name:'Nathan Cottrell',pos:'RB',school:'Georgia Tech',photo:'Nate.Cottrell.jpeg',
+   ras:null,forty:4.38,split:1.5,vert:36,broad:122,bench:29,weight:205,
+   classYear:'2020',proOutcome:'Jacksonville Jaguars',
+   bestTrait:'Speed-and-power backfield profile',devEdge:'Contact balance at speed',
+   summary:'4.38 forty, 29 bench reps, and an NFL roster appearance confirm a running back profile with rare dual-threat measurables. Speed and power in one frame.',
+   why:'This profile matters because running backs who combine sub-4.4 speed with near-30 bench reps carry a projection floor that translates to professional rosters.'},
+  {name:'Shawn Williams',pos:'S',school:'Georgia',photo:'Shawn.williams.alumni.jpeg',
+   ras:null,forty:4.52,split:1.56,vert:36.5,broad:120,bench:18,weight:212,
+   classYear:'2013',proOutcome:'Cincinnati Bengals (9 seasons)',
+   bestTrait:'NFL-proven safety profile',devEdge:'Range and instincts over numbers',
+   summary:'Nine NFL seasons with the Cincinnati Bengals validate a safety profile that combined physical tools with elite football intelligence. PPF pipeline verified at the highest level.',
+   why:'This profile matters because it is the ultimate proof of concept — a PPF-connected athlete who built a long professional career on verified preparation.'},
+  {name:'Martez Manuel',pos:'S',school:'Missouri',photo:'Martez.Manuel.jpeg',
+   ras:null,forty:4.47,split:1.54,vert:37,broad:122,bench:16,weight:210,
+   classYear:'2024',proOutcome:'Pro Day Standout',
+   bestTrait:'Downhill speed and range',devEdge:'Hybrid safety-linebacker versatility',
+   summary:'4.47 speed at 210 pounds with a verified vertical and broad confirm a safety profile that plays bigger than listed size. Movement tools project across multiple defensive roles.',
+   why:'This profile matters because safeties who test with both speed and explosion create scheme flexibility that professional defensive coordinators value.'},
+  {name:'Torricelli Simpkins',pos:'OL',school:'South Carolina',photo:'Torricelli.Simpkins.alumni.new.jpg',
+   ras:null,forty:5.2,split:1.82,vert:29,broad:102,bench:24,weight:312,
+   classYear:'2023',proOutcome:'Professional Opportunity',
+   bestTrait:'Big-man movement at size',devEdge:'Lateral reach and anchor width',
+   summary:'312 pounds with verified vertical and bench output. Offensive line profiles at this weight with documented athletic testing show the kind of movement that translates to protection.',
+   why:'This profile matters because offensive linemen who test with verified measurables at 310+ carry higher projection ceilings than size-only prospects.'},
+  {name:'Zeke Correll',pos:'OL',school:'Notre Dame',photo:'Zeke.Correll.new.jpg',
+   ras:null,forty:5.15,split:1.8,vert:27,broad:100,bench:22,weight:305,
+   classYear:'2023',proOutcome:'Professional Opportunity',
+   bestTrait:'Pedigree and technique base',devEdge:'Interior awareness and combination blocking',
+   summary:'Notre Dame offensive line pedigree with verified size and documented professional interest. Interior line development backed by elite coaching and program background.',
+   why:'This profile matters because Power 5 offensive line experience combined with documented measurables and program background create a professional floor.'}
+];
+
+/* ── Position Intel Data ──────────────────────────────────── */
+var positionIntel = {
+  'WR': [
+    {trait:'40-yard dash',why:'Separation speed'},
+    {trait:'10-yard split',why:'Route burst'},
+    {trait:'Vertical jump',why:'Catch radius'},
+    {trait:'Broad jump',why:'Explosion off the line'},
+    {trait:'Weight',why:'Press release power'},
+    {trait:'RAS',why:'Overall athletic profile'}
+  ],
+  'DB': [
+    {trait:'40-yard dash',why:'Recovery speed'},
+    {trait:'Vertical jump',why:'Ball-high play ability'},
+    {trait:'10-yard split',why:'Transitional burst'},
+    {trait:'Broad jump',why:'Range and explosion'},
+    {trait:'Weight',why:'Tackle reliability'},
+    {trait:'RAS',why:'Complete movement profile'}
+  ],
+  'DL': [
+    {trait:'10-yard split',why:'First-step explosion'},
+    {trait:'Bench press',why:'Hand power at contact'},
+    {trait:'Weight',why:'Point-of-attack anchor'},
+    {trait:'Broad jump',why:'Lower-body explosion'},
+    {trait:'40-yard dash',why:'Pursuit speed'},
+    {trait:'RAS',why:'Size-speed confirmation'}
+  ],
+  'DT': [
+    {trait:'Bench press',why:'Interior push power'},
+    {trait:'Weight',why:'Anchor mass'},
+    {trait:'10-yard split',why:'Gap penetration burst'},
+    {trait:'Vertical jump',why:'Lower-body drive'},
+    {trait:'Broad jump',why:'Explosion at size'},
+    {trait:'RAS',why:'Rare athletic DT profile'}
+  ],
+  'OL': [
+    {trait:'Bench press',why:'Blocking power'},
+    {trait:'Weight',why:'Anchor and frame'},
+    {trait:'10-yard split',why:'Lateral movement'},
+    {trait:'Broad jump',why:'Lower-body drive'},
+    {trait:'Vertical jump',why:'Athletic upside'},
+    {trait:'RAS',why:'Movement at size'}
+  ],
+  'LB': [
+    {trait:'10-yard split',why:'Downhill burst'},
+    {trait:'Bench press',why:'Block shedding power'},
+    {trait:'40-yard dash',why:'Sideline-to-sideline range'},
+    {trait:'Vertical jump',why:'Stack-and-shed explosion'},
+    {trait:'Weight',why:'Contact surface'},
+    {trait:'RAS',why:'Complete LB profile'}
+  ],
+  'RB': [
+    {trait:'40-yard dash',why:'Breakaway speed'},
+    {trait:'10-yard split',why:'Hole burst'},
+    {trait:'Bench press',why:'Contact balance'},
+    {trait:'Weight',why:'Between-the-tackles power'},
+    {trait:'Broad jump',why:'Explosion through the line'},
+    {trait:'RAS',why:'Dual-threat confirmation'}
+  ],
+  'S': [
+    {trait:'40-yard dash',why:'Range and pursuit'},
+    {trait:'Vertical jump',why:'Ball-high ability'},
+    {trait:'10-yard split',why:'Trigger speed'},
+    {trait:'Broad jump',why:'Closing explosion'},
+    {trait:'Weight',why:'Tackle reliability'},
+    {trait:'RAS',why:'Complete safety profile'}
+  ],
+  'LS': [
+    {trait:'RAS',why:'Special teams athleticism'},
+    {trait:'40-yard dash',why:'Coverage unit speed'},
+    {trait:'Weight',why:'Blocking at the line'},
+    {trait:'Bench press',why:'Protection power'},
+    {trait:'Vertical jump',why:'Athletic ceiling'},
+    {trait:'Broad jump',why:'Lower-body explosion'}
+  ]
+};
+
+/* ── Badge Logic ──────────────────────────────────────────── */
+function getBadges(a){
+  var badges = [];
+  if(a.forty !== null && a.forty <= 4.4) badges.push({cls:'dr-badge-verified-speed',label:'Verified Speed'});
+  if(a.vert !== null && a.vert >= 38) badges.push({cls:'dr-badge-elite-burst',label:'Elite Burst'});
+  if(a.bench !== null && a.bench >= 28) badges.push({cls:'dr-badge-rare-power',label:'Rare Power'});
+  if(a.weight !== null && a.weight >= 290) badges.push({cls:'dr-badge-front-line-size',label:'Front-Line Size'});
+  if(a.ras !== null && a.ras >= 9.0) badges.push({cls:'dr-badge-high-carryover',label:'High-Carryover Profile'});
+  if(a.ras !== null && a.ras >= 8.0 && a.ras < 9.0) badges.push({cls:'dr-badge-specialist',label:'Specialist Value'});
+  if(a.forty !== null && a.broad !== null && a.forty <= 4.5 && a.broad >= 120) badges.push({cls:'dr-badge-explosive-profile',label:'Explosive Profile'});
+  return badges;
+}
+
+function renderBadgesHTML(badges){
+  return badges.map(function(b){
+    return '<span class="dr-badge ' + b.cls + '">\u25CF ' + b.label + '</span>';
+  }).join('');
+}
+
+/* ── Pressure Trait Scoring ───────────────────────────────── */
+function traitScore(a, trait){
+  switch(trait){
+    case 'speed':
+      var s = 0;
+      if(a.forty !== null) s += (5.2 - a.forty) / (5.2 - 4.2) * 50;
+      if(a.split !== null) s += (1.85 - a.split) / (1.85 - 1.4) * 30;
+      if(a.broad !== null) s += (a.broad - 95) / (130 - 95) * 20;
+      return s;
+    case 'explosion':
+      var s = 0;
+      if(a.vert !== null) s += (a.vert - 24) / (42 - 24) * 40;
+      if(a.broad !== null) s += (a.broad - 95) / (130 - 95) * 35;
+      if(a.split !== null) s += (1.85 - a.split) / (1.85 - 1.4) * 25;
+      return s;
+    case 'power':
+      var s = 0;
+      if(a.bench !== null) s += a.bench / 40 * 50;
+      if(a.weight !== null) s += (a.weight - 170) / (330 - 170) * 30;
+      if(a.broad !== null) s += (a.broad - 95) / (130 - 95) * 20;
+      return s;
+    case 'size':
+      var s = 0;
+      if(a.weight !== null) s += (a.weight - 170) / (330 - 170) * 60;
+      if(a.bench !== null) s += a.bench / 40 * 25;
+      if(a.broad !== null) s += (a.broad - 95) / (130 - 95) * 15;
+      return s;
+    case 'movement':
+      var s = 0;
+      if(a.forty !== null) s += (5.2 - a.forty) / (5.2 - 4.2) * 30;
+      if(a.split !== null) s += (1.85 - a.split) / (1.85 - 1.4) * 30;
+      if(a.vert !== null) s += (a.vert - 24) / (42 - 24) * 20;
+      if(a.broad !== null) s += (a.broad - 95) / (130 - 95) * 20;
+      return s;
+    case 'positional':
+      var s = 0;
+      if(a.ras !== null) s += a.ras * 7;
+      var nflKeywords = ['NFL','Texans','Jaguars','Bengals','Redblacks','Active'];
+      if(a.proOutcome){
+        for(var k = 0; k < nflKeywords.length; k++){
+          if(a.proOutcome.indexOf(nflKeywords[k]) !== -1){ s += 20; break; }
+        }
+      }
+      return s;
+    default: return 0;
+  }
+}
+
+/* ── DOM References ───────────────────────────────────────── */
+var entryOverlay  = document.getElementById('dr-entry-overlay');
+var enterBtn      = document.getElementById('dr-enter-btn');
+var enterWrap     = document.getElementById('dr-enter-wrap');
+var console_el    = document.getElementById('dr-console');
+var exitBtn       = document.getElementById('dr-exit-btn');
+var section       = document.getElementById('draft-room');
+var boardGrid     = document.getElementById('dr-board-grid');
+var heatmapWrap   = document.getElementById('dr-heatmap-wrap');
+var buildTiers    = document.getElementById('dr-build-tiers');
+var buildSource   = document.getElementById('dr-build-source-grid');
+var insightText   = document.getElementById('dr-insight-text');
+var compareCount  = document.getElementById('dr-compare-count');
+var compareTrigger = document.getElementById('dr-compare-trigger');
+var compareOverlay = document.getElementById('dr-compare-overlay');
+var comparePanel  = document.getElementById('dr-compare-panel');
+var compareBackdrop= document.getElementById('dr-compare-backdrop');
+var dossierOverlay = document.getElementById('dr-dossier-overlay');
+var dossierPanel  = document.getElementById('dr-dossier-panel');
+var dossierBackdrop= document.getElementById('dr-dossier-backdrop');
+var rightIntel    = document.getElementById('dr-right-intel');
+var rightCompare  = document.getElementById('dr-right-compare');
+var intelContent  = document.getElementById('dr-intel-content');
+
+if(!boardGrid) return;
+
+/* ── State ────────────────────────────────────────────────── */
+var currentFilter = 'all';
+var currentTrait  = null;
+var currentView   = 'board';
+var selected      = [];
+var focusedAthlete = null;
+var tierData = {};
+var placedNames = new Set();
+
+/* Tier definitions */
+var tierDefs = [
+  {id:'tier1',name:'Tier 1 \u2014 Top of Board'},
+  {id:'tier2',name:'Tier 2 \u2014 Strong Projection'},
+  {id:'day3',name:'Day 3 Upside'},
+  {id:'explosive',name:'Explosive Profile'},
+  {id:'sizeSpeed',name:'Size-Speed Outlier'},
+  {id:'power',name:'Power Marker'},
+  {id:'specialist',name:'Specialist Value'}
+];
+tierDefs.forEach(function(t){ tierData[t.id] = []; });
+
+var VERDICT_THRESHOLD = 3;
+
+/* ── Sound Cue ────────────────────────────────────────────── */
+var draftChime = null;
+try { draftChime = new Audio('nfl-draft-chime.mp3'); draftChime.volume = 0.3; } catch(e){}
+
+/* ── XSS Protection ───────────────────────────────────────── */
+function drEsc(str){
+  var d = document.createElement('div');
+  d.appendChild(document.createTextNode(str || ''));
+  return d.innerHTML;
+}
+
+/* ── Entry Transition ─────────────────────────────────────── */
+function enterDraftRoom(){
+  if(entryOverlay){
+    entryOverlay.classList.add('active');
+    var bar = entryOverlay.querySelector('.dr-entry-bar span');
+    var prog = 0;
+    var tick = setInterval(function(){
+      prog += Math.random() * 15 + 8;
+      if(prog > 100) prog = 100;
+      if(bar) bar.style.width = prog + '%';
+      if(prog >= 100){
+        clearInterval(tick);
+        setTimeout(function(){
+          entryOverlay.classList.remove('active');
+          if(enterWrap) enterWrap.style.display = 'none';
+          if(console_el) console_el.classList.remove('hidden');
+          if(section) section.classList.add('dr-active');
+          if(draftChime) draftChime.play().catch(function(){});
+          renderBoard();
+          updateInsight('Board loaded. ' + getFilteredData().length + ' athletes on the board. Select a profile to begin evaluation.');
+        }, 600);
+      }
+    }, 80);
+  } else {
+    if(enterWrap) enterWrap.style.display = 'none';
+    if(console_el) console_el.classList.remove('hidden');
+    if(section) section.classList.add('dr-active');
+    renderBoard();
+  }
+}
+
+function exitDraftRoom(){
+  if(console_el) console_el.classList.add('hidden');
+  if(enterWrap) enterWrap.style.display = '';
+  if(section) section.classList.remove('dr-active');
+  selected = [];
+  focusedAthlete = null;
+  updateCompareCount();
+  resetRightPanel();
+}
+
+if(enterBtn) enterBtn.addEventListener('click', enterDraftRoom);
+if(exitBtn) exitBtn.addEventListener('click', exitDraftRoom);
+
+/* ── Filtering ────────────────────────────────────────────── */
+function getFilteredData(){
+  var fortyMax = parseFloat(document.getElementById('dr-forty-range').value);
+  var vertMin  = parseFloat(document.getElementById('dr-vert-range').value);
+  var benchMin = parseInt(document.getElementById('dr-bench-range').value);
+  var weightMin= parseInt(document.getElementById('dr-weight-range').value);
+  var rasMin   = parseFloat(document.getElementById('dr-ras-range').value);
+
+  return draftData.filter(function(a){
+    if(currentFilter !== 'all' && a.pos !== currentFilter) return false;
+    if(a.forty !== null && a.forty > fortyMax) return false;
+    if(vertMin > 25 && (a.vert === null || a.vert < vertMin)) return false;
+    if(benchMin > 0 && (a.bench === null || a.bench < benchMin)) return false;
+    if(weightMin > 170 && (a.weight === null || a.weight < weightMin)) return false;
+    if(rasMin > 0 && (a.ras === null || a.ras < rasMin)) return false;
+    return true;
+  });
+}
+
+function getSortedData(data){
+  if(!currentTrait) return data;
+  var sorted = data.slice().sort(function(a, b){
+    return traitScore(b, currentTrait) - traitScore(a, currentTrait);
+  });
+  return sorted;
+}
+
+/* ── Board Rendering ──────────────────────────────────────── */
+function renderBoard(){
+  var data = getSortedData(getFilteredData());
+  boardGrid.innerHTML = '';
+  if(data.length === 0){
+    boardGrid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--soft);padding:40px;font-size:13px;">No athletes match current filters. Adjust your criteria above.</p>';
+    return;
+  }
+  data.forEach(function(a){
+    var card = document.createElement('div');
+    card.className = 'dr-card';
+    var idx = draftData.indexOf(a);
+    card.setAttribute('data-idx', idx);
+    if(selected.indexOf(idx) !== -1) card.classList.add('selected');
+
+    var badges = getBadges(a);
+    var statsHTML = '';
+    if(a.ras !== null) statsHTML += '<span class="dr-stat highlight">' + a.ras.toFixed(2) + ' RAS</span>';
+    if(a.forty !== null) statsHTML += '<span class="dr-stat">' + a.forty.toFixed(2) + '</span>';
+    if(a.vert !== null) statsHTML += '<span class="dr-stat">' + a.vert + '\u2033</span>';
+    if(a.bench !== null) statsHTML += '<span class="dr-stat">' + a.bench + ' reps</span>';
+    if(a.weight !== null) statsHTML += '<span class="dr-stat">' + a.weight + ' lbs</span>';
+
+    card.innerHTML =
+      '<div class="dr-card-check">\u2713</div>' +
+      '<button class="dr-card-dossier-btn" data-dossier="' + idx + '" type="button" title="Open dossier">\u2295</button>' +
+      '<img class="dr-card-photo" src="' + a.photo + '" alt="' + drEsc(a.name) + '" loading="lazy">' +
+      '<div class="dr-card-body">' +
+        '<div class="dr-card-name">' + drEsc(a.name) + '</div>' +
+        '<span class="dr-card-pos">' + drEsc(a.pos) + '</span>' +
+        '<div class="dr-card-school">' + drEsc(a.school) + '</div>' +
+        '<div class="dr-card-stats">' + statsHTML + '</div>' +
+        (badges.length ? '<div class="dr-card-badges">' + renderBadgesHTML(badges) + '</div>' : '') +
+      '</div>';
+
+    // Selection click
+    card.addEventListener('click', function(e){
+      if(e.target.closest('.dr-card-dossier-btn')) return;
+      var i = parseInt(card.getAttribute('data-idx'));
+      var pos = selected.indexOf(i);
+      if(pos !== -1){
+        selected.splice(pos, 1);
+        card.classList.remove('selected');
+      } else if(selected.length < 2){
+        selected.push(i);
+        card.classList.add('selected');
+      }
+      if(selected.length > 0){
+        focusedAthlete = draftData[selected[selected.length - 1]];
+        renderPlayerIntel(focusedAthlete);
+      } else {
+        focusedAthlete = null;
+        resetRightPanel();
+      }
+      updateCompareCount();
+      updateInsightForSelection();
+    });
+
+    // Dossier button
+    var dossierBtn = card.querySelector('.dr-card-dossier-btn');
+    if(dossierBtn){
+      dossierBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        openDossier(draftData[parseInt(dossierBtn.getAttribute('data-dossier'))]);
+      });
+    }
+
+    // Magnetic tilt
+    card.addEventListener('mousemove', function(e){
+      var rect = card.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.transform = 'perspective(800px) rotateY(' + (x * 8) + 'deg) rotateX(' + (-y * 8) + 'deg) translateY(-4px)';
+    });
+    card.addEventListener('mouseleave', function(){
+      card.style.transform = '';
+    });
+
+    boardGrid.appendChild(card);
+  });
+}
+
+/* ── Compare Count ────────────────────────────────────────── */
+function updateCompareCount(){
+  if(compareCount) compareCount.textContent = selected.length;
+  if(compareTrigger) compareTrigger.disabled = selected.length !== 2;
+}
+
+/* ── Right Panel ──────────────────────────────────────────── */
+function resetRightPanel(){
+  if(rightIntel){
+    rightIntel.innerHTML =
+      '<div class="dr-intel-empty">' +
+        '<div class="dr-intel-empty-icon">\u25C6</div>' +
+        '<p>Click any athlete card to see their scouting breakdown here.</p>' +
+      '</div>';
+  }
+}
+
+function renderPlayerIntel(a){
+  if(!rightIntel) return;
+  var badges = getBadges(a);
+  var idx = draftData.indexOf(a);
+
+  var statsGrid = '';
+  var metrics = [
+    {val:a.ras,label:'RAS',fmt:function(v){return v !== null ? v.toFixed(2) : '\u2014'}, glow: a.ras !== null && a.ras >= 8.5},
+    {val:a.forty,label:'40-Yard',fmt:function(v){return v !== null ? v.toFixed(2) : '\u2014'}, glow: a.forty !== null && a.forty <= 4.45},
+    {val:a.split,label:'10-Split',fmt:function(v){return v !== null ? v.toFixed(2) : '\u2014'}, glow: a.split !== null && a.split <= 1.55},
+    {val:a.vert,label:'Vertical',fmt:function(v){return v !== null ? v + '\u2033' : '\u2014'}, glow: a.vert !== null && a.vert >= 36},
+    {val:a.broad,label:'Broad',fmt:function(v){return v !== null ? v + '\u2033' : '\u2014'}, glow: a.broad !== null && a.broad >= 122},
+    {val:a.bench,label:'Bench',fmt:function(v){return v !== null ? v + ' reps' : '\u2014'}, glow: a.bench !== null && a.bench >= 26},
+    {val:a.weight,label:'Weight',fmt:function(v){return v !== null ? v + ' lbs' : '\u2014'}, glow: false},
+    {val:a.classYear,label:'Class',fmt:function(v){return v || '\u2014'}, glow: false}
   ];
 
-  var selected = [];
+  metrics.forEach(function(m){
+    statsGrid += '<div class="dr-intel-stat' + (m.glow ? ' glow' : '') + '">' +
+      '<div class="dr-intel-stat-val">' + m.fmt(m.val) + '</div>' +
+      '<div class="dr-intel-stat-label">' + m.label + '</div>' +
+    '</div>';
+  });
 
-  function renderDraftCards(filter){
-    grid.innerHTML = '';
-    var filtered = filter === 'all' ? draftData : draftData.filter(function(a){ return a.pos === filter; });
-    filtered.forEach(function(a, idx){
-      var card = document.createElement('div');
-      card.className = 'dr-card';
-      card.setAttribute('data-idx', draftData.indexOf(a));
-      if(selected.indexOf(draftData.indexOf(a)) !== -1) card.classList.add('selected');
-      card.innerHTML =
-        '<div class="dr-card-check">✓</div>' +
-        '<img class="dr-card-photo" src="' + a.photo + '" alt="' + a.name + '" loading="lazy">' +
-        '<div class="dr-card-body">' +
-          '<div class="dr-card-name">' + a.name + '</div>' +
-          '<span class="dr-card-pos">' + a.pos + '</span>' +
-          '<div class="dr-card-school">' + a.school + '</div>' +
-          '<div class="dr-card-stats">' +
-            (a.ras !== '—' ? '<span class="dr-stat-ras">' + a.ras + ' RAS</span>' : '') +
-            (a.forty !== '—' ? '<span class="dr-stat-forty">' + a.forty + ' forty</span>' : '') +
-          '</div>' +
-        '</div>';
-      card.addEventListener('click', function(){
-        var i = parseInt(card.getAttribute('data-idx'));
-        var pos = selected.indexOf(i);
-        if(pos !== -1){
-          selected.splice(pos, 1);
-          card.classList.remove('selected');
-        } else if(selected.length < 2){
-          selected.push(i);
-          card.classList.add('selected');
-        }
-        updateCompareBtn();
-      });
-      grid.appendChild(card);
-    });
+  // Radar data (normalized 0-100)
+  var radarData = {
+    Speed: a.forty !== null ? Math.min(100, ((5.2 - a.forty) / (5.2 - 4.2)) * 100) : 0,
+    Explosion: a.vert !== null ? Math.min(100, ((a.vert - 24) / (42 - 24)) * 100) : 0,
+    Power: a.bench !== null ? Math.min(100, (a.bench / 38) * 100) : 0,
+    Size: a.weight !== null ? Math.min(100, ((a.weight - 170) / (330 - 170)) * 100) : 0,
+    Movement: a.split !== null ? Math.min(100, ((1.85 - a.split) / (1.85 - 1.4)) * 100) : 0
+  };
+
+  rightIntel.innerHTML =
+    '<div class="dr-player-intel">' +
+      '<img class="dr-intel-photo" src="' + a.photo + '" alt="' + drEsc(a.name) + '">' +
+      '<div class="dr-intel-name">' + drEsc(a.name) + '</div>' +
+      '<div class="dr-intel-pos-school">' + drEsc(a.pos) + ' \u2022 ' + drEsc(a.school) + (a.proOutcome ? ' \u2022 ' + drEsc(a.proOutcome) : '') + '</div>' +
+      (badges.length ? '<div class="dr-intel-badges">' + renderBadgesHTML(badges) + '</div>' : '') +
+      '<div class="dr-intel-stat-grid">' + statsGrid + '</div>' +
+      '<div class="dr-radar-wrap"><canvas class="dr-radar-canvas" id="dr-radar-canvas" width="200" height="200"></canvas></div>' +
+      '<div class="dr-intel-best-trait">' +
+        '<div class="dr-intel-best-label">Best Trait</div>' +
+        '<div class="dr-intel-best-val">' + drEsc(a.bestTrait) + '</div>' +
+      '</div>' +
+      '<div class="dr-intel-summary">' +
+        '<div class="dr-intel-summary-title">Profile Summary</div>' +
+        drEsc(a.summary) +
+      '</div>' +
+      '<button class="dr-intel-dossier-link" data-dossier="' + idx + '" type="button">View Full Dossier \u2192</button>' +
+    '</div>';
+
+  // Draw radar
+  drawRadar(radarData);
+
+  // Dossier link
+  var link = rightIntel.querySelector('.dr-intel-dossier-link');
+  if(link) link.addEventListener('click', function(){ openDossier(a); });
+}
+
+/* ── Radar Chart ──────────────────────────────────────────── */
+function drawRadar(data){
+  var canvas = document.getElementById('dr-radar-canvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var cx = 100, cy = 100, r = 75;
+  var keys = Object.keys(data);
+  var n = keys.length;
+  var step = (Math.PI * 2) / n;
+
+  ctx.clearRect(0, 0, 200, 200);
+
+  // Grid circles
+  for(var level = 1; level <= 4; level++){
+    ctx.beginPath();
+    var gr = r * (level / 4);
+    for(var i = 0; i <= n; i++){
+      var angle = -Math.PI / 2 + step * i;
+      var gx = cx + gr * Math.cos(angle);
+      var gy = cy + gr * Math.sin(angle);
+      if(i === 0) ctx.moveTo(gx, gy);
+      else ctx.lineTo(gx, gy);
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,' + (0.04 + level * 0.02) + ')';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
   }
 
-  function updateCompareBtn(){
-    if(!compareBtn) return;
-    compareBtn.textContent = 'Compare Selected (' + selected.length + '/2)';
-    compareBtn.disabled = selected.length !== 2;
+  // Axis lines
+  for(var i = 0; i < n; i++){
+    var angle = -Math.PI / 2 + step * i;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + r * Math.cos(angle), cy + r * Math.sin(angle));
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
   }
 
-  if(compareBtn){
-    compareBtn.addEventListener('click', function(){
-      if(selected.length !== 2 || !comparePanel) return;
-      var a = draftData[selected[0]];
-      var b = draftData[selected[1]];
-      comparePanel.classList.add('active');
-      comparePanel.innerHTML =
-        '<div class="dr-compare-grid">' +
-          '<div class="dr-compare-athlete">' +
-            '<img src="' + a.photo + '" alt="' + a.name + '">' +
-            '<h4>' + a.name + '</h4>' +
-            '<span class="dr-card-pos">' + a.pos + '</span>' +
-          '</div>' +
-          '<div class="dr-compare-vs">VS</div>' +
-          '<div class="dr-compare-athlete">' +
-            '<img src="' + b.photo + '" alt="' + b.name + '">' +
-            '<h4>' + b.name + '</h4>' +
-            '<span class="dr-card-pos">' + b.pos + '</span>' +
-          '</div>' +
-        '</div>' +
-        '<div class="dr-compare-stats">' +
-          '<div class="dr-compare-row"><div class="dr-val">' + a.ras + '</div><div class="dr-label">RAS</div><div class="dr-val">' + b.ras + '</div></div>' +
-          '<div class="dr-compare-row"><div class="dr-val">' + a.forty + '</div><div class="dr-label">40-Yard</div><div class="dr-val">' + b.forty + '</div></div>' +
-          '<div class="dr-compare-row"><div class="dr-val">' + a.vert + '</div><div class="dr-label">Vertical</div><div class="dr-val">' + b.vert + '</div></div>' +
-          '<div class="dr-compare-row"><div class="dr-val">' + a.bench + '</div><div class="dr-label">Bench</div><div class="dr-val">' + b.bench + '</div></div>' +
-        '</div>';
-      comparePanel.scrollIntoView({behavior:'smooth', block:'nearest'});
-    });
+  // Data polygon
+  ctx.beginPath();
+  for(var i = 0; i < n; i++){
+    var val = Math.max(0, Math.min(100, data[keys[i]]));
+    var angle = -Math.PI / 2 + step * i;
+    var dr = r * (val / 100);
+    var dx = cx + dr * Math.cos(angle);
+    var dy = cy + dr * Math.sin(angle);
+    if(i === 0) ctx.moveTo(dx, dy);
+    else ctx.lineTo(dx, dy);
   }
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(255,106,0,0.15)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,106,0,0.7)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
 
-  // Filter buttons
-  document.querySelectorAll('.draft-room-filter').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      document.querySelectorAll('.draft-room-filter').forEach(function(b){ b.classList.remove('active'); });
-      btn.classList.add('active');
-      selected = [];
-      updateCompareBtn();
-      if(comparePanel) comparePanel.classList.remove('active');
-      renderDraftCards(btn.getAttribute('data-drfilter'));
+  // Data points and labels
+  for(var i = 0; i < n; i++){
+    var val = Math.max(0, Math.min(100, data[keys[i]]));
+    var angle = -Math.PI / 2 + step * i;
+    var dr = r * (val / 100);
+    var dx = cx + dr * Math.cos(angle);
+    var dy = cy + dr * Math.sin(angle);
+
+    ctx.beginPath();
+    ctx.arc(dx, dy, 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,106,0,0.9)';
+    ctx.fill();
+
+    // Labels
+    var lx = cx + (r + 14) * Math.cos(angle);
+    var ly = cy + (r + 14) * Math.sin(angle);
+    ctx.font = '600 8px Inter,system-ui,sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(keys[i], lx, ly);
+  }
+}
+
+/* ── Player Dossier ───────────────────────────────────────── */
+function openDossier(a){
+  if(!dossierOverlay || !dossierPanel) return;
+  var badges = getBadges(a);
+
+  var measurablesHTML = '';
+  var dossierMetrics = [
+    {val:a.ras,label:'RAS',fmt:function(v){return v !== null ? v.toFixed(2) : '\u2014'}, glow: a.ras !== null && a.ras >= 8.5},
+    {val:a.forty,label:'40-Yard',fmt:function(v){return v !== null ? v.toFixed(2) + 's' : '\u2014'}, glow: a.forty !== null && a.forty <= 4.45},
+    {val:a.split,label:'10-Split',fmt:function(v){return v !== null ? v.toFixed(2) + 's' : '\u2014'}, glow: a.split !== null && a.split <= 1.55},
+    {val:a.vert,label:'Vertical',fmt:function(v){return v !== null ? v + '\u2033' : '\u2014'}, glow: a.vert !== null && a.vert >= 36},
+    {val:a.broad,label:'Broad',fmt:function(v){return v !== null ? v + '\u2033' : '\u2014'}, glow: a.broad !== null && a.broad >= 122},
+    {val:a.bench,label:'Bench',fmt:function(v){return v !== null ? v + ' reps' : '\u2014'}, glow: a.bench !== null && a.bench >= 26},
+    {val:a.weight,label:'Weight',fmt:function(v){return v !== null ? v + ' lbs' : '\u2014'}, glow: false},
+    {val:a.classYear,label:'Class Year',fmt:function(v){return v || '\u2014'}, glow: false}
+  ];
+  dossierMetrics.forEach(function(m){
+    measurablesHTML += '<div class="dr-dossier-stat' + (m.glow ? ' glow' : '') + '">' +
+      '<div class="dr-dossier-stat-val">' + m.fmt(m.val) + '</div>' +
+      '<div class="dr-dossier-stat-label">' + m.label + '</div>' +
+    '</div>';
+  });
+
+  // Profile Strength Bars
+  var traits = [
+    {label:'Speed', pct: a.forty !== null ? Math.min(100, ((5.2 - a.forty) / (5.2 - 4.2)) * 100) : 0},
+    {label:'Explosion', pct: a.vert !== null ? Math.min(100, ((a.vert - 24) / (42 - 24)) * 100) : 0},
+    {label:'Power', pct: a.bench !== null ? Math.min(100, (a.bench / 38) * 100) : 0},
+    {label:'Size', pct: a.weight !== null ? Math.min(100, ((a.weight - 170) / (330 - 170)) * 100) : 0},
+    {label:'Movement', pct: a.split !== null ? Math.min(100, ((1.85 - a.split) / (1.85 - 1.4)) * 100) : 0}
+  ];
+  var traitBarsHTML = traits.map(function(t){
+    var p = Math.round(t.pct);
+    return '<div class="dr-dossier-trait-row">' +
+      '<div class="dr-dossier-trait-label">' + t.label + '</div>' +
+      '<div class="dr-dossier-trait-bar"><div class="dr-dossier-trait-fill" style="width:0%" data-width="' + p + '%"></div></div>' +
+      '<div class="dr-dossier-trait-pct">' + p + '%</div>' +
+    '</div>';
+  }).join('');
+
+  dossierPanel.innerHTML =
+    '<button class="dr-dossier-close" type="button">\u2715</button>' +
+    '<img class="dr-dossier-hero" src="' + a.photo + '" alt="' + drEsc(a.name) + '">' +
+    '<div class="dr-dossier-body">' +
+      '<div class="dr-dossier-name">' + drEsc(a.name) + '</div>' +
+      '<div class="dr-dossier-pos-school">' + drEsc(a.pos) + ' \u2022 ' + drEsc(a.school) + (a.proOutcome ? ' \u2022 ' + drEsc(a.proOutcome) : '') + '</div>' +
+      (badges.length ? '<div class="dr-dossier-badges">' + renderBadgesHTML(badges) + '</div>' : '') +
+      '<div class="dr-dossier-measurables">' + measurablesHTML + '</div>' +
+      '<div class="dr-dossier-section">' +
+        '<div class="dr-dossier-section-title">Profile Strength</div>' +
+        traitBarsHTML +
+      '</div>' +
+      '<div class="dr-dossier-section">' +
+        '<div class="dr-dossier-section-title">Best Trait</div>' +
+        '<div class="dr-dossier-text" style="font-weight:800;color:#fff;font-size:15px;margin-bottom:6px">' + drEsc(a.bestTrait) + '</div>' +
+        '<div class="dr-dossier-text">' + drEsc(a.devEdge) + '</div>' +
+      '</div>' +
+      '<div class="dr-dossier-section">' +
+        '<div class="dr-dossier-section-title">Profile Summary</div>' +
+        '<div class="dr-dossier-text">' + drEsc(a.summary) + '</div>' +
+      '</div>' +
+      '<div class="dr-dossier-why">' +
+        '<div class="dr-dossier-why-title">Why This Profile Matters</div>' +
+        '<div class="dr-dossier-why-text">' + drEsc(a.why) + '</div>' +
+      '</div>' +
+    '</div>';
+
+  dossierOverlay.classList.add('active');
+  dossierOverlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+
+  // Animate trait bars
+  setTimeout(function(){
+    var fills = dossierPanel.querySelectorAll('.dr-dossier-trait-fill');
+    fills.forEach(function(f){ f.style.width = f.getAttribute('data-width'); });
+  }, 100);
+
+  // Close
+  var closeBtn = dossierPanel.querySelector('.dr-dossier-close');
+  if(closeBtn) closeBtn.addEventListener('click', closeDossier);
+}
+
+function closeDossier(){
+  if(dossierOverlay){
+    dossierOverlay.classList.remove('active');
+    dossierOverlay.setAttribute('aria-hidden', 'true');
+  }
+  document.body.style.overflow = '';
+}
+if(dossierBackdrop) dossierBackdrop.addEventListener('click', closeDossier);
+
+/* ── Compare Command Center ───────────────────────────────── */
+function openCompare(){
+  if(selected.length !== 2 || !compareOverlay || !comparePanel) return;
+  var a = draftData[selected[0]];
+  var b = draftData[selected[1]];
+
+  var metrics = [
+    {label:'RAS',aVal:a.ras,bVal:b.ras,fmt:function(v){return v !== null ? v.toFixed(2) : '\u2014'},higher:true},
+    {label:'40-Yard',aVal:a.forty,bVal:b.forty,fmt:function(v){return v !== null ? v.toFixed(2) : '\u2014'},higher:false},
+    {label:'10-Split',aVal:a.split,bVal:b.split,fmt:function(v){return v !== null ? v.toFixed(2) : '\u2014'},higher:false},
+    {label:'Vertical',aVal:a.vert,bVal:b.vert,fmt:function(v){return v !== null ? v + '\u2033' : '\u2014'},higher:true},
+    {label:'Broad',aVal:a.broad,bVal:b.broad,fmt:function(v){return v !== null ? v + '\u2033' : '\u2014'},higher:true},
+    {label:'Bench',aVal:a.bench,bVal:b.bench,fmt:function(v){return v !== null ? v + ' reps' : '\u2014'},higher:true},
+    {label:'Weight',aVal:a.weight,bVal:b.weight,fmt:function(v){return v !== null ? v + ' lbs' : '\u2014'},higher:true}
+  ];
+
+  var metricsHTML = metrics.map(function(m){
+    var aWin = '', bWin = '';
+    if(m.aVal !== null && m.bVal !== null){
+      if(m.higher){
+        if(m.aVal > m.bVal) aWin = ' winner';
+        else if(m.bVal > m.aVal) bWin = ' winner';
+      } else {
+        if(m.aVal < m.bVal) aWin = ' winner';
+        else if(m.bVal < m.aVal) bWin = ' winner';
+      }
+    }
+    return '<div class="dr-compare-metric">' +
+      '<div class="dr-compare-val' + aWin + '">' + m.fmt(m.aVal) + '</div>' +
+      '<div class="dr-compare-metric-label">' + m.label + '</div>' +
+      '<div class="dr-compare-val' + bWin + '">' + m.fmt(m.bVal) + '</div>' +
+    '</div>';
+  }).join('');
+
+  // Verdict
+  var verdicts = [
+    {label:'Speed Edge', trait:'speed'},
+    {label:'Explosion Edge', trait:'explosion'},
+    {label:'Power Edge', trait:'power'},
+    {label:'Size Edge', trait:'size'},
+    {label:'Overall Profile', trait:'movement'}
+  ];
+  var verdictHTML = verdicts.map(function(v){
+    var sa = traitScore(a, v.trait);
+    var sb = traitScore(b, v.trait);
+    var cls = 'edge-tie';
+    var winner = 'Tie';
+    if(sa > sb + VERDICT_THRESHOLD){ cls = 'edge-a'; winner = a.name.split(' ').pop(); }
+    else if(sb > sa + VERDICT_THRESHOLD){ cls = 'edge-b'; winner = b.name.split(' ').pop(); }
+    return '<div class="dr-verdict-item ' + cls + '">' + v.label + ': ' + winner + '</div>';
+  }).join('');
+
+  comparePanel.innerHTML =
+    '<button class="dr-compare-close" type="button">\u2715</button>' +
+    '<div class="dr-compare-header">' +
+      '<div class="dr-compare-title">Command Center</div>' +
+      '<div class="dr-compare-subtitle">Head-to-Head Evaluation</div>' +
+    '</div>' +
+    '<div class="dr-compare-athletes">' +
+      '<div class="dr-compare-athlete">' +
+        '<img class="dr-compare-athlete-photo" src="' + a.photo + '" alt="' + drEsc(a.name) + '">' +
+        '<div class="dr-compare-athlete-name">' + drEsc(a.name) + '</div>' +
+        '<span class="dr-card-pos">' + drEsc(a.pos) + '</span>' +
+      '</div>' +
+      '<div class="dr-compare-vs">VS</div>' +
+      '<div class="dr-compare-athlete">' +
+        '<img class="dr-compare-athlete-photo" src="' + b.photo + '" alt="' + drEsc(b.name) + '">' +
+        '<div class="dr-compare-athlete-name">' + drEsc(b.name) + '</div>' +
+        '<span class="dr-card-pos">' + drEsc(b.pos) + '</span>' +
+      '</div>' +
+    '</div>' +
+    '<div class="dr-compare-metrics">' + metricsHTML + '</div>' +
+    '<div class="dr-verdict-strip">' +
+      '<div class="dr-verdict-title">Verdict</div>' +
+      '<div class="dr-verdict-items">' + verdictHTML + '</div>' +
+    '</div>';
+
+  compareOverlay.classList.add('active');
+  compareOverlay.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+
+  var closeBtn = comparePanel.querySelector('.dr-compare-close');
+  if(closeBtn) closeBtn.addEventListener('click', closeCompare);
+}
+
+function closeCompare(){
+  if(compareOverlay){
+    compareOverlay.classList.remove('active');
+    compareOverlay.setAttribute('aria-hidden', 'true');
+  }
+  document.body.style.overflow = '';
+}
+if(compareTrigger) compareTrigger.addEventListener('click', openCompare);
+if(compareBackdrop) compareBackdrop.addEventListener('click', closeCompare);
+
+/* ── Heatmap ──────────────────────────────────────────────── */
+function renderHeatmap(){
+  if(!heatmapWrap) return;
+  var data = getSortedData(getFilteredData());
+  var cols = [
+    {key:'forty',label:'40',lower:true,min:4.2,max:5.2},
+    {key:'split',label:'Split',lower:true,min:1.4,max:1.85},
+    {key:'vert',label:'Vert',lower:false,min:24,max:42},
+    {key:'broad',label:'Broad',lower:false,min:95,max:130},
+    {key:'bench',label:'Bench',lower:false,min:0,max:38},
+    {key:'weight',label:'Weight',lower:false,min:170,max:330},
+    {key:'ras',label:'RAS',lower:false,min:0,max:10}
+  ];
+
+  var gridCols = 'minmax(120px,1fr) ' + cols.map(function(){ return '80px'; }).join(' ');
+  var html = '<div class="dr-heatmap" style="grid-template-columns:' + gridCols + '">';
+
+  // Header
+  html += '<div class="dr-hm-cell dr-hm-cell-header">Athlete</div>';
+  cols.forEach(function(c){
+    html += '<div class="dr-hm-cell dr-hm-cell-header">' + c.label + '</div>';
+  });
+
+  // Rows
+  data.forEach(function(a){
+    html += '<div class="dr-hm-cell dr-hm-cell-name">' + drEsc(a.name) + '</div>';
+    cols.forEach(function(c){
+      var val = a[c.key];
+      var display = '\u2014';
+      if(val !== null){
+        if(c.key === 'ras') display = val.toFixed(2);
+        else if(c.key === 'forty' || c.key === 'split') display = val.toFixed(2);
+        else display = val;
+      }
+      var glow = '';
+      if(val !== null){
+        var norm;
+        if(c.lower) norm = (c.max - val) / (c.max - c.min);
+        else norm = (val - c.min) / (c.max - c.min);
+        norm = Math.max(0, Math.min(1, norm));
+        if(norm >= 0.85) glow = ' dr-hm-glow-4';
+        else if(norm >= 0.65) glow = ' dr-hm-glow-3';
+        else if(norm >= 0.45) glow = ' dr-hm-glow-2';
+        else if(norm >= 0.25) glow = ' dr-hm-glow-1';
+      }
+      html += '<div class="dr-hm-cell dr-hm-cell-value' + glow + '">' + display + '</div>';
     });
   });
 
-  renderDraftCards('all');
-  updateCompareBtn();
+  html += '</div>';
+  heatmapWrap.innerHTML = html;
+}
+
+/* ── Build Board ──────────────────────────────────────────── */
+function renderBuildBoard(){
+  if(!buildTiers || !buildSource) return;
+  buildTiers.innerHTML = '';
+  tierDefs.forEach(function(t){
+    var tier = document.createElement('div');
+    tier.className = 'dr-build-tier';
+    tier.setAttribute('data-tier', t.id);
+    var count = tierData[t.id] ? tierData[t.id].length : 0;
+    tier.innerHTML =
+      '<div class="dr-build-tier-header">' +
+        '<div class="dr-build-tier-name">' + t.name + '</div>' +
+        '<div class="dr-build-tier-count">' + count + ' athlete' + (count !== 1 ? 's' : '') + '</div>' +
+      '</div>' +
+      '<div class="dr-build-tier-cards" data-tier="' + t.id + '"></div>';
+
+    var cardsContainer = tier.querySelector('.dr-build-tier-cards');
+
+    if(tierData[t.id]){
+      tierData[t.id].forEach(function(a){
+        var chip = createBuildChip(a, t.id);
+        cardsContainer.appendChild(chip);
+      });
+    }
+
+    tier.addEventListener('dragover', function(e){
+      e.preventDefault();
+      tier.classList.add('drag-over');
+    });
+    tier.addEventListener('dragleave', function(){
+      tier.classList.remove('drag-over');
+    });
+    tier.addEventListener('drop', function(e){
+      e.preventDefault();
+      tier.classList.remove('drag-over');
+      var name = e.dataTransfer.getData('text/plain');
+      var athlete = draftData.find(function(a){ return a.name === name; });
+      if(athlete && !placedNames.has(name)){
+        placedNames.add(name);
+        if(!tierData[t.id]) tierData[t.id] = [];
+        tierData[t.id].push(athlete);
+        renderBuildBoard();
+        updateInsight(drEsc(name) + ' placed in ' + t.name + '. ' + placedNames.size + ' athletes ranked on your board.');
+      }
+    });
+
+    buildTiers.appendChild(tier);
+  });
+
+  buildSource.innerHTML = '';
+  draftData.forEach(function(a){
+    var chip = document.createElement('div');
+    chip.className = 'dr-build-source-chip' + (placedNames.has(a.name) ? ' placed' : '');
+    chip.setAttribute('draggable', 'true');
+    chip.innerHTML = '<img src="' + a.photo + '" alt="' + drEsc(a.name) + '"> ' + drEsc(a.name);
+    chip.addEventListener('dragstart', function(e){
+      e.dataTransfer.setData('text/plain', a.name);
+    });
+    buildSource.appendChild(chip);
+  });
+}
+
+function createBuildChip(a, tierId){
+  var chip = document.createElement('div');
+  chip.className = 'dr-build-chip';
+  chip.innerHTML =
+    '<img src="' + a.photo + '" alt="' + drEsc(a.name) + '">' +
+    '<span>' + drEsc(a.name) + '</span>' +
+    '<button class="dr-build-chip-remove" type="button">\u2715</button>';
+  chip.querySelector('.dr-build-chip-remove').addEventListener('click', function(){
+    placedNames.delete(a.name);
+    tierData[tierId] = tierData[tierId].filter(function(x){ return x.name !== a.name; });
+    renderBuildBoard();
+  });
+  return chip;
+}
+
+/* ── Position Intel Panel ─────────────────────────────────── */
+function renderPositionIntel(pos){
+  if(!intelContent) return;
+  var intel = positionIntel[pos];
+  if(!intel){
+    intelContent.innerHTML = '<p class="dr-intel-placeholder">Select a specific position to see trait priorities</p>';
+    return;
+  }
+  intelContent.innerHTML = intel.map(function(item, i){
+    return '<div class="dr-intel-item">' +
+      '<div class="dr-intel-rank">' + (i + 1) + '</div>' +
+      '<div class="dr-intel-trait">' + item.trait + '</div>' +
+      '<div class="dr-intel-why">' + item.why + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ── Insight Engine ───────────────────────────────────────── */
+function updateInsight(text){
+  if(insightText) insightText.textContent = text;
+}
+
+function updateInsightForSelection(){
+  if(selected.length === 0){
+    updateInsight('Board active with ' + getFilteredData().length + ' athletes. Click a card to begin evaluation.');
+    return;
+  }
+  if(selected.length === 1){
+    var a = draftData[selected[0]];
+    var reasons = [];
+    if(a.ras !== null && a.ras >= 9.0) reasons.push('elite RAS');
+    if(a.forty !== null && a.forty <= 4.4) reasons.push('verified speed');
+    if(a.bench !== null && a.bench >= 28) reasons.push('upper-body output');
+    if(a.vert !== null && a.vert >= 37) reasons.push('vertical explosion');
+    if(a.weight !== null && a.weight >= 290) reasons.push('front-line size');
+    if(reasons.length > 0){
+      updateInsight(a.name + ' \u2014 this profile rises because ' + reasons.join(', ') + ' show up together.');
+    } else {
+      updateInsight(a.name + ' \u2014 ' + a.bestTrait + '. Select a second athlete to activate the compare command center.');
+    }
+    return;
+  }
+  if(selected.length === 2){
+    var a = draftData[selected[0]];
+    var b = draftData[selected[1]];
+    updateInsight(a.name + ' vs ' + b.name + ' loaded. Click Compare to open the head-to-head command center.');
+  }
+}
+
+/* ── Event Listeners ──────────────────────────────────────── */
+
+// Position filter buttons
+document.querySelectorAll('.dr-pos-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.dr-pos-btn').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    currentFilter = btn.getAttribute('data-drpos');
+    selected = [];
+    focusedAthlete = null;
+    updateCompareCount();
+    resetRightPanel();
+    renderPositionIntel(currentFilter);
+    applyCurrentView();
+    updateInsight(currentFilter === 'all' ? 'All positions loaded. ' + getFilteredData().length + ' athletes on the board.' : currentFilter + ' position selected. ' + getFilteredData().length + ' athletes match.');
+  });
+});
+
+// Range filters
+['dr-forty-range','dr-vert-range','dr-bench-range','dr-weight-range','dr-ras-range'].forEach(function(id){
+  var el = document.getElementById(id);
+  if(!el) return;
+  var valId = id.replace('-range', '-val');
+  el.addEventListener('input', function(){
+    var valEl = document.getElementById(valId);
+    if(valEl) valEl.textContent = el.value;
+    applyCurrentView();
+    updateInsight('Filters updated. ' + getFilteredData().length + ' athletes match current criteria.');
+  });
+});
+
+// Pressure trait buttons
+document.querySelectorAll('.dr-trait-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    var trait = btn.getAttribute('data-trait');
+    if(currentTrait === trait){
+      currentTrait = null;
+      btn.classList.remove('active');
+    } else {
+      document.querySelectorAll('.dr-trait-btn').forEach(function(b){ b.classList.remove('active'); });
+      currentTrait = trait;
+      btn.classList.add('active');
+    }
+    applyCurrentView();
+    if(currentTrait){
+      updateInsight('Board reordered by ' + currentTrait + '. Top profiles for this trait are now prioritized.');
+    } else {
+      updateInsight('Pressure trait cleared. Board returned to default order.');
+    }
+  });
+});
+
+// View tabs
+document.querySelectorAll('.dr-view-tab').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.dr-view-tab').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    currentView = btn.getAttribute('data-view');
+    applyCurrentView();
+  });
+});
+
+function applyCurrentView(){
+  var boardView = document.getElementById('dr-view-board');
+  var heatmapView = document.getElementById('dr-view-heatmap');
+  var buildView = document.getElementById('dr-view-build');
+  if(boardView) boardView.classList.toggle('hidden', currentView !== 'board');
+  if(heatmapView) heatmapView.classList.toggle('hidden', currentView !== 'heatmap');
+  if(buildView) buildView.classList.toggle('hidden', currentView !== 'build');
+
+  if(currentView === 'board') renderBoard();
+  else if(currentView === 'heatmap') renderHeatmap();
+  else if(currentView === 'build') renderBuildBoard();
+}
+
+// Right panel tabs
+document.querySelectorAll('.dr-right-tab').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.dr-right-tab').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    var tab = btn.getAttribute('data-rtab');
+    if(rightIntel) rightIntel.classList.toggle('hidden', tab !== 'intel');
+    if(rightCompare) rightCompare.classList.toggle('hidden', tab !== 'compare');
+  });
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    if(dossierOverlay && dossierOverlay.classList.contains('active')){
+      closeDossier();
+    } else if(compareOverlay && compareOverlay.classList.contains('active')){
+      closeCompare();
+    }
+  }
+});
+
 })();
 
 /* ── Sound Toggle ────────────────────────────────────────── */
