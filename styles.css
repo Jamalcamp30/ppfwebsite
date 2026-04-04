@@ -3176,7 +3176,7 @@ table th{color:var(--orange2)!important;font-weight:900}
   position:fixed;inset:0;z-index:10000;
   display:flex;align-items:center;justify-content:center;
   background:#030303;
-  transition:opacity 1s var(--ease-out-expo),visibility 1s var(--ease-out-expo);
+  transition:opacity .8s var(--ease-out-expo),visibility .8s var(--ease-out-expo);
 }
 .cinematic-intro.done{opacity:0;visibility:hidden;pointer-events:none}
 .intro-vignette{
@@ -3899,9 +3899,11 @@ table th{color:var(--orange2)!important;font-weight:900}
 .persona-overlay{
   position:fixed;inset:0;z-index:9500;
   display:flex;align-items:center;justify-content:center;
-  opacity:1;visibility:visible;
-  transition:opacity .8s var(--ease-out-expo),visibility .8s var(--ease-out-expo);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .6s var(--ease-out-expo),visibility .6s var(--ease-out-expo);
 }
+.persona-overlay.ps-open{opacity:1;visibility:visible;pointer-events:auto}
+.persona-overlay.ps-open.done{opacity:0;visibility:hidden;pointer-events:none}
 .persona-overlay.done{opacity:0;visibility:hidden;pointer-events:none}
 .persona-bg{
   position:absolute;inset:0;
@@ -3911,9 +3913,9 @@ table th{color:var(--orange2)!important;font-weight:900}
 .persona-content{
   position:relative;z-index:1;text-align:center;max-width:720px;padding:20px;
   opacity:0;transform:translateY(30px);
-  animation:persona-enter .8s var(--ease-out-expo) .3s forwards;
+  transition:opacity .5s var(--ease-out-expo) .2s,transform .5s var(--ease-out-expo) .2s;
 }
-@keyframes persona-enter{to{opacity:1;transform:translateY(0)}}
+.persona-overlay.ps-open .persona-content{opacity:1;transform:translateY(0)}
 .persona-logo{margin:0 auto 24px;width:140px;height:84px}
 .persona-logo img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 30px rgba(255,106,0,.4))}
 .persona-title{
@@ -3924,7 +3926,7 @@ table th{color:var(--orange2)!important;font-weight:900}
 .persona-sub{font-size:16px;color:var(--muted);margin:0 0 28px;line-height:1.7}
 .persona-grid{
   display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;
-  max-width:600px;margin:0 auto;
+  max-width:600px;margin:0 auto 8px;
 }
 .persona-btn{
   appearance:none;cursor:pointer;
@@ -3934,20 +3936,49 @@ table th{color:var(--orange2)!important;font-weight:900}
   color:#fff;
   transition:all .35s var(--ease-out-expo);
 }
-.persona-btn:hover{
+.persona-btn:hover,.persona-btn:focus-visible{
   border-color:rgba(255,106,0,.35);background:rgba(255,106,0,.08);
   transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.3),0 0 20px rgba(255,106,0,.1);
+  outline:none;
+}
+.persona-btn.selected{
+  border-color:var(--orange);background:rgba(255,106,0,.12);
+  box-shadow:0 0 20px rgba(255,106,0,.2);
 }
 .persona-btn .persona-icon{font-size:28px}
 .persona-btn .persona-label{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
 .persona-skip{
   appearance:none;cursor:pointer;
-  margin-top:24px;padding:12px 24px;border-radius:999px;
+  margin-top:20px;padding:12px 24px;border-radius:999px;
   background:transparent;border:1px solid rgba(255,255,255,.12);
   color:rgba(255,255,255,.5);font-size:13px;font-weight:700;letter-spacing:.04em;
   transition:all .3s var(--ease-out-expo);
 }
-.persona-skip:hover{color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.04)}
+.persona-skip:hover,.persona-skip:focus-visible{color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.04);outline:none}
+/* Persona banner shown after selection */
+.persona-banner{
+  position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:9400;
+  display:flex;align-items:center;gap:10px;
+  padding:10px 18px;border-radius:999px;
+  background:rgba(10,10,14,.92);border:1px solid rgba(255,106,0,.25);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  opacity:0;visibility:hidden;pointer-events:none;
+  transition:opacity .4s var(--ease-out-expo),visibility .4s var(--ease-out-expo);
+  font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--muted);
+  white-space:nowrap;
+}
+.persona-banner.visible{opacity:1;visibility:visible;pointer-events:auto}
+.persona-banner-label{color:#fff}
+.persona-banner-change{
+  cursor:pointer;color:var(--orange2);border:none;background:none;
+  font:inherit;font-size:11px;font-weight:700;letter-spacing:.04em;padding:0;
+}
+.persona-banner-change:hover{color:#fff}
+/* Hero content fade on persona change */
+.persona-fade{
+  transition:opacity .3s ease,transform .3s ease;
+}
+.persona-fade.fading{opacity:0;transform:translateY(6px)}
 
 /* ══════════════════════════════════════════════════════════
    PPF PERFORMANCE LAB
