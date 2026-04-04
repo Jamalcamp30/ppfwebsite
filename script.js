@@ -3113,7 +3113,7 @@ var draftData = [
       btn.classList.add('selected');
       closeOverlay();
       applyPersona(p);
-      /* Scroll to relevant section */
+      /* Scroll after overlay fade-out completes (~600ms transition + buffer) */
       var cfg = personaConfig[p];
       if(cfg && cfg.scroll){
         setTimeout(function(){
