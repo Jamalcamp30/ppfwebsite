@@ -2603,6 +2603,386 @@ document.addEventListener('keydown', function(e){
 
 })();
 
+/* ── Performance Intelligence Section ────────────────────── */
+(function(){
+
+  /* ── Video Player: always reset to 0:00 on play ─────────── */
+  var video = document.getElementById('pi-hero-video');
+  var overlay = document.getElementById('pi-video-overlay');
+  var playBtn = document.getElementById('pi-play-btn');
+  if(video && overlay && playBtn){
+    function startVideo(){
+      video.currentTime = 0;
+      video.play().catch(function(){});
+      overlay.classList.add('hidden');
+    }
+    overlay.addEventListener('click', startVideo);
+    video.addEventListener('ended', function(){
+      overlay.classList.remove('hidden');
+    });
+    video.addEventListener('pause', function(){
+      if(video.ended) return;
+      overlay.classList.remove('hidden');
+    });
+  }
+
+  /* ── Count-Up Animation ─────────────────────────────────── */
+  var countUpEls = document.querySelectorAll('[data-countup]');
+  var countUpDone = new Set();
+
+  function animateCountUp(el){
+    var target = parseFloat(el.getAttribute('data-countup'));
+    var decimals = parseInt(el.getAttribute('data-decimals') || '0', 10);
+    var suffix = el.getAttribute('data-suffix') || '';
+    var duration = 1800;
+    var start = performance.now();
+
+    function tick(now){
+      var elapsed = now - start;
+      var progress = Math.min(elapsed / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 4);
+      var current = target * eased;
+      el.textContent = current.toFixed(decimals) + suffix;
+      if(progress < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  var countUpObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting && !countUpDone.has(entry.target)){
+        countUpDone.add(entry.target);
+        animateCountUp(entry.target);
+      }
+    });
+  }, {threshold: 0.3});
+
+  countUpEls.forEach(function(el){ countUpObserver.observe(el); });
+
+  /* ── Verified Tag Flicker on Reveal ────────────────────── */
+  var verifiedTags = document.querySelectorAll('.pi-metric-card .pi-verified-tag');
+  var tagsDone = new Set();
+
+  var tagObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting && !tagsDone.has(entry.target)){
+        tagsDone.add(entry.target);
+        var tag = entry.target.querySelector('.pi-verified-tag');
+        if(tag){
+          tag.style.animation = 'none';
+          tag.offsetHeight;
+          tag.style.animation = 'pi-tag-flicker .6s ease forwards';
+        }
+      }
+    });
+  }, {threshold: 0.2});
+
+  document.querySelectorAll('.pi-metric-card').forEach(function(card){
+    tagObserver.observe(card);
+  });
+
+  /* ── Position Intelligence Toggle ──────────────────────── */
+  var posData = {
+    WR: [
+      {metric: '10-Yard Split', why: 'Burst off the line — creates initial separation'},
+      {metric: '40-Yard Dash', why: 'Top-end speed — deep threat separation'},
+      {metric: 'Vertical / Broad', why: 'Explosive playmaking — high-point ability'},
+      {metric: 'Shuttle / 3-Cone', why: 'Route efficiency — lateral quickness'},
+      {metric: 'Size / Frame', why: 'Matchup value — press resistance'},
+      {metric: 'Bench Press', why: 'Upper-body strength at the point of attack'}
+    ],
+    DB: [
+      {metric: '10-Yard Split', why: 'Reaction burst — break on the ball'},
+      {metric: '40-Yard Dash', why: 'Recovery speed — deep coverage'},
+      {metric: 'Shuttle / 3-Cone', why: 'Change of direction — mirror ability'},
+      {metric: 'Vertical / Broad', why: 'Closing explosion — ball skills at the catch point'},
+      {metric: 'Size / Frame', why: 'Length and physicality in press'},
+      {metric: 'Bench Press', why: 'Tackle strength — run support'}
+    ],
+    RB: [
+      {metric: '10-Yard Split', why: 'Burst through the hole — first-level speed'},
+      {metric: '40-Yard Dash', why: 'Breakaway speed — home run ability'},
+      {metric: 'Shuttle / 3-Cone', why: 'Lateral agility — cutback ability'},
+      {metric: 'Broad Jump', why: 'Explosive first step — power through contact'},
+      {metric: 'Bench Press', why: 'Contact balance — pass protection'},
+      {metric: 'Size / Weight', why: 'Durability — between-the-tackles presence'}
+    ],
+    LB: [
+      {metric: 'Shuttle / 3-Cone', why: 'Lateral range — sideline-to-sideline speed'},
+      {metric: '40-Yard Dash', why: 'Pursuit speed — chase-down ability'},
+      {metric: '10-Yard Split', why: 'Downhill burst — closing on the ball'},
+      {metric: 'Bench Press', why: 'Stack and shed — taking on blockers'},
+      {metric: 'Vertical / Broad', why: 'Explosive closing — blitz pressure'},
+      {metric: 'Size / Frame', why: 'Anchor and physicality at the point of attack'}
+    ],
+    OL: [
+      {metric: 'Size / Frame', why: 'Anchor and length — base for everything'},
+      {metric: 'Shuttle / 3-Cone', why: 'Lateral agility — mirror and adjust'},
+      {metric: '10-Yard Split', why: 'Set speed — pass protection timing'},
+      {metric: 'Bench Press', why: 'Strike and sustain power — drive blocking'},
+      {metric: 'Vertical / Broad', why: 'Lower-body power — second-level movement'},
+      {metric: '40-Yard Dash', why: 'Overall athleticism for the position'}
+    ],
+    DL: [
+      {metric: 'Bench Press', why: 'Hand violence — bull rush and control'},
+      {metric: '10-Yard Split', why: 'First-step explosion — gap penetration'},
+      {metric: 'Shuttle / 3-Cone', why: 'Counter moves — inside rush agility'},
+      {metric: 'Size / Weight', why: 'Anchor against double teams'},
+      {metric: 'Vertical / Broad', why: 'Lower-body explosion — leverage and power'},
+      {metric: '40-Yard Dash', why: 'Pursuit and chase ability downfield'}
+    ]
+  };
+
+  var posToggleContainer = document.getElementById('pi-pos-toggles');
+  var priorityStack = document.getElementById('pi-priority-stack');
+
+  function renderPriority(pos){
+    if(!posData[pos] || !priorityStack) return;
+    priorityStack.innerHTML = '';
+    posData[pos].forEach(function(item, i){
+      var div = document.createElement('div');
+      div.className = 'pi-priority-item';
+      div.style.animationDelay = (i * 0.08) + 's';
+      div.innerHTML =
+        '<div class="pi-priority-rank">' + (i + 1) + '</div>' +
+        '<div class="pi-priority-info">' +
+          '<div class="pi-priority-metric">' + item.metric + '</div>' +
+          '<div class="pi-priority-why">' + item.why + '</div>' +
+        '</div>';
+      priorityStack.appendChild(div);
+    });
+  }
+
+  if(posToggleContainer){
+    posToggleContainer.addEventListener('click', function(e){
+      var btn = e.target.closest('.pi-pos-btn');
+      if(!btn) return;
+      posToggleContainer.querySelectorAll('.pi-pos-btn').forEach(function(b){
+        b.classList.remove('active');
+      });
+      btn.classList.add('active');
+      renderPriority(btn.getAttribute('data-pos'));
+    });
+    renderPriority('WR');
+  }
+
+  /* ── Compare Profile Tool ──────────────────────────────── */
+  var compareBenchmarks = {
+    WR:  {forty:[4.25,4.75], ten:[1.45,1.65], vert:[30,42], broad:[115,132], bench:[10,27], shuttle:[3.95,4.45]},
+    DB:  {forty:[4.30,4.75], ten:[1.45,1.65], vert:[32,42], broad:[118,134], bench:[10,22], shuttle:[3.95,4.35]},
+    RB:  {forty:[4.30,4.70], ten:[1.46,1.64], vert:[30,40], broad:[115,130], bench:[14,28], shuttle:[4.00,4.45]},
+    LB:  {forty:[4.40,4.90], ten:[1.50,1.72], vert:[28,40], broad:[112,128], bench:[18,34], shuttle:[4.05,4.55]},
+    OL:  {forty:[4.80,5.60], ten:[1.60,1.90], vert:[22,34], broad:[96,118], bench:[20,38], shuttle:[4.30,5.00]},
+    DL:  {forty:[4.50,5.20], ten:[1.52,1.82], vert:[26,38], broad:[104,124], bench:[20,38], shuttle:[4.10,4.70]}
+  };
+
+  var ppfTopMarks = {
+    WR:  {forty:4.29, ten:1.48, vert:39.5, broad:128, bench:30, shuttle:4.05},
+    DB:  {forty:4.38, ten:1.50, vert:38,   broad:126, bench:22, shuttle:4.02},
+    RB:  {forty:4.35, ten:1.49, vert:37,   broad:124, bench:26, shuttle:4.10},
+    LB:  {forty:4.48, ten:1.54, vert:36,   broad:122, bench:30, shuttle:4.15},
+    OL:  {forty:5.05, ten:1.72, vert:30,   broad:108, bench:34, shuttle:4.55},
+    DL:  {forty:4.72, ten:1.60, vert:33.5, broad:116, bench:34, shuttle:4.30}
+  };
+
+  var compareRunBtn = document.getElementById('pi-compare-run');
+  var compareResult = document.getElementById('pi-compare-result');
+  var compareBarsEl = document.getElementById('pi-compare-bars');
+  var radarCanvas = document.getElementById('pi-radar-canvas');
+
+  if(compareRunBtn){
+    compareRunBtn.addEventListener('click', function(){
+      var pos = document.getElementById('pi-compare-pos').value;
+      var bench = compareBenchmarks[pos];
+      var top = ppfTopMarks[pos];
+      var inputs = document.querySelectorAll('#pi-compare-inputs input');
+      var userData = {};
+      var hasData = false;
+
+      inputs.forEach(function(inp){
+        var key = inp.getAttribute('data-metric');
+        var val = parseFloat(inp.value);
+        if(!isNaN(val)){
+          userData[key] = val;
+          hasData = true;
+        }
+      });
+
+      if(!hasData){
+        compareResult.style.display = 'none';
+        return;
+      }
+
+      compareResult.style.display = 'block';
+
+      var metrics = ['forty','ten','vert','broad','bench','shuttle'];
+      var labels = ['40-Yard','10-Split','Vertical','Broad','Bench','Shuttle'];
+      var inverted = {forty:true, ten:true, shuttle:true};
+
+      /* Bar comparison */
+      var barsHTML = '';
+      var userScores = [];
+      var benchScores = [];
+
+      metrics.forEach(function(key, i){
+        var range = bench[key];
+        var mn = range[0], mx = range[1];
+        var userVal = userData[key];
+        var topVal = top[key];
+
+        var userPct = 0, topPct = 0;
+        if(inverted[key]){
+          if(userVal !== undefined) userPct = Math.max(0, Math.min(100, ((mx - userVal) / (mx - mn)) * 100));
+          topPct = Math.max(0, Math.min(100, ((mx - topVal) / (mx - mn)) * 100));
+        } else {
+          if(userVal !== undefined) userPct = Math.max(0, Math.min(100, ((userVal - mn) / (mx - mn)) * 100));
+          topPct = Math.max(0, Math.min(100, ((topVal - mn) / (mx - mn)) * 100));
+        }
+
+        userScores.push(userVal !== undefined ? userPct : 0);
+        benchScores.push(topPct);
+
+        var displayVal = userVal !== undefined ? userVal : '—';
+        barsHTML +=
+          '<div class="pi-compare-bar-row">' +
+            '<div class="pi-compare-bar-label">' + labels[i] + '</div>' +
+            '<div class="pi-compare-bar-track">' +
+              '<div class="pi-compare-bar-fill benchmark" style="width:' + topPct + '%"></div>' +
+              (userVal !== undefined ? '<div class="pi-compare-bar-fill user" style="width:0%"></div>' : '') +
+            '</div>' +
+            '<div class="pi-compare-bar-val">' + displayVal + '</div>' +
+          '</div>';
+      });
+
+      compareBarsEl.innerHTML = barsHTML;
+
+      /* Animate bars in */
+      setTimeout(function(){
+        compareBarsEl.querySelectorAll('.pi-compare-bar-fill.user').forEach(function(bar, i){
+          bar.style.width = userScores[i] + '%';
+        });
+      }, 50);
+
+      /* Radar chart */
+      if(radarCanvas){
+        drawRadar(radarCanvas, labels, userScores, benchScores);
+      }
+    });
+  }
+
+  function drawRadar(canvas, labels, userData, benchData){
+    var ctx = canvas.getContext('2d');
+    var size = canvas.width;
+    var cx = size / 2, cy = size / 2;
+    var radius = size * 0.36;
+    var n = labels.length;
+    var angleStep = (Math.PI * 2) / n;
+    var startAngle = -Math.PI / 2;
+
+    ctx.clearRect(0, 0, size, size);
+
+    /* Grid rings */
+    for(var ring = 1; ring <= 5; ring++){
+      var r = (radius / 5) * ring;
+      ctx.beginPath();
+      for(var j = 0; j <= n; j++){
+        var angle = startAngle + j * angleStep;
+        var x = cx + Math.cos(angle) * r;
+        var y = cy + Math.sin(angle) * r;
+        if(j === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = 'rgba(255,255,255,' + (0.04 + ring * 0.02) + ')';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    /* Axes */
+    for(var k = 0; k < n; k++){
+      var angle = startAngle + k * angleStep;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
+      ctx.strokeStyle = 'rgba(255,255,255,.06)';
+      ctx.stroke();
+
+      /* Labels */
+      var lx = cx + Math.cos(angle) * (radius + 18);
+      var ly = cy + Math.sin(angle) * (radius + 18);
+      ctx.fillStyle = 'rgba(255,255,255,.5)';
+      ctx.font = '600 10px -apple-system, BlinkMacSystemFont, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(labels[k], lx, ly);
+    }
+
+    /* Benchmark shape */
+    ctx.beginPath();
+    for(var m = 0; m < n; m++){
+      var bAngle = startAngle + m * angleStep;
+      var bR = (benchData[m] / 100) * radius;
+      var bx = cx + Math.cos(bAngle) * bR;
+      var by = cy + Math.sin(bAngle) * bR;
+      if(m === 0) ctx.moveTo(bx, by); else ctx.lineTo(bx, by);
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,255,255,.06)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,.2)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    /* User shape */
+    ctx.beginPath();
+    for(var u = 0; u < n; u++){
+      var uAngle = startAngle + u * angleStep;
+      var uR = (userData[u] / 100) * radius;
+      var ux = cx + Math.cos(uAngle) * uR;
+      var uy = cy + Math.sin(uAngle) * uR;
+      if(u === 0) ctx.moveTo(ux, uy); else ctx.lineTo(ux, uy);
+    }
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,106,0,.15)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,106,0,.8)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    /* User dots */
+    for(var d = 0; d < n; d++){
+      var dAngle = startAngle + d * angleStep;
+      var dR = (userData[d] / 100) * radius;
+      var dx = cx + Math.cos(dAngle) * dR;
+      var dy = cy + Math.sin(dAngle) * dR;
+      ctx.beginPath();
+      ctx.arc(dx, dy, 4, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,106,0,.9)';
+      ctx.fill();
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  }
+
+  /* ── Micro-particle motion on metric cards ─────────────── */
+  document.querySelectorAll('.pi-metric-card').forEach(function(card){
+    card.addEventListener('mouseenter', function(){
+      for(var p = 0; p < 6; p++){
+        var particle = document.createElement('span');
+        particle.className = 'pi-particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = (Math.random() * 0.3) + 's';
+        card.appendChild(particle);
+        (function(el){
+          setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 1200);
+        })(particle);
+      }
+    });
+  });
+
+})();
+
 /* ── Sound Toggle ────────────────────────────────────────── */
 (function(){
   var toggle = document.getElementById('sound-toggle');
