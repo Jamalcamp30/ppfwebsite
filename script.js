@@ -768,6 +768,92 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
 })();
 
+/* ── Coach Command Center — Position Filter & Interactivity ── */
+(function(){
+  var section = document.querySelector('.cc-section');
+  if(!section) return;
+
+  var filterBtns = section.querySelectorAll('.cc-filter-btn');
+  var hero = section.querySelector('.cc-hero');
+  var cards = section.querySelectorAll('.cc-card');
+  var spotlight = section.querySelector('.cc-spotlight');
+
+  /* ── Position Filter ── */
+  filterBtns.forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var pos = btn.dataset.pos;
+
+      filterBtns.forEach(function(b){ b.classList.remove('cc-active'); });
+      btn.classList.add('cc-active');
+
+      if(pos === 'all'){
+        hero.classList.remove('cc-dim','cc-highlight');
+        cards.forEach(function(c){ c.classList.remove('cc-dim','cc-highlight'); });
+        return;
+      }
+
+      /* Hero (Richard Camp) matches all positions */
+      var heroPositions = (hero.dataset.positions || '').split(',');
+      if(heroPositions.indexOf(pos) !== -1){
+        hero.classList.remove('cc-dim');
+        hero.classList.add('cc-highlight');
+      } else {
+        hero.classList.add('cc-dim');
+        hero.classList.remove('cc-highlight');
+      }
+
+      cards.forEach(function(c){
+        var cPositions = (c.dataset.positions || '').split(',');
+        if(cPositions.indexOf(pos) !== -1){
+          c.classList.remove('cc-dim');
+          c.classList.add('cc-highlight');
+        } else {
+          c.classList.add('cc-dim');
+          c.classList.remove('cc-highlight');
+        }
+      });
+    });
+  });
+
+  /* ── Cursor Spotlight (desktop only) ── */
+  if(window.matchMedia('(pointer:fine)').matches && spotlight){
+    section.addEventListener('mousemove',function(e){
+      var rect = section.getBoundingClientRect();
+      spotlight.style.left = (e.clientX - rect.left - 300) + 'px';
+      spotlight.style.top  = (e.clientY - rect.top  - 300) + 'px';
+    });
+  }
+
+  /* ── Trait Chip Ignition on Hover ── */
+  cards.forEach(function(card){
+    var chips = card.querySelectorAll('.cc-chip');
+    card.addEventListener('mouseenter',function(){
+      chips.forEach(function(chip, i){
+        chip.style.transitionDelay = (i * 60) + 'ms';
+        chip.style.transform = 'scale(1.05)';
+      });
+    });
+    card.addEventListener('mouseleave',function(){
+      chips.forEach(function(chip){
+        chip.style.transitionDelay = '0ms';
+        chip.style.transform = 'none';
+      });
+    });
+  });
+
+  /* ── Pillar Hover Glow ── */
+  var pillars = section.querySelectorAll('.cc-pillar');
+  pillars.forEach(function(p){
+    p.addEventListener('mouseenter',function(){
+      p.style.boxShadow = '0 0 20px rgba(255,106,0,.08)';
+    });
+    p.addEventListener('mouseleave',function(){
+      p.style.boxShadow = 'none';
+    });
+  });
+
+})();
+
 /* ── Draft Countdown ─────────────────────────────────────── */
 (function(){
   var target = new Date('2027-04-27T20:00:00-04:00').getTime();
