@@ -2993,3 +2993,800 @@ document.addEventListener('keydown', function(e){
     toggle.classList.toggle('active', soundOn);
   });
 })();
+
+/* ═══════════════════════════════════════════════════════════
+   SIGNATURE CANVAS FX ENGINE
+   6 unique performance-signature animations for metric cards
+   ═══════════════════════════════════════════════════════════ */
+(function(){
+  var cards = document.querySelectorAll('.pi-metric-card');
+  if(!cards.length) return;
+
+  /* ── Utility helpers ──────────────────────────────────── */
+  function rand(a,b){return a+Math.random()*(b-a)}
+  function randInt(a,b){return Math.floor(rand(a,b+1))}
+  function lerp(a,b,t){return a+(b-a)*t}
+  function clamp(v,lo,hi){return v<lo?lo:v>hi?hi:v}
+  function dist(x1,y1,x2,y2){var dx=x2-x1,dy=y2-y1;return Math.sqrt(dx*dx+dy*dy)}
+  var TAU = Math.PI*2;
+
+  /* ── Renderer registry ────────────────────────────────── */
+  var Registry = {
+    speed:    SpeedFX,
+    vertical: VerticalFX,
+    power:    PowerFX,
+    ras:      RASFX,
+    electric: ElectricFX,
+    gravity:  GravityFX
+  };
+
+  /* ── Bootstrap each card ──────────────────────────────── */
+  cards.forEach(function(card){
+    var sig = card.getAttribute('data-signature');
+    var fxDiv = card.querySelector('.pi-signature-fx');
+    if(!fxDiv || !Registry[sig]) return;
+
+    var cvs = document.createElement('canvas');
+    cvs.className = 'pi-sig-canvas';
+    fxDiv.appendChild(cvs);
+    var ctx = cvs.getContext('2d');
+    var Ctor = Registry[sig];
+    var fx = new Ctor(ctx, cvs, card);
+    var rafId = null, running = false, t0 = 0;
+
+    function resize(){
+      var r = Math.min(window.devicePixelRatio||1, 2);
+      var w = card.offsetWidth, h = card.offsetHeight;
+      cvs.width  = w*r; cvs.height = h*r;
+      cvs.style.width = w+'px'; cvs.style.height = h+'px';
+      ctx.setTransform(r,0,0,r,0,0);
+      fx.w = w; fx.h = h;
+    }
+
+    function loop(ts){
+      if(!running) return;
+      var dt = Math.min(ts-t0, 50)/1000; /* cap to 50ms to prevent jumps when tab is inactive */
+      t0 = ts;
+      ctx.clearRect(0,0, cvs.width, cvs.height);
+      ctx.save();
+      fx.update(dt);
+      fx.draw();
+      ctx.restore();
+      rafId = requestAnimationFrame(loop);
+    }
+
+    function start(){
+      if(running) return;
+      running = true;
+      resize();
+      fx.init();
+      card.classList.add('pi-fx-active');
+      t0 = performance.now();
+      rafId = requestAnimationFrame(loop);
+    }
+
+    function stop(){
+      running = false;
+      if(rafId) cancelAnimationFrame(rafId);
+      card.classList.remove('pi-fx-active');
+      card.classList.remove('pi-touch-active');
+      fx.destroy();
+    }
+
+    card.addEventListener('mouseenter', start);
+    card.addEventListener('mouseleave', stop);
+
+    /* Touch toggle */
+    card.addEventListener('touchstart', function(e){
+      e.preventDefault();
+      if(running){stop();}
+      else{card.classList.add('pi-touch-active'); start();}
+    }, {passive:false});
+  });
+
+  /* ═══════════════════════════════════════════════════════
+     1. SPEED FX — "Afterburner"
+     Horizontal light streaks accelerate across the card
+     with glowing tips and layered depth.
+     ═══════════════════════════════════════════════════════ */
+  function SpeedFX(ctx,cvs,card){this.ctx=ctx;this.cvs=cvs;this.card=card;this.w=0;this.h=0;}
+
+  SpeedFX.prototype.init = function(){
+    this.time = 0;
+    this.streaks = [];
+    for(var i=0;i<24;i++) this.streaks.push(this._spawn(true));
+    this.mach = {x:-20, opacity:0};
+  };
+
+  SpeedFX.prototype._spawn = function(scatter){
+    return {
+      x: scatter ? rand(-this.w*0.5, this.w) : rand(-200,-40),
+      y: rand(4, this.h-4),
+      vx: rand(220,900),
+      len: rand(30,180),
+      thick: rand(0.4,2.8),
+      alpha: rand(0.06,0.45),
+      hue: rand(15,42)
+    };
+  };
+
+  SpeedFX.prototype.update = function(dt){
+    this.time += dt;
+    for(var i=0;i<this.streaks.length;i++){
+      var s = this.streaks[i];
+      s.vx += rand(10,60)*dt; /* accelerate */
+      s.x += s.vx*dt;
+      if(s.x-s.len > this.w) this.streaks[i] = this._spawn(false);
+    }
+    /* Mach cone appears briefly */
+    this.mach.x += 600*dt;
+    this.mach.opacity = this.mach.x < this.w*0.4
+      ? clamp(this.mach.opacity+dt*3,0,0.12)
+      : clamp(this.mach.opacity-dt*2,0,0.12);
+  };
+
+  SpeedFX.prototype.draw = function(){
+    var ctx = this.ctx, w = this.w, h = this.h;
+    /* Streaks */
+    for(var i=0;i<this.streaks.length;i++){
+      var s = this.streaks[i];
+      var g = ctx.createLinearGradient(s.x-s.len, s.y, s.x, s.y);
+      g.addColorStop(0,'rgba(255,106,0,0)');
+      g.addColorStop(0.5,'hsla('+s.hue+',100%,55%,'+s.alpha*0.5+')');
+      g.addColorStop(0.85,'hsla('+s.hue+',100%,70%,'+s.alpha+')');
+      g.addColorStop(1,'rgba(255,255,255,'+s.alpha*0.7+')');
+      ctx.beginPath(); ctx.strokeStyle=g; ctx.lineWidth=s.thick; ctx.lineCap='round';
+      ctx.moveTo(s.x-s.len, s.y); ctx.lineTo(s.x, s.y); ctx.stroke();
+    }
+    /* Mach-cone V-shape */
+    if(this.mach.opacity>0.01){
+      var mx = clamp(this.mach.x,0,w);
+      ctx.save(); ctx.globalAlpha = this.mach.opacity;
+      ctx.beginPath(); ctx.moveTo(mx,h*0.5);
+      ctx.lineTo(mx-80, h*0.5-60); ctx.lineTo(mx-80, h*0.5+60);
+      ctx.closePath();
+      var mg = ctx.createRadialGradient(mx,h*0.5,0, mx,h*0.5,90);
+      mg.addColorStop(0,'rgba(255,200,100,0.3)');
+      mg.addColorStop(1,'rgba(255,106,0,0)');
+      ctx.fillStyle = mg; ctx.fill(); ctx.restore();
+    }
+    /* Ambient heat glow at trailing edge */
+    var rg = ctx.createRadialGradient(w*0.85,h*0.5,0, w*0.85,h*0.5,w*0.45);
+    rg.addColorStop(0,'rgba(255,106,0,0.04)');
+    rg.addColorStop(1,'rgba(255,106,0,0)');
+    ctx.fillStyle=rg; ctx.fillRect(0,0,w,h);
+  };
+
+  SpeedFX.prototype.destroy = function(){this.streaks=[];};
+
+  /* ═══════════════════════════════════════════════════════
+     2. VERTICAL FX — "Altitude Ascent"
+     Rising measurement grid, climbing altitude bar,
+     and anti-gravity luminous particles drifting upward.
+     ═══════════════════════════════════════════════════════ */
+  function VerticalFX(ctx,cvs,card){this.ctx=ctx;this.cvs=cvs;this.card=card;this.w=0;this.h=0;}
+
+  VerticalFX.prototype.init = function(){
+    this.time = 0; this.barPct = 0;
+    this.gridOffset = 0;
+    this.particles = [];
+    for(var i=0;i<18;i++) this.particles.push(this._spawn());
+    this.ticks = [];
+    for(var t=0;t<12;t++) this.ticks.push({y:t/12, label:(t*4)+'″', alpha:0});
+  };
+
+  VerticalFX.prototype._spawn = function(){
+    return {
+      x:rand(10,this.w-10), y:rand(0,this.h),
+      vy:rand(-30,-80), vx:rand(-5,5),
+      r:rand(1,3.5), alpha:rand(0.15,0.6),
+      wobble: rand(0,TAU), wobbleSpd: rand(1,3)
+    };
+  };
+
+  VerticalFX.prototype.update = function(dt){
+    this.time += dt;
+    this.barPct = clamp(this.barPct + dt*0.9, 0, 0.82); /* ~82% of bar height to represent 39.5″ */
+    this.gridOffset = (this.gridOffset + 30*dt) % 20;
+    for(var i=0;i<this.particles.length;i++){
+      var p = this.particles[i];
+      p.wobble += p.wobbleSpd*dt;
+      p.x += p.vx*dt + Math.sin(p.wobble)*0.3;
+      p.y += p.vy*dt;
+      if(p.y < -10){
+        /* Respawn at bottom and reset upward drift */
+        this.particles[i] = this._spawn();
+        this.particles[i].y = this.h + 5;
+      }
+    }
+    for(var j=0;j<this.ticks.length;j++){
+      var tgt = (j/12 < this.barPct) ? 0.7 : 0.1;
+      this.ticks[j].alpha = lerp(this.ticks[j].alpha, tgt, dt*3);
+    }
+  };
+
+  VerticalFX.prototype.draw = function(){
+    var ctx=this.ctx, w=this.w, h=this.h;
+    /* Rising grid lines */
+    ctx.save(); ctx.globalAlpha = 0.06;
+    ctx.strokeStyle = 'rgba(255,106,0,1)'; ctx.lineWidth = 0.5;
+    for(var gy = -20 + this.gridOffset; gy < h; gy += 20){
+      ctx.beginPath(); ctx.moveTo(0,gy); ctx.lineTo(w,gy); ctx.stroke();
+    }
+    ctx.restore();
+
+    /* Altitude bar on left edge */
+    var barW = 4, barH = h*this.barPct;
+    var bg = ctx.createLinearGradient(0, h, 0, h-barH);
+    bg.addColorStop(0,'rgba(255,106,0,0.6)');
+    bg.addColorStop(0.7,'rgba(255,170,50,0.4)');
+    bg.addColorStop(1,'rgba(255,255,255,0.15)');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, h-barH, barW, barH);
+    /* Bar glow */
+    ctx.save(); ctx.globalAlpha = 0.3;
+    ctx.shadowColor = 'rgba(255,106,0,0.8)'; ctx.shadowBlur = 10;
+    ctx.fillRect(0, h-barH, barW, 3); ctx.restore();
+
+    /* Tick marks */
+    ctx.font = '600 9px system-ui, sans-serif';
+    for(var t=0;t<this.ticks.length;t++){
+      var tk = this.ticks[t];
+      var ty = h - (tk.y*h);
+      ctx.save(); ctx.globalAlpha = tk.alpha;
+      ctx.fillStyle = '#ff8c3a';
+      ctx.fillRect(0, ty, 12, 0.5);
+      ctx.fillText(tk.label, 14, ty+3);
+      ctx.restore();
+    }
+
+    /* Floating luminous particles */
+    for(var i=0;i<this.particles.length;i++){
+      var p = this.particles[i];
+      ctx.save(); ctx.globalAlpha = p.alpha * clamp((h-p.y)/h,0,1);
+      var pg = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
+      pg.addColorStop(0,'rgba(255,180,80,0.8)');
+      pg.addColorStop(0.5,'rgba(255,106,0,0.3)');
+      pg.addColorStop(1,'rgba(255,106,0,0)');
+      ctx.fillStyle = pg;
+      ctx.fillRect(p.x-p.r*3,p.y-p.r*3,p.r*6,p.r*6);
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,TAU);
+      ctx.fillStyle = 'rgba(255,220,180,0.9)'; ctx.fill();
+      ctx.restore();
+    }
+  };
+
+  VerticalFX.prototype.destroy = function(){this.particles=[];this.barPct=0;};
+
+  /* ═══════════════════════════════════════════════════════
+     3. POWER FX — "Seismic Heartbeat"
+     Concentric shockwave rings pulse rhythmically from
+     center. Equalizer bars vibrate. Ground rumble.
+     ═══════════════════════════════════════════════════════ */
+  function PowerFX(ctx,cvs,card){this.ctx=ctx;this.cvs=cvs;this.card=card;this.w=0;this.h=0;}
+
+  PowerFX.prototype.init = function(){
+    this.time = 0; this.pulseTimer = 0;
+    this.rings = [];
+    this.bars = [];
+    for(var i=0;i<16;i++){
+      this.bars.push({x:0, h:rand(5,20), target:rand(5,25), speed:rand(3,8)});
+    }
+    this.debris = [];
+  };
+
+  PowerFX.prototype.update = function(dt){
+    this.time += dt;
+    this.pulseTimer += dt;
+    /* New ring every beat */
+    if(this.pulseTimer > 0.65){
+      this.pulseTimer = 0;
+      this.rings.push({r:0, maxR:Math.max(this.w,this.h)*0.9, alpha:0.5, speed:rand(180,280)});
+      /* Debris burst */
+      for(var d=0;d<8;d++){
+        var ang = rand(0,TAU);
+        this.debris.push({
+          x:this.w*0.5, y:this.h*0.5,
+          vx:Math.cos(ang)*rand(40,120), vy:Math.sin(ang)*rand(40,120),
+          life:1, decay:rand(0.8,1.5), r:rand(1,2.5)
+        });
+      }
+    }
+    /* Update rings */
+    for(var i=this.rings.length-1;i>=0;i--){
+      var rn = this.rings[i];
+      rn.r += rn.speed*dt;
+      rn.alpha = clamp(0.5*(1 - rn.r/rn.maxR),0,0.5);
+      if(rn.r > rn.maxR) this.rings.splice(i,1);
+    }
+    /* Equalizer bars */
+    for(var b=0;b<this.bars.length;b++){
+      var bar = this.bars[b];
+      bar.h = lerp(bar.h, bar.target, bar.speed*dt);
+      if(Math.abs(bar.h - bar.target)<1) bar.target = rand(4,30 + Math.sin(this.time*5)*10);
+    }
+    /* Debris */
+    for(var j=this.debris.length-1;j>=0;j--){
+      var db = this.debris[j];
+      db.x += db.vx*dt; db.y += db.vy*dt;
+      db.vy += 60*dt; /* gravity */
+      db.life -= db.decay*dt;
+      if(db.life<=0) this.debris.splice(j,1);
+    }
+  };
+
+  PowerFX.prototype.draw = function(){
+    var ctx=this.ctx, w=this.w, h=this.h, cx=w*0.5, cy=h*0.5;
+
+    /* Shockwave rings */
+    for(var i=0;i<this.rings.length;i++){
+      var rn = this.rings[i];
+      ctx.save(); ctx.globalAlpha = rn.alpha;
+      ctx.beginPath(); ctx.arc(cx,cy,rn.r,0,TAU);
+      ctx.strokeStyle = 'rgba(255,106,0,0.7)'; ctx.lineWidth = 2;
+      ctx.stroke();
+      /* Inner glow ring */
+      ctx.beginPath(); ctx.arc(cx,cy,rn.r*0.95,0,TAU);
+      ctx.strokeStyle = 'rgba(255,180,100,0.3)'; ctx.lineWidth = 4;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    /* Center pulse glow */
+    var pulse = 0.5 + 0.5*Math.sin(this.time * TAU / 0.65);
+    ctx.save(); ctx.globalAlpha = 0.08 + pulse*0.06;
+    var cg = ctx.createRadialGradient(cx,cy,0,cx,cy,60);
+    cg.addColorStop(0,'rgba(255,106,0,0.5)');
+    cg.addColorStop(1,'rgba(255,106,0,0)');
+    ctx.fillStyle = cg; ctx.fillRect(cx-60,cy-60,120,120);
+    ctx.restore();
+
+    /* Equalizer bars at bottom */
+    var barW = (w-32)/ this.bars.length;
+    ctx.save();
+    for(var b=0;b<this.bars.length;b++){
+      var bar = this.bars[b];
+      var bx = 16 + b*barW;
+      var bh = bar.h;
+      var bbg = ctx.createLinearGradient(bx, h, bx, h-bh);
+      bbg.addColorStop(0,'rgba(255,106,0,0.35)');
+      bbg.addColorStop(1,'rgba(255,106,0,0.05)');
+      ctx.fillStyle = bbg;
+      ctx.fillRect(bx+1, h-bh, barW-2, bh);
+    }
+    ctx.restore();
+
+    /* Debris particles */
+    for(var j=0;j<this.debris.length;j++){
+      var db = this.debris[j];
+      ctx.save(); ctx.globalAlpha = db.life*0.7;
+      ctx.beginPath(); ctx.arc(db.x,db.y,db.r,0,TAU);
+      ctx.fillStyle='rgba(255,150,50,0.8)'; ctx.fill(); ctx.restore();
+    }
+  };
+
+  PowerFX.prototype.destroy = function(){this.rings=[];this.debris=[];};
+
+  /* ═══════════════════════════════════════════════════════
+     4. RAS FX — "Scoring Arc"
+     Circular arc fills clockwise to 97.8%.
+     Tick segments light up. Radar sweep. Inner rings.
+     ═══════════════════════════════════════════════════════ */
+  function RASFX(ctx,cvs,card){this.ctx=ctx;this.cvs=cvs;this.card=card;this.w=0;this.h=0;}
+
+  RASFX.prototype.init = function(){
+    this.time = 0; this.arcPct = 0;
+    this.sweepAngle = -Math.PI*0.5;
+    this.trailParticles = [];
+    this.innerPulse = 0;
+    this.segments = [];
+    for(var i=0;i<10;i++) this.segments.push({lit:false, alpha:0});
+  };
+
+  RASFX.prototype.update = function(dt){
+    this.time += dt;
+    this.arcPct = clamp(this.arcPct + dt*0.7, 0, 0.978); /* 97.8% = 9.78/10 RAS score */
+    this.sweepAngle += dt*1.8;
+    this.innerPulse = 0.3 + 0.2*Math.sin(this.time*3);
+
+    /* Light up segments as arc fills */
+    for(var i=0;i<10;i++){
+      var segPct = (i+1)/10;
+      var lit = segPct <= this.arcPct;
+      this.segments[i].lit = lit;
+      var tgt = lit ? 0.7 : 0.08;
+      this.segments[i].alpha = lerp(this.segments[i].alpha, tgt, dt*4);
+    }
+
+    /* Trail particles at arc head */
+    if(this.arcPct < 0.978){
+      var a = -Math.PI*0.5 + this.arcPct*TAU;
+      this.trailParticles.push({
+        x: 0, y: 0, angle: a,
+        r: rand(0.5,2), life: 1, decay: rand(1.5,3),
+        drift: rand(-8,8)
+      });
+    }
+    for(var j=this.trailParticles.length-1;j>=0;j--){
+      this.trailParticles[j].life -= this.trailParticles[j].decay*dt;
+      if(this.trailParticles[j].life<=0) this.trailParticles.splice(j,1);
+    }
+  };
+
+  RASFX.prototype.draw = function(){
+    var ctx=this.ctx, w=this.w, h=this.h;
+    var cx=w*0.5, cy=h*0.5;
+    var R = Math.min(w,h)*0.38;
+    var startA = -Math.PI*0.5;
+    var endA = startA + this.arcPct*TAU;
+
+    /* Outer scoring arc */
+    ctx.save();
+    ctx.lineCap = 'round';
+
+    /* Background ring */
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,TAU);
+    ctx.strokeStyle = 'rgba(255,106,0,0.06)'; ctx.lineWidth=4;
+    ctx.stroke();
+
+    /* Filled arc */
+    if(this.arcPct > 0.001){
+      ctx.beginPath(); ctx.arc(cx,cy,R,startA,endA);
+      var ag = ctx.createLinearGradient(cx-R,cy,cx+R,cy);
+      ag.addColorStop(0,'rgba(255,106,0,0.7)');
+      ag.addColorStop(0.5,'rgba(255,170,50,0.8)');
+      ag.addColorStop(1,'rgba(255,220,100,0.9)');
+      ctx.strokeStyle = ag; ctx.lineWidth = 4; ctx.stroke();
+
+      /* Arc head glow */
+      var hx = cx + R*Math.cos(endA), hy = cy + R*Math.sin(endA);
+      var hg = ctx.createRadialGradient(hx,hy,0,hx,hy,12);
+      hg.addColorStop(0,'rgba(255,200,100,0.6)');
+      hg.addColorStop(1,'rgba(255,106,0,0)');
+      ctx.fillStyle = hg; ctx.fillRect(hx-12,hy-12,24,24);
+    }
+
+    /* Segment tick marks */
+    for(var i=0;i<10;i++){
+      var seg = this.segments[i];
+      var a = startA + ((i+0.5)/10)*TAU;
+      var tx1 = cx + (R-10)*Math.cos(a), ty1 = cy + (R-10)*Math.sin(a);
+      var tx2 = cx + (R+6)*Math.cos(a), ty2 = cy + (R+6)*Math.sin(a);
+      ctx.save(); ctx.globalAlpha = seg.alpha;
+      ctx.beginPath(); ctx.moveTo(tx1,ty1); ctx.lineTo(tx2,ty2);
+      ctx.strokeStyle = seg.lit ? 'rgba(255,180,50,0.9)' : 'rgba(255,106,0,0.4)';
+      ctx.lineWidth = 1.5; ctx.stroke(); ctx.restore();
+    }
+
+    /* Inner concentric rings pulse */
+    for(var ring=1;ring<=3;ring++){
+      ctx.save(); ctx.globalAlpha = this.innerPulse * (0.12 / ring);
+      ctx.beginPath(); ctx.arc(cx,cy,R*(0.3+ring*0.15),0,TAU);
+      ctx.strokeStyle = 'rgba(255,170,50,1)'; ctx.lineWidth=0.5; ctx.stroke();
+      ctx.restore();
+    }
+
+    /* Radar sweep line */
+    var sweepEndX = cx + R*1.05*Math.cos(this.sweepAngle);
+    var sweepEndY = cy + R*1.05*Math.sin(this.sweepAngle);
+    ctx.save(); ctx.globalAlpha = 0.15;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(sweepEndX,sweepEndY);
+    ctx.strokeStyle = 'rgba(255,200,100,1)'; ctx.lineWidth=1; ctx.stroke();
+    ctx.restore();
+
+    /* Trail particles */
+    for(var j=0;j<this.trailParticles.length;j++){
+      var tp = this.trailParticles[j];
+      var px = cx + (R+tp.drift)*Math.cos(tp.angle);
+      var py = cy + (R+tp.drift)*Math.sin(tp.angle);
+      ctx.save(); ctx.globalAlpha = tp.life*0.5;
+      ctx.beginPath(); ctx.arc(px,py,tp.r,0,TAU);
+      ctx.fillStyle='rgba(255,200,120,0.9)'; ctx.fill(); ctx.restore();
+    }
+
+    /* Center glow when near complete */
+    if(this.arcPct > 0.9){
+      var cIntensity = (this.arcPct-0.9)/0.078;
+      ctx.save(); ctx.globalAlpha = cIntensity * 0.08;
+      var cgg = ctx.createRadialGradient(cx,cy,0,cx,cy,R*0.4);
+      cgg.addColorStop(0,'rgba(255,200,80,1)');
+      cgg.addColorStop(1,'rgba(255,106,0,0)');
+      ctx.fillStyle=cgg; ctx.fillRect(cx-R*0.4,cy-R*0.4,R*0.8,R*0.8);
+      ctx.restore();
+    }
+
+    ctx.restore();
+  };
+
+  RASFX.prototype.destroy = function(){this.trailParticles=[];this.arcPct=0;};
+
+  /* ═══════════════════════════════════════════════════════
+     5. ELECTRIC FX — "Lightning Storm"
+     Branching lightning bolts crackle across the card.
+     Spark particles. Initial flash. Electric static.
+     ═══════════════════════════════════════════════════════ */
+  function ElectricFX(ctx,cvs,card){this.ctx=ctx;this.cvs=cvs;this.card=card;this.w=0;this.h=0;}
+
+  ElectricFX.prototype.init = function(){
+    this.time = 0; this.boltTimer = 0; this.flashAlpha = 0.35;
+    this.bolts = [];
+    this.sparks = [];
+    this.staticNoise = [];
+    /* Initial bolt */
+    this._spawnBolt();
+  };
+
+  ElectricFX.prototype._spawnBolt = function(){
+    var w=this.w, h=this.h;
+    /* Start from random edge */
+    var side = randInt(0,3);
+    var sx,sy,ex,ey;
+    if(side===0){sx=0;sy=rand(h*0.2,h*0.8);ex=w;ey=rand(h*0.2,h*0.8);}
+    else if(side===1){sx=w;sy=rand(h*0.2,h*0.8);ex=0;ey=rand(h*0.2,h*0.8);}
+    else if(side===2){sx=rand(w*0.2,w*0.8);sy=0;ex=rand(w*0.2,w*0.8);ey=h;}
+    else{sx=rand(w*0.2,w*0.8);sy=h;ex=rand(w*0.2,w*0.8);ey=0;}
+    var points = this._buildBolt(sx,sy,ex,ey,6);
+    this.bolts.push({points:points, life:1, decay:rand(1.2,2.5), width:rand(1.5,3)});
+
+    /* Branch bolts */
+    if(points.length > 4){
+      var bIdx = randInt(2, Math.min(points.length-2, 6));
+      var bp = points[bIdx];
+      var bex = bp[0]+rand(-80,80), bey = bp[1]+rand(-80,80);
+      var bPoints = this._buildBolt(bp[0],bp[1],bex,bey,3);
+      this.bolts.push({points:bPoints, life:0.8, decay:rand(2,4), width:rand(0.8,1.8)});
+    }
+
+    /* Sparks at endpoints */
+    for(var s=0;s<12;s++){
+      var ang = rand(0,TAU);
+      this.sparks.push({
+        x:ex, y:ey, vx:Math.cos(ang)*rand(30,150), vy:Math.sin(ang)*rand(30,150),
+        life:1, decay:rand(2,5), r:rand(0.5,2)
+      });
+    }
+  };
+
+  ElectricFX.prototype._buildBolt = function(sx,sy,ex,ey,segments){
+    var pts = [[sx,sy]];
+    var dx=(ex-sx)/segments, dy=(ey-sy)/segments;
+    for(var i=1;i<segments;i++){
+      var jitter = 20 + (segments-i)*5;
+      pts.push([sx+dx*i+rand(-jitter,jitter), sy+dy*i+rand(-jitter,jitter)]);
+    }
+    pts.push([ex,ey]);
+    return pts;
+  };
+
+  ElectricFX.prototype.update = function(dt){
+    this.time += dt;
+    this.boltTimer += dt;
+    this.flashAlpha = clamp(this.flashAlpha - dt*2, 0, 0.35);
+
+    /* New bolt periodically */
+    if(this.boltTimer > rand(0.3,0.7)){
+      this.boltTimer = 0;
+      this._spawnBolt();
+      this.flashAlpha = 0.12;
+    }
+
+    /* Decay bolts */
+    for(var i=this.bolts.length-1;i>=0;i--){
+      this.bolts[i].life -= this.bolts[i].decay*dt;
+      if(this.bolts[i].life<=0) this.bolts.splice(i,1);
+    }
+
+    /* Sparks */
+    for(var j=this.sparks.length-1;j>=0;j--){
+      var sp = this.sparks[j];
+      sp.x += sp.vx*dt; sp.y += sp.vy*dt;
+      sp.vy += 40*dt;
+      sp.life -= sp.decay*dt;
+      if(sp.life<=0) this.sparks.splice(j,1);
+    }
+
+    /* Static noise */
+    if(Math.random()<0.3){
+      this.staticNoise.push({
+        x:rand(0,this.w), y:rand(0,this.h),
+        w:rand(2,30), h:rand(0.5,1.5), life:1, decay:rand(6,12)
+      });
+    }
+    for(var k=this.staticNoise.length-1;k>=0;k--){
+      this.staticNoise[k].life -= this.staticNoise[k].decay*dt;
+      if(this.staticNoise[k].life<=0) this.staticNoise.splice(k,1);
+    }
+  };
+
+  ElectricFX.prototype.draw = function(){
+    var ctx=this.ctx, w=this.w, h=this.h;
+
+    /* Flash overlay */
+    if(this.flashAlpha>0.005){
+      ctx.save(); ctx.globalAlpha = this.flashAlpha;
+      ctx.fillStyle = 'rgba(180,200,255,1)';
+      ctx.fillRect(0,0,w,h); ctx.restore();
+    }
+
+    /* Lightning bolts */
+    for(var i=0;i<this.bolts.length;i++){
+      var b = this.bolts[i];
+      /* Core bolt */
+      ctx.save(); ctx.globalAlpha = b.life;
+      ctx.beginPath();
+      ctx.moveTo(b.points[0][0], b.points[0][1]);
+      for(var p=1;p<b.points.length;p++){
+        ctx.lineTo(b.points[p][0], b.points[p][1]);
+      }
+      ctx.strokeStyle = 'rgba(180,200,255,0.9)'; ctx.lineWidth = b.width;
+      ctx.shadowColor = 'rgba(100,150,255,0.6)'; ctx.shadowBlur = 8;
+      ctx.stroke();
+
+      /* Glow layer */
+      ctx.beginPath();
+      ctx.moveTo(b.points[0][0], b.points[0][1]);
+      for(var q=1;q<b.points.length;q++){
+        ctx.lineTo(b.points[q][0], b.points[q][1]);
+      }
+      ctx.strokeStyle = 'rgba(255,106,0,0.4)'; ctx.lineWidth = b.width*3;
+      ctx.shadowColor = 'rgba(255,106,0,0.3)'; ctx.shadowBlur = 15;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    /* Sparks */
+    for(var j=0;j<this.sparks.length;j++){
+      var sp = this.sparks[j];
+      ctx.save(); ctx.globalAlpha = sp.life;
+      ctx.beginPath(); ctx.arc(sp.x,sp.y,sp.r,0,TAU);
+      ctx.fillStyle = 'rgba(200,220,255,0.9)'; ctx.fill();
+      ctx.restore();
+    }
+
+    /* Static noise lines */
+    for(var k=0;k<this.staticNoise.length;k++){
+      var sn = this.staticNoise[k];
+      ctx.save(); ctx.globalAlpha = sn.life*0.15;
+      ctx.fillStyle = 'rgba(180,200,255,1)';
+      ctx.fillRect(sn.x, sn.y, sn.w, sn.h);
+      ctx.restore();
+    }
+  };
+
+  ElectricFX.prototype.destroy = function(){this.bolts=[];this.sparks=[];this.staticNoise=[];};
+
+  /* ═══════════════════════════════════════════════════════
+     6. GRAVITY FX — "Mass Field"
+     Particles orbit and spiral inward toward a central
+     gravity well. Concentric force rings contract.
+     Gravitational lensing distortion.
+     ═══════════════════════════════════════════════════════ */
+  function GravityFX(ctx,cvs,card){this.ctx=ctx;this.cvs=cvs;this.card=card;this.w=0;this.h=0;}
+
+  GravityFX.prototype.init = function(){
+    this.time = 0;
+    this.particles = [];
+    var cx=this.w*0.5, cy=this.h*0.5;
+    for(var i=0;i<30;i++){
+      var ang = rand(0,TAU);
+      var orbitR = rand(30,Math.min(this.w,this.h)*0.48);
+      this.particles.push({
+        angle: ang, orbitR: orbitR, startR: orbitR,
+        speed: rand(0.5,2) * (Math.random()>0.5?1:-1),
+        r: rand(1,3), alpha: rand(0.2,0.7),
+        spiralRate: rand(3,12)
+      });
+    }
+    this.forceRings = [];
+    for(var j=0;j<5;j++){
+      this.forceRings.push({r: 20+j*25, targetR: 20+j*25, alpha:0.15-j*0.02});
+    }
+    this.coreGlow = 0;
+  };
+
+  GravityFX.prototype.update = function(dt){
+    this.time += dt;
+    this.coreGlow = 0.1 + 0.05*Math.sin(this.time*2);
+
+    for(var i=this.particles.length-1;i>=0;i--){
+      var p = this.particles[i];
+      p.angle += p.speed*dt;
+      p.orbitR -= p.spiralRate*dt;
+      if(p.orbitR < 3){
+        /* Reset particle to outer edge */
+        p.orbitR = p.startR;
+        p.angle = rand(0,TAU);
+      }
+    }
+
+    /* Contracting force rings */
+    for(var j=0;j<this.forceRings.length;j++){
+      var fr = this.forceRings[j];
+      fr.r -= 15*dt;
+      if(fr.r < 8){
+        fr.r = fr.targetR + 10;
+      }
+    }
+  };
+
+  GravityFX.prototype.draw = function(){
+    var ctx=this.ctx, w=this.w, h=this.h, cx=w*0.5, cy=h*0.5;
+
+    /* Dark gravitational well center */
+    ctx.save();
+    var dg = ctx.createRadialGradient(cx,cy,0,cx,cy,40);
+    dg.addColorStop(0,'rgba(0,0,0,0.3)');
+    dg.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle = dg; ctx.fillRect(cx-40,cy-40,80,80);
+    ctx.restore();
+
+    /* Force field rings (contracting) */
+    for(var j=0;j<this.forceRings.length;j++){
+      var fr = this.forceRings[j];
+      ctx.save(); ctx.globalAlpha = fr.alpha * clamp(fr.r/fr.targetR,0.2,1);
+      ctx.beginPath(); ctx.arc(cx,cy,fr.r,0,TAU);
+      ctx.strokeStyle = 'rgba(255,106,0,0.5)'; ctx.lineWidth = 0.8;
+      ctx.setLineDash([3,5]); ctx.stroke();
+      ctx.restore();
+    }
+
+    /* Orbiting particles with trails */
+    for(var i=0;i<this.particles.length;i++){
+      var p = this.particles[i];
+      var px = cx + p.orbitR*Math.cos(p.angle);
+      var py = cy + p.orbitR*Math.sin(p.angle);
+      var closeness = 1 - clamp(p.orbitR/p.startR,0,1);
+
+      /* Trail (small arc behind particle) */
+      ctx.save();
+      ctx.globalAlpha = p.alpha * 0.3 * (1+closeness);
+      ctx.beginPath();
+      var trailAng = p.speed > 0 ? -0.3 : 0.3;
+      ctx.arc(cx,cy,p.orbitR, p.angle+trailAng, p.angle);
+      ctx.strokeStyle = 'rgba(255,150,50,0.6)';
+      ctx.lineWidth = p.r*0.8; ctx.stroke(); ctx.restore();
+
+      /* Particle dot */
+      ctx.save();
+      var pAlpha = p.alpha * (0.5 + closeness*0.5);
+      ctx.globalAlpha = pAlpha;
+      ctx.beginPath(); ctx.arc(px,py,p.r*(1+closeness*0.5),0,TAU);
+      ctx.fillStyle = closeness > 0.7
+        ? 'rgba(255,220,150,0.9)'
+        : 'rgba(255,140,50,0.8)';
+      ctx.fill();
+      /* Glow */
+      if(closeness > 0.5){
+        var gg = ctx.createRadialGradient(px,py,0,px,py,p.r*4);
+        gg.addColorStop(0,'rgba(255,180,80,0.3)');
+        gg.addColorStop(1,'rgba(255,106,0,0)');
+        ctx.fillStyle=gg; ctx.fillRect(px-p.r*4,py-p.r*4,p.r*8,p.r*8);
+      }
+      ctx.restore();
+    }
+
+    /* Core accretion glow */
+    ctx.save(); ctx.globalAlpha = this.coreGlow;
+    var cg = ctx.createRadialGradient(cx,cy,0,cx,cy,20);
+    cg.addColorStop(0,'rgba(255,180,60,0.7)');
+    cg.addColorStop(0.5,'rgba(255,106,0,0.3)');
+    cg.addColorStop(1,'rgba(255,106,0,0)');
+    ctx.fillStyle = cg; ctx.fillRect(cx-20,cy-20,40,40);
+    ctx.restore();
+
+    /* Compression lines (horizontal, heavier near center) */
+    ctx.save(); ctx.globalAlpha = 0.04;
+    ctx.strokeStyle = 'rgba(255,106,0,1)'; ctx.lineWidth = 0.5;
+    for(var cl=0;cl<8;cl++){
+      var cly = cy + (cl-3.5)*12;
+      var squeeze = 1 - Math.abs(cl-3.5)/4;
+      ctx.globalAlpha = 0.03 + squeeze*0.04;
+      ctx.beginPath(); ctx.moveTo(cx-50*squeeze,cly); ctx.lineTo(cx+50*squeeze,cly);
+      ctx.stroke();
+    }
+    ctx.restore();
+  };
+
+  GravityFX.prototype.destroy = function(){this.particles=[];};
+
+})();
