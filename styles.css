@@ -2962,7 +2962,7 @@ table th{color:var(--orange2)!important;font-weight:900}
 .dc-metric-hero{
   opacity:0;transform:translateY(20px);
 }
-.dc-metric-heroes.dc-in-view .dc-metric-hero{animation:dcMetricIn .6s var(--ease-out-expo) both, dcMetricPulse 1.5s ease .8s}
+.dc-metric-heroes.dc-in-view .dc-metric-hero{animation:dcMetricIn .6s var(--ease-out-expo) both, dcMetricPulse 1.5s ease .8s both}
 .dc-metric-heroes.dc-in-view .dc-metric-hero:nth-child(1){animation-delay:0s}
 .dc-metric-heroes.dc-in-view .dc-metric-hero:nth-child(2){animation-delay:.1s}
 .dc-metric-heroes.dc-in-view .dc-metric-hero:nth-child(3){animation-delay:.2s}
