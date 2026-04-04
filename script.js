@@ -775,6 +775,13 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   var section = document.querySelector('.dc-section');
   if(!section) return;
 
+  /* Inject reverse panel animation keyframes */
+  var styleSheet = document.createElement('style');
+  styleSheet.textContent = 
+    '@keyframes dcPanelInReverse{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}' +
+    '@keyframes dcPanelOutReverse{from{opacity:1;transform:none}to{opacity:0;transform:translateX(30px)}}';
+  document.head.appendChild(styleSheet);
+
   /* ── Featured Athlete Data (from existing HTML content) ── */
   var featuredAthletes = [
     {name:'Jalen Camp',pos:'WR',school:'Georgia Tech',pro:'Jacksonville Jaguars',
@@ -925,34 +932,61 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     window.addEventListener('resize', resizeCanvas);
   }
 
+  /* ── Cursor Proximity Glow ─────────────────────────────── */
+  var cursorGlow = document.getElementById('dcCursorGlow');
+  if(cursorGlow){
+    section.addEventListener('mousemove', function(e){
+      var rect = section.getBoundingClientRect();
+      cursorGlow.style.left = (e.clientX - rect.left) + 'px';
+      cursorGlow.style.top = (e.clientY - rect.top) + 'px';
+    });
+  }
+
   /* ── Tab Switching (Command Control Strip) ─────────────── */
   var dcTabs = section.querySelectorAll('.dc-tab');
   var dcPanels = section.querySelectorAll('.dc-panel');
 
-  dcTabs.forEach(function(tab){
+  var lastTabIndex = 0;
+  var tabOrder = ['featured','alumni','room','metrics'];
+
+  dcTabs.forEach(function(tab, tabIdx){
     tab.addEventListener('click', function(){
       var targetTab = tab.getAttribute('data-tab');
       var targetPanel = document.getElementById('dc-' + targetTab);
       if(!targetPanel) return;
+      var newIdx = tabOrder.indexOf(targetTab);
 
-      /* Deactivate all tabs */
       dcTabs.forEach(function(t){ t.classList.remove('active'); });
       tab.classList.add('active');
 
-      /* Animate out current panel, then show new one */
       var currentPanel = section.querySelector('.dc-panel:not(.dc-hidden)');
       if(currentPanel && currentPanel !== targetPanel){
-        currentPanel.classList.add('dc-exiting');
+        /* Directional exit */
+        var goRight = newIdx > lastTabIndex;
+        currentPanel.style.animation = 'none';
+        currentPanel.offsetHeight; /* reflow */
+        currentPanel.style.animation = goRight ? 
+          'dcPanelOut .4s ease both' : 
+          'dcPanelOutReverse .4s ease both';
+        
         setTimeout(function(){
-          dcPanels.forEach(function(p){ p.classList.add('dc-hidden'); p.classList.remove('dc-exiting'); });
+          dcPanels.forEach(function(p){ 
+            p.classList.add('dc-hidden'); 
+            p.style.animation = ''; 
+          });
           targetPanel.classList.remove('dc-hidden');
-          /* Trigger metric animations when metrics tab opens */
+          targetPanel.style.animation = 'none';
+          targetPanel.offsetHeight;
+          targetPanel.style.animation = goRight ?
+            'dcPanelIn .45s var(--ease-out-expo) both' :
+            'dcPanelInReverse .45s var(--ease-out-expo) both';
+          
           if(targetTab === 'metrics'){
             triggerMetricAnimations();
           }
-          /* Re-stagger card animations */
           restaggerCards(targetPanel);
-        }, 300);
+          lastTabIndex = newIdx;
+        }, 400);
       }
     });
   });
@@ -1012,6 +1046,11 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       if(posEl) posEl.textContent = a.pos;
       if(schoolEl) schoolEl.textContent = a.school;
       if(proEl) proEl.textContent = a.pro;
+
+      var routeSchool = document.getElementById('dcRouteSchool');
+      var routePro = document.getElementById('dcRoutePro');
+      if(routeSchool) routeSchool.textContent = a.school;
+      if(routePro) routePro.textContent = a.pro;
       if(bioEl) bioEl.textContent = a.bio;
       if(linkEl){ linkEl.href = a.link; linkEl.textContent = a.linkText; }
 
@@ -1135,7 +1174,17 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
             '<span class="dc-legacy-badge">' + esc(item.school) + '</span>' +
           '</div>' +
         '</div>';
-      card.addEventListener('click', function(){ openBoardLock(item); });
+      card.addEventListener('click', function(e){
+        if(e.shiftKey || e.ctrlKey || e.metaKey){
+          toggleCompare(item);
+        } else {
+          openBoardLock(item);
+        }
+      });
+      card.addEventListener('contextmenu', function(e){
+        e.preventDefault();
+        toggleCompare(item);
+      });
       grid.appendChild(card);
     });
     restaggerCards(grid);
@@ -1181,11 +1230,12 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   function sortData(data, key){
     return data.slice().sort(function(a, b){
       if(key === 'position') return (a.position || '').localeCompare(b.position || '');
+      if(key === 'school') return (a.school || '').localeCompare(b.school || '');
       return (a.name || '').localeCompare(b.name || '');
     });
   }
 
-  /* View toggle (grid/compact) */
+  /* View toggle (grid/compact/dossier) */
   var viewBtns = section.querySelectorAll('.dc-view-btn');
   viewBtns.forEach(function(btn){
     btn.addEventListener('click', function(){
@@ -1193,13 +1243,122 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       btn.classList.add('active');
       var grid = document.getElementById('dcRoomGrid');
       if(!grid) return;
-      if(btn.getAttribute('data-view') === 'compact'){
-        grid.classList.add('dc-compact');
-      } else {
-        grid.classList.remove('dc-compact');
-      }
+      var view = btn.getAttribute('data-view');
+      grid.classList.remove('dc-compact', 'dc-dossier');
+      if(view === 'compact') grid.classList.add('dc-compact');
+      else if(view === 'dossier') grid.classList.add('dc-dossier');
     });
   });
+
+  /* ── Compare Mode ──────────────────────────────────────── */
+  var compareSlots = [];
+  var compareDock = document.getElementById('dcCompareDock');
+  var compareSlotsEl = document.getElementById('dcCompareSlots');
+  var compareBtn = document.getElementById('dcCompareBtn');
+  var compareClear = document.getElementById('dcCompareClear');
+
+  function toggleCompare(item){
+    var idx = compareSlots.findIndex(function(s){ return s.name === item.name; });
+    if(idx > -1){
+      compareSlots.splice(idx, 1);
+    } else {
+      if(compareSlots.length >= 3) return; /* Max 3 */
+      compareSlots.push(item);
+    }
+    updateCompareDock();
+    updateCompareHighlights();
+  }
+
+  function updateCompareDock(){
+    if(!compareDock || !compareSlotsEl) return;
+    if(compareSlots.length > 0){
+      compareDock.classList.add('dc-dock-visible');
+    } else {
+      compareDock.classList.remove('dc-dock-visible');
+    }
+    compareSlotsEl.innerHTML = '';
+    compareSlots.forEach(function(item, i){
+      var photo = playerPhotos[item.name] || item.photo || '';
+      var slot = document.createElement('div');
+      slot.className = 'dc-compare-slot';
+      slot.innerHTML = (photo ? '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '"/>' : '') +
+        '<span class="dc-slot-remove" data-idx="' + i + '">&times;</span>';
+      slot.querySelector('.dc-slot-remove').addEventListener('click', function(e){
+        e.stopPropagation();
+        compareSlots.splice(i, 1);
+        updateCompareDock();
+        updateCompareHighlights();
+      });
+      compareSlotsEl.appendChild(slot);
+    });
+  }
+
+  function updateCompareHighlights(){
+    section.querySelectorAll('.dc-athlete-card').forEach(function(card){
+      var name = card.querySelector('h4') ? card.querySelector('h4').textContent : '';
+      var isSelected = compareSlots.some(function(s){ return s.name === name; });
+      card.classList.toggle('dc-selected', isSelected);
+    });
+  }
+
+  if(compareBtn){
+    compareBtn.addEventListener('click', function(){
+      if(compareSlots.length < 2) return;
+      openCompareView();
+    });
+  }
+  if(compareClear){
+    compareClear.addEventListener('click', function(){
+      compareSlots = [];
+      updateCompareDock();
+      updateCompareHighlights();
+    });
+  }
+
+  function openCompareView(){
+    if(!lockOverlay || !lockContent) return;
+    var html = '<button class="dc-lock-close" aria-label="Close">&times;</button>';
+    html += '<h3 style="font-size:24px;font-weight:900;color:#fff;margin:0 0 20px;letter-spacing:-.03em">Athlete Comparison</h3>';
+    html += '<div style="display:grid;grid-template-columns:repeat(' + compareSlots.length + ',1fr);gap:16px">';
+    
+    compareSlots.forEach(function(item){
+      var d = findDraftData(item.name);
+      var photo = playerPhotos[item.name] || item.photo || '';
+      var statsHtml = '';
+      if(d){
+        var metrics = [
+          {label:'40-Yard',val:d.forty},
+          {label:'Vertical',val:d.vert ? d.vert + '″' : null},
+          {label:'Bench',val:d.bench ? d.bench + ' reps' : null},
+          {label:'Broad',val:d.broad ? d.broad + '″' : null},
+          {label:'Weight',val:d.weight ? d.weight + ' lbs' : null},
+          {label:'RAS',val:d.ras}
+        ];
+        metrics.forEach(function(m){
+          if(m.val != null){
+            statsHtml += '<div class="dc-lock-stat"><strong>' + m.val + '</strong><span>' + m.label + '</span></div>';
+          }
+        });
+      }
+      html += '<div style="text-align:center">' +
+        '<div style="width:100px;height:100px;border-radius:16px;overflow:hidden;margin:0 auto 12px;border:2px solid rgba(255,106,0,.2)">' +
+          (photo ? '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '" style="width:100%;height:100%;object-fit:cover"/>' : '') +
+        '</div>' +
+        '<h4 style="font-size:18px;font-weight:900;color:#fff;margin:0 0 4px">' + esc(item.name) + '</h4>' +
+        '<p style="font-size:12px;color:var(--muted);margin:0 0 12px">' + esc(item.position) + ' · ' + esc(item.school) + '</p>' +
+        '<div class="dc-lock-stats" style="grid-template-columns:1fr">' + statsHtml + '</div>' +
+      '</div>';
+    });
+    html += '</div>';
+    
+    lockContent.innerHTML = html;
+    lockOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    lockContent.querySelector('.dc-lock-close').addEventListener('click', closeBoardLock);
+    lockOverlay.addEventListener('click', function handler(e){
+      if(e.target === lockOverlay){ closeBoardLock(); lockOverlay.removeEventListener('click', handler); }
+    });
+  }
 
   /* ── Metric Leaders Animations ────────────────────────── */
   function triggerMetricAnimations(){
@@ -1300,6 +1459,20 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
         '</div>' +
       '</div>' +
       (statsHtml ? '<div class="dc-lock-stats">' + statsHtml + '</div>' : '');
+
+    /* Add route line if school and pro data exist */
+    var routeHtml = '';
+    if(item.school || item.pro){
+      routeHtml = '<div class="dc-lock-route">' +
+        '<span class="dc-lock-route-node dc-node-school">' + esc(item.school || '') + '</span>' +
+        '<div class="dc-lock-route-line"></div>' +
+        (item.pro ? '<span class="dc-lock-route-node dc-node-pro">' + esc(item.pro) + '</span>' : '') +
+      '</div>';
+    }
+    var headerEl = lockContent.querySelector('.dc-lock-header');
+    if(headerEl && routeHtml){
+      headerEl.insertAdjacentHTML('afterend', routeHtml);
+    }
 
     lockOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
