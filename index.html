@@ -224,64 +224,247 @@
 </div>
 </div>
 </header>
-<section class="section" id="system">
-<div class="container grid-2">
-<div class="reveal">
-<span class="eyebrow">How we build the profile</span>
-<h2 class="section-title">The room is built around what scouts, families, and serious athletes actually care about.</h2>
-<p class="section-sub">We keep the standard precise and uncompromising. We coach acceleration, top-end speed, jump mechanics, force application, positional movement, recovery, and testing rhythm with the expectation that every athlete presents cleanly on paper and even better in person.</p>
-<div class="system-grid" style="margin-top:24px">
-<div class="system-card">
-<h3>Speed that carries</h3>
-<p>Start angles, shin position, front-side mechanics, projection, stiffness, and clean ground contact are coached so the stopwatch reflects the work. The result is speed that holds its shape when the testing gets real.</p>
-</div>
-<div class="system-card">
-<h3>Power that transfers</h3>
-<p>We tie weight-room output to jumps, force production, violent first steps, and movement that shows up in both testing and position drills. Strength is expected to carry into the field, not stay trapped in the rack.</p>
-</div>
-<div class="system-card">
-<h3>Position detail</h3>
-<p>Wideouts, defensive backs, linemen, linebackers, backs, and specialists do not need the same conversation. That matters here. Position detail stays specific so the work carries over cleanly to the athlete on the board.</p>
-</div>
-<div class="system-card">
-<h3>Readiness between sessions</h3>
-<p>Nutrition, recovery, and sports-medicine support stay connected to the work because real development does not stop when the set ends. Athletes are expected to recover with the same discipline they bring to training.</p>
-</div>
-</div>
-</div>
-<div class="stack reveal">
-<div class="card image-card">
-<img loading="lazy" alt="Jalen Camp profile graphic" src="Jalen.Camp.DraftProof.png" style="aspect-ratio:16/9;object-fit:contain;object-position:center center;background:transparent"/>
-<div class="label"><strong>Draft proof</strong><span>Profiles sharpen here and carry into draft weekend, camp evaluations, and next-level conversations.</span></div>
-</div>
-<div class="cards-4">
-<div class="card image-card draft-proof-card">
-<img loading="lazy" alt="Travis Bell draft graphic" src="710214b4-c6e6-4962-b402-5a6ce6d115d5.png"/>
-<div class="label"><strong>Historic results</strong><span>Real opportunity follows real preparation.</span></div>
-</div>
-<div class="card image-card carryover-card">
-<img loading="lazy" alt="Ahmarean Brown NFL carryover image" class="carryover-card-image" class="carryover-card-image" src="ahmarean brown.webp"/>
-<div class="label"><strong class="carryover-card-title">NEXT-LEVEL CARRYOVER</strong><span class="carryover-card-copy">The work should still look right after the testing cycle.</span></div>
-</div>
-<div class="combine-note reveal">
-<img loading="lazy" alt="Sean Martin player photo" src="Sean.Martin.WVU.NEW.png"/>
-<div class="combine-copy">
-<h4>Sean Martin</h4>
-<p>PPF carried a true NFL Combine participant through the cycle with a profile built on front-line size, verified testing strength, and movement that translates cleanly in the defensive front.</p>
-<span class="sub">NFL Combine participant • West Virginia</span>
-</div>
-</div>
-<div class="combine-note reveal">
-<img loading="lazy" alt="Torricelli Simpkins player photo" src="Torricelli.Simpkins.SC.png"/>
-<div class="combine-copy">
-<h4>Torricelli Simpkins</h4>
-<p>Few rooms can point to combine-level offensive line size and movement in the same view. This profile adds another clear marker of what the work can look like when it reaches the highest level and through the NFL Combine process.</p>
-<span class="sub">NFL Combine participant • South Carolina</span>
-</div>
-</div>
-</div>
-</div>
-</div>
+<section class="section sys-section" id="system">
+  <!-- Background Layers -->
+  <div class="sys-bg">
+    <div class="sys-grid-layer"></div>
+    <div class="sys-scan"></div>
+    <div class="sys-ambient"></div>
+    <div class="sys-float-metrics">
+      <span class="sys-float" style="top:12%;left:6%">4.29</span>
+      <span class="sys-float" style="top:28%;right:10%">39.5"</span>
+      <span class="sys-float" style="top:55%;left:4%">225</span>
+      <span class="sys-float" style="top:75%;right:7%">1.48s</span>
+      <span class="sys-float" style="top:18%;left:88%">10'6"</span>
+      <span class="sys-float" style="top:45%;right:3%">30</span>
+    </div>
+  </div>
+
+  <div class="container sys-wrap">
+    <!-- Boot Sequence Header -->
+    <div class="sys-boot" id="sysBoot">
+      <span class="sys-tag-line">PPF SYSTEM <span class="sys-sep">//</span> THE METHOD ENGINE</span>
+      <h2 class="sys-hero-title" id="sysTitle">WE DON'T SELL TRAINING. WE BUILD THE PROFILE.</h2>
+      <p class="sys-hero-sub">Speed. Power. Position. Readiness. Carryover. Each layer locks into place like part of a machine.</p>
+    </div>
+
+    <!-- Athlete Position Selector -->
+    <div class="sys-selector" id="sysSelector">
+      <span class="sys-selector-label">CHOOSE THE ATHLETE PATH</span>
+      <div class="sys-pos-row">
+        <button class="sys-pos active" data-pos="all">ALL</button>
+        <button class="sys-pos" data-pos="wr">WR</button>
+        <button class="sys-pos" data-pos="db">DB</button>
+        <button class="sys-pos" data-pos="rb">RB</button>
+        <button class="sys-pos" data-pos="lb">LB</button>
+        <button class="sys-pos" data-pos="dl">DL</button>
+        <button class="sys-pos" data-pos="ol">OL</button>
+      </div>
+    </div>
+
+    <!-- System Modules -->
+    <div class="sys-modules" id="sysModules">
+      <!-- 01 ACCELERATION -->
+      <div class="sys-module" data-module="speed">
+        <span class="sys-mod-idx">01</span>
+        <div class="sys-mod-head">
+          <h3 class="sys-mod-title">ACCELERATION</h3>
+          <span class="sys-mod-tag">Speed that survives the stopwatch.</span>
+        </div>
+        <div class="sys-mod-body">
+          <p class="sys-mod-detail"
+             data-default="Start angles, shin position, front-side mechanics, projection, stiffness, and clean ground contact — coached so the time reflects the work."
+             data-wr="Route-release burst and top-end speed built for separation at the catch point."
+             data-db="Explosive transition speed — backpedal to drive, click-and-close, and recovery angles coached frame by frame."
+             data-rb="First-step burst through the hole, second-level acceleration, and speed that carries through contact."
+             data-lb="Downhill burst and sideline-to-sideline speed built for pursuit, blitz timing, and coverage recovery."
+             data-dl="First-step explosion off the snap — get-off speed that collapses the pocket and disrupts timing."
+             data-ol="Quick-set speed in pass protection and explosive first step in the run game — movement that neutralizes speed rushers.">Start angles, shin position, front-side mechanics, projection, stiffness, and clean ground contact — coached so the time reflects the work.</p>
+        </div>
+        <div class="sys-proof-row">
+          <span class="sys-chip">4.29 verified forty</span>
+          <span class="sys-chip">NFL Combine speed</span>
+          <span class="sys-chip">Sub-1.50 10-yd splits</span>
+        </div>
+        <div class="sys-tracers">
+          <span class="sys-tracer">→ 40 time</span>
+          <span class="sys-tracer">→ 10-yd split</span>
+          <span class="sys-tracer">→ Top-end carry</span>
+        </div>
+      </div>
+
+      <!-- 02 FORCE -->
+      <div class="sys-module" data-module="power">
+        <span class="sys-mod-idx">02</span>
+        <div class="sys-mod-head">
+          <h3 class="sys-mod-title">FORCE</h3>
+          <span class="sys-mod-tag">Force that leaves the rack and shows up on the field.</span>
+        </div>
+        <div class="sys-mod-body">
+          <p class="sys-mod-detail"
+             data-default="Weight-room output tied to jumps, force production, violent first steps, and movement that shows up in both testing and position drills."
+             data-wr="Explosive jump mechanics and contested-catch power. Strength that shows up at the line and at the point of the catch."
+             data-db="Jam-press power, explosive plant-and-drive force, and vertical ability that makes plays at the highest point."
+             data-rb="Contact balance, leg drive through the hole, and power that translates to yards after contact."
+             data-lb="Stack-and-shed strength, explosive downhill force, and power to dominate at the point of attack."
+             data-dl="Violent hands, bull-rush power, and force application that collapses the pocket from every alignment."
+             data-ol="Anchor strength, drive-block power, and the ability to move defenders off the ball consistently.">Weight-room output tied to jumps, force production, violent first steps, and movement that shows up in both testing and position drills.</p>
+        </div>
+        <div class="sys-proof-row">
+          <span class="sys-chip">39.5" vert at 226 lbs</span>
+          <span class="sys-chip">30+ reps benchmark</span>
+          <span class="sys-chip">Verified broad jumps</span>
+        </div>
+        <div class="sys-tracers">
+          <span class="sys-tracer">→ Vertical jump</span>
+          <span class="sys-tracer">→ Broad jump</span>
+          <span class="sys-tracer">→ Bench press</span>
+        </div>
+      </div>
+
+      <!-- 03 POSITION -->
+      <div class="sys-module" data-module="position">
+        <span class="sys-mod-idx">03</span>
+        <div class="sys-mod-head">
+          <h3 class="sys-mod-title">POSITION</h3>
+          <span class="sys-mod-tag">Position work built for the athlete, not the group.</span>
+        </div>
+        <div class="sys-mod-body">
+          <p class="sys-mod-detail"
+             data-default="Wideouts, defensive backs, linemen, linebackers, backs, and specialists get position-specific coaching so the work carries over cleanly to the athlete on the board."
+             data-wr="Route trees, release packages, hand combat at the line, and break timing — built for the way receivers are actually evaluated."
+             data-db="Pedal-and-drive, press technique, zone eyes, transition footwork — built for the way defensive backs are actually graded."
+             data-rb="Vision development, pass protection technique, route running from the backfield — built for the modern three-down back."
+             data-lb="Run fits, coverage drops, blitz timing, stack-and-shed technique — built for the modern off-ball linebacker."
+             data-dl="Pass rush moves, hand technique, alignment versatility, run defense responsibility — built for the modern defensive front."
+             data-ol="Pass sets, combination blocks, pull technique, hand placement — built for the modern offensive line.">Wideouts, defensive backs, linemen, linebackers, backs, and specialists get position-specific coaching so the work carries over cleanly to the athlete on the board.</p>
+        </div>
+        <div class="sys-proof-row">
+          <span class="sys-chip">Combine participant carryover</span>
+          <span class="sys-chip">Position-specific protocols</span>
+        </div>
+        <div class="sys-tracers">
+          <span class="sys-tracer">→ Position drills</span>
+          <span class="sys-tracer">→ Film evaluation</span>
+          <span class="sys-tracer">→ Scout presentation</span>
+        </div>
+      </div>
+
+      <!-- 04 READINESS -->
+      <div class="sys-module" data-module="readiness">
+        <span class="sys-mod-idx">04</span>
+        <div class="sys-mod-head">
+          <h3 class="sys-mod-title">READINESS</h3>
+          <span class="sys-mod-tag">Recovery is part of the standard. Not the afterthought.</span>
+        </div>
+        <div class="sys-mod-body">
+          <p class="sys-mod-detail"
+             data-default="Nutrition, recovery, and sports-medicine support stay connected to the work. Athletes recover with the same discipline they bring to training."
+             data-wr="Receiver bodies need speed-maintenance nutrition, soft-tissue recovery, and session-to-session ankle and hip readiness protocols."
+             data-db="DB recovery protocols for hip mobility, CNS reset, and the high-volume footwork demand that defines the position."
+             data-rb="Running back recovery built around contact management, joint preservation, and maintaining burst across a full training cycle."
+             data-lb="Linebacker readiness protocols for managing the collision toll while maintaining lateral burst and coverage ability."
+             data-dl="D-line recovery built for heavy loading cycles — joint care, inflammation management, and maintaining first-step explosiveness."
+             data-ol="O-line readiness protocols for managing heavy squat and pull loading, shoulder recovery, and maintaining foot speed across the cycle.">Nutrition, recovery, and sports-medicine support stay connected to the work. Athletes recover with the same discipline they bring to training.</p>
+        </div>
+        <div class="sys-proof-row">
+          <span class="sys-chip">Full recovery integration</span>
+          <span class="sys-chip">Nutrition architecture</span>
+          <span class="sys-chip">Sports-medicine pipeline</span>
+        </div>
+        <div class="sys-tracers">
+          <span class="sys-tracer">→ Session readiness</span>
+          <span class="sys-tracer">→ Body composition</span>
+          <span class="sys-tracer">→ Repeatability</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Weak Links Rail -->
+    <div class="sys-rail" id="sysRail">
+      <span class="sys-rail-label">NO WEAK LINKS — THE FULL PROFILE</span>
+      <div class="sys-rail-items">
+        <span class="sys-rail-node" data-rail="1">Movement</span>
+        <span class="sys-rail-node" data-rail="2">Output</span>
+        <span class="sys-rail-node" data-rail="3">Body Composition</span>
+        <span class="sys-rail-node" data-rail="4">Recovery</span>
+        <span class="sys-rail-node" data-rail="5">Position Detail</span>
+        <span class="sys-rail-node" data-rail="6">Presentation</span>
+      </div>
+      <p class="sys-rail-statement">PPF doesn't train one trait. PPF closes the whole profile.</p>
+    </div>
+
+    <!-- Carryover Visualizer -->
+    <div class="sys-carryover" id="sysCarryover">
+      <span class="sys-tag-line">CARRYOVER CHAIN</span>
+      <h3 class="sys-co-title">Training input → Testing output</h3>
+      <div class="sys-pairs">
+        <div class="sys-pair">
+          <div class="sys-pair-in"><span class="sys-pair-dot"></span>Resisted March</div>
+          <div class="sys-pair-line"></div>
+          <div class="sys-pair-out">10-Yard Split Improvement</div>
+        </div>
+        <div class="sys-pair">
+          <div class="sys-pair-in"><span class="sys-pair-dot"></span>Force Development</div>
+          <div class="sys-pair-line"></div>
+          <div class="sys-pair-out">Broad / Vertical Transfer</div>
+        </div>
+        <div class="sys-pair">
+          <div class="sys-pair-in"><span class="sys-pair-dot"></span>Position Footwork</div>
+          <div class="sys-pair-line"></div>
+          <div class="sys-pair-out">Cleaner Break &amp; Separation</div>
+        </div>
+        <div class="sys-pair">
+          <div class="sys-pair-in"><span class="sys-pair-dot"></span>Recovery Discipline</div>
+          <div class="sys-pair-line"></div>
+          <div class="sys-pair-out">Readiness &amp; Repeatability</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Proof Gallery -->
+    <div class="sys-proof-section">
+      <div class="sys-proof-main">
+        <img loading="lazy" alt="Jalen Camp profile graphic" src="Jalen.Camp.DraftProof.png" style="aspect-ratio:16/9;object-fit:contain;object-position:center center;background:transparent"/>
+        <div class="sys-proof-label"><strong>Draft proof</strong><span>Profiles sharpen here and carry into draft weekend, camp evaluations, and next-level conversations.</span></div>
+      </div>
+      <div class="sys-proof-grid">
+        <div class="sys-proof-card">
+          <img loading="lazy" alt="Travis Bell draft graphic" src="710214b4-c6e6-4962-b402-5a6ce6d115d5.png"/>
+          <div class="sys-proof-label"><strong>Historic results</strong><span>Real opportunity follows real preparation.</span></div>
+        </div>
+        <div class="sys-proof-card">
+          <img loading="lazy" alt="Ahmarean Brown NFL carryover image" src="ahmarean brown.webp"/>
+          <div class="sys-proof-label"><strong>Next-level carryover</strong><span>The work should still look right after the testing cycle.</span></div>
+        </div>
+      </div>
+      <div class="sys-combine-notes">
+        <div class="sys-combine-note">
+          <img loading="lazy" alt="Sean Martin player photo" src="Sean.Martin.WVU.NEW.png"/>
+          <div class="sys-combine-copy">
+            <h4>Sean Martin</h4>
+            <p>NFL Combine participant. Profile built on front-line size, verified testing strength, and movement that translates cleanly in the defensive front.</p>
+            <span class="sys-combine-sub">NFL Combine participant • West Virginia</span>
+          </div>
+        </div>
+        <div class="sys-combine-note">
+          <img loading="lazy" alt="Torricelli Simpkins player photo" src="Torricelli.Simpkins.SC.png"/>
+          <div class="sys-combine-copy">
+            <h4>Torricelli Simpkins</h4>
+            <p>Combine-level offensive line size and movement. Another clear marker of what the work looks like when it reaches the highest level.</p>
+            <span class="sys-combine-sub">NFL Combine participant • South Carolina</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- End CTA -->
+    <div class="sys-cta" id="sysCta">
+      <div class="sys-cta-line"></div>
+      <p class="sys-cta-statement">THE TESTING DAY SHOULD CONFIRM THE WORK.<br>NOT REVEAL THE GAPS.</p>
+      <a href="#contact" class="btn sys-cta-btn">START YOUR PROFILE BUILD</a>
+    </div>
+  </div>
 </section>
 <section class="section dc-section" id="draft-board">
   <!-- Cinematic Background Layers -->

@@ -2400,7 +2400,7 @@ var draftData = [
 /* ── Enhanced 3D Card Tilt ──────────────────────────────── */
 (function(){
   if(window.matchMedia('(pointer: coarse)').matches) return;
-  var cards = document.querySelectorAll('.athlete-card, .system-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card, .pos-guide-card, .dr-card, .facility-card, .rc-partner-card, .rc-lab-module, .rc-outcome-card, .rc-cta-card, .path-card');
+  var cards = document.querySelectorAll('.athlete-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card, .pos-guide-card, .dr-card, .facility-card, .rc-partner-card, .rc-lab-module, .rc-outcome-card, .rc-cta-card, .path-card, .sys-proof-card, .sys-combine-note');
   cards.forEach(function(card){
     card.addEventListener('mousemove', function(e){
       var rect = card.getBoundingClientRect();
@@ -6076,4 +6076,150 @@ document.addEventListener('keydown', function(e){
     initRecoverySection();
   }
 
+})();
+
+/* ══════════════════════════════════════════════════════════
+   PPF SYSTEM — THE METHOD ENGINE
+   ══════════════════════════════════════════════════════════ */
+(function(){
+  var section = document.getElementById('system');
+  if(!section || !section.classList.contains('sys-section')) return;
+
+  var titleEl = document.getElementById('sysTitle');
+  var modules = section.querySelectorAll('.sys-module');
+  var rail = document.getElementById('sysRail');
+  var railNodes = rail ? rail.querySelectorAll('.sys-rail-node') : [];
+  var carryover = document.getElementById('sysCarryover');
+  var pairs = carryover ? carryover.querySelectorAll('.sys-pair') : [];
+  var cta = document.getElementById('sysCta');
+  var posButtons = section.querySelectorAll('.sys-pos');
+  var proofSection = section.querySelector('.sys-proof-section');
+  var booted = false;
+
+  /* ── Word-by-Word Title Reveal ───────────────── */
+  if(titleEl){
+    var raw = titleEl.textContent;
+    titleEl.innerHTML = '';
+    var parts = raw.split(/(\s+)/);
+    parts.forEach(function(part){
+      if(/^\s+$/.test(part)){
+        titleEl.appendChild(document.createTextNode(part));
+      } else {
+        var span = document.createElement('span');
+        span.className = 'sys-word';
+        span.textContent = part;
+        titleEl.appendChild(span);
+      }
+    });
+  }
+
+  /* ── Module Mouse Tracking (radial glow) ─────── */
+  if(!window.matchMedia('(pointer: coarse)').matches){
+    modules.forEach(function(mod){
+      mod.addEventListener('mousemove', function(e){
+        var rect = mod.getBoundingClientRect();
+        mod.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+        mod.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+      });
+    });
+  }
+
+  /* ── Position Selector ───────────────────────── */
+  posButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      posButtons.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var pos = btn.getAttribute('data-pos');
+      var details = section.querySelectorAll('.sys-mod-detail');
+      details.forEach(function(d){
+        d.classList.add('sys-switching');
+        setTimeout(function(){
+          var key = pos === 'all' ? 'default' : pos;
+          var txt = d.getAttribute('data-' + key);
+          if(txt) d.textContent = txt;
+          d.classList.remove('sys-switching');
+        }, 250);
+      });
+    });
+  });
+
+  /* ── Boot Observer ───────────────────────────── */
+  var bootObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting && !booted){
+        booted = true;
+        section.classList.add('sys-active');
+        var wordEls = titleEl ? titleEl.querySelectorAll('.sys-word') : [];
+        wordEls.forEach(function(w, i){
+          setTimeout(function(){ w.classList.add('sys-word-in'); }, 700 + i * 80);
+        });
+      }
+    });
+  }, {threshold:0.08});
+  bootObs.observe(section);
+
+  /* ── Rail Observer ───────────────────────────── */
+  if(rail){
+    var railObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          rail.classList.add('sys-vis');
+          railNodes.forEach(function(n, i){
+            setTimeout(function(){ n.classList.add('lit'); }, i * 180);
+          });
+          railObs.unobserve(rail);
+        }
+      });
+    }, {threshold:0.2});
+    railObs.observe(rail);
+  }
+
+  /* ── Carryover Observer ──────────────────────── */
+  if(carryover){
+    var coObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          carryover.classList.add('sys-vis');
+          pairs.forEach(function(p, i){
+            setTimeout(function(){ p.classList.add('sys-vis'); }, i * 180);
+          });
+          coObs.unobserve(carryover);
+        }
+      });
+    }, {threshold:0.12});
+    coObs.observe(carryover);
+  }
+
+  /* ── CTA Observer ────────────────────────────── */
+  if(cta){
+    var ctaObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          cta.classList.add('sys-vis');
+          ctaObs.unobserve(cta);
+        }
+      });
+    }, {threshold:0.2});
+    ctaObs.observe(cta);
+  }
+
+  /* ── Proof Section Stagger Reveal ────────────── */
+  if(proofSection){
+    var proofEls = proofSection.querySelectorAll('.sys-proof-main, .sys-proof-card, .sys-combine-note');
+    proofEls.forEach(function(el){
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity .6s cubic-bezier(0.16,1,0.3,1), transform .6s cubic-bezier(0.16,1,0.3,1)';
+    });
+    var proofObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'none';
+          proofObs.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.12});
+    proofEls.forEach(function(el){ proofObs.observe(el); });
+  }
 })();
