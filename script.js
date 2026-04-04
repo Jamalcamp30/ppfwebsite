@@ -1486,7 +1486,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
 /* ── Enhanced 3D Card Tilt ──────────────────────────────── */
 (function(){
   if(window.matchMedia('(pointer: coarse)').matches) return;
-  var cards = document.querySelectorAll('.athlete-card, .system-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card, .pos-guide-card, .dr-card, .facility-card, .recovery-modality-card, .path-card');
+  var cards = document.querySelectorAll('.athlete-card, .system-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card, .pos-guide-card, .dr-card, .facility-card, .rc-partner-card, .rc-lab-module, .rc-outcome-card, .rc-cta-card, .path-card');
   cards.forEach(function(card){
     card.addEventListener('mousemove', function(e){
       var rect = card.getBoundingClientRect();
@@ -4832,6 +4832,236 @@ document.addEventListener('keydown', function(e){
     document.addEventListener('DOMContentLoaded', initProofOfStandard);
   } else {
     initProofOfStandard();
+  }
+
+})();
+
+/* ══════════════════════════════════════════════════════════
+   PPF PERFORMANCE SUPPORT SYSTEM — Recovery Section JS
+   ══════════════════════════════════════════════════════════ */
+(function(){
+
+  /* ── Biometric Canvas Background ────────────────────── */
+  function initBioCanvas(){
+    var canvas = document.querySelector('.rc-bio-canvas');
+    if(!canvas) return;
+    var ctx = canvas.getContext('2d');
+    var w, h, nodes = [];
+    var nodeCount = 60;
+    var orange = {r:255,g:106,b:0};
+
+    function resize(){
+      w = canvas.parentElement.offsetWidth;
+      h = canvas.parentElement.offsetHeight;
+      canvas.width = w;
+      canvas.height = h;
+    }
+
+    function createNodes(){
+      nodes = [];
+      for(var i = 0; i < nodeCount; i++){
+        nodes.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          r: Math.random() * 2 + 1
+        });
+      }
+    }
+
+    function draw(){
+      ctx.clearRect(0, 0, w, h);
+      // connections
+      for(var i = 0; i < nodes.length; i++){
+        for(var j = i + 1; j < nodes.length; j++){
+          var dx = nodes[i].x - nodes[j].x;
+          var dy = nodes[i].y - nodes[j].y;
+          var dist = Math.sqrt(dx*dx + dy*dy);
+          if(dist < 150){
+            var alpha = (1 - dist/150) * 0.15;
+            ctx.strokeStyle = 'rgba('+orange.r+','+orange.g+','+orange.b+','+alpha+')';
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      // nodes
+      for(var k = 0; k < nodes.length; k++){
+        var n = nodes[k];
+        ctx.fillStyle = 'rgba('+orange.r+','+orange.g+','+orange.b+',0.3)';
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+        ctx.fill();
+        // move
+        n.x += n.vx;
+        n.y += n.vy;
+        if(n.x < 0 || n.x > w){ n.vx *= -1; n.x = Math.max(0, Math.min(w, n.x)); }
+        if(n.y < 0 || n.y > h){ n.vy *= -1; n.y = Math.max(0, Math.min(h, n.y)); }
+      }
+      requestAnimationFrame(draw);
+    }
+
+    resize();
+    createNodes();
+    draw();
+    window.addEventListener('resize', function(){
+      resize();
+      createNodes();
+    });
+  }
+
+  /* ── Lab Tabs ───────────────────────────────────────── */
+  function initLabTabs(){
+    var tabs = document.querySelectorAll('.rc-lab-tab');
+    var panels = document.querySelectorAll('.rc-lab-panel');
+    if(!tabs.length) return;
+    tabs.forEach(function(tab){
+      tab.addEventListener('click', function(){
+        var target = tab.getAttribute('data-lab');
+        tabs.forEach(function(t){ t.classList.remove('active'); });
+        panels.forEach(function(p){ p.classList.remove('active'); });
+        tab.classList.add('active');
+        var panelId = target === 'fuel' ? 'rc-fuel-lab' : 'rc-recover-lab';
+        var panel = document.getElementById(panelId);
+        if(panel) panel.classList.add('active');
+      });
+    });
+  }
+
+  /* ── Recovery Stack Builder ─────────────────────────── */
+  function initStackBuilder(){
+    var btns = document.querySelectorAll('.rc-need-btn');
+    var resultEl = document.getElementById('rc-stack-result');
+    if(!btns.length || !resultEl) return;
+
+    var stackData = {
+      'sore-legs':       {modalities:['Compression Therapy','Cold Plunge'],fuel:'Post-Training Recovery Shake',icon:'\uD83E\uDDB5',desc:'Sequential compression + cold immersion to flush waste and reduce lower-body soreness.'},
+      'tissue-irritation':{modalities:['PEMF Therapy','Red Light Therapy'],fuel:'Anti-Inflammatory Nutrition Support',icon:'\u26A1',desc:'Electromagnetic field + photobiomodulation for deep cellular repair and tissue restoration.'},
+      'fatigue':         {modalities:['Infrared Sauna','Cold Plunge','Compression Therapy'],fuel:'Recovery-Window Macros + Hydration',icon:'\uD83D\uDD25',desc:'Contrast therapy plus compression to reset the system and accelerate full-body recovery.'},
+      'heavy-week':      {modalities:['Compression Therapy','PEMF Therapy','Infrared Sauna','Cold Plunge'],fuel:'Full Nutrition Protocol + Daily Accountability',icon:'\uD83D\uDCCA',desc:'Complete recovery rotation \u2014 every modality structured across the training week.'},
+      'body-comp':       {modalities:['Infrared Sauna','Red Light Therapy'],fuel:'Macro Structuring + Supplementation',icon:'\uD83D\uDCD0',desc:'Metabolic support through infrared heat and photobiomodulation, paired with precision nutrition.'},
+      'combine-prep':    {modalities:['Compression Therapy','PEMF Therapy','Red Light Therapy','Infrared Sauna','Cold Plunge'],fuel:'Draft-Prep Meal Prep by Rebecca Camp',icon:'\uD83C\uDFC8',desc:'Full performance stack \u2014 every recovery and nutrition layer activated for combine-level readiness.'},
+      'return-rehab':    {modalities:['PEMF Therapy','Red Light Therapy','Rehab & Return-to-Play'],fuel:'Rehab-Phase Nutrition Adjustment',icon:'\uD83C\uDFE5',desc:'Clinical-grade rehab support through R5 & Alliance partnership, with targeted cellular recovery modalities.'},
+      'nervous-reset':   {modalities:['Cold Plunge','Infrared Sauna'],fuel:'Calming Nutrition + Hydration Protocol',icon:'\u2744\uFE0F',desc:'Contrast sequencing to activate parasympathetic recovery and reset the nervous system.'}
+    };
+
+    var selected = {};
+
+    btns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var need = btn.getAttribute('data-need');
+        if(selected[need]){
+          delete selected[need];
+          btn.classList.remove('selected');
+        } else {
+          selected[need] = true;
+          btn.classList.add('selected');
+        }
+        renderStack();
+      });
+    });
+
+    function renderStack(){
+      var keys = Object.keys(selected);
+      if(!keys.length){
+        resultEl.innerHTML = '<div class="rc-stack-empty">Select one or more needs above to build your stack.</div>';
+        return;
+      }
+      var modalSet = {};
+      var fuelSet = {};
+      keys.forEach(function(k){
+        var d = stackData[k];
+        if(!d) return;
+        d.modalities.forEach(function(m){ modalSet[m] = d.icon; });
+        fuelSet[d.fuel] = true;
+      });
+
+      var modalHTML = '';
+      Object.keys(modalSet).forEach(function(m){
+        modalHTML += '<div class="rc-stack-rec-item"><span class="rc-stack-rec-icon">' + modalSet[m] + '</span><div class="rc-stack-rec-text"><strong>' + m + '</strong>Included in your recovery stack</div></div>';
+      });
+      Object.keys(fuelSet).forEach(function(f){
+        modalHTML += '<div class="rc-stack-rec-item"><span class="rc-stack-rec-icon">\uD83C\uDF7D\uFE0F</span><div class="rc-stack-rec-text"><strong>' + f + '</strong>Fueling support recommendation</div></div>';
+      });
+
+      resultEl.innerHTML = '<div class="rc-stack-recommendation">' +
+        '<div class="rc-stack-rec-title">Your Recommended Recovery Stack</div>' +
+        '<div class="rc-stack-rec-items">' + modalHTML + '</div>' +
+        '<div class="rc-stack-rec-cta"><a href="#contact" class="btn primary">Build My Support Plan</a></div>' +
+        '</div>';
+    }
+  }
+
+  /* ── Cinematic Journey Scroll Animation ─────────────── */
+  function initJourneyAnimation(){
+    var steps = document.querySelectorAll('.rc-journey-step');
+    if(!steps.length) return;
+
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('rc-step-visible');
+        }
+      });
+    },{threshold:0.2, rootMargin:'0px 0px -50px 0px'});
+
+    steps.forEach(function(step, i){
+      step.style.transitionDelay = (i * 0.1) + 's';
+      observer.observe(step);
+    });
+  }
+
+  /* ── Outcome Card Toggle ────────────────────────────── */
+  function initOutcomeCards(){
+    var cards = document.querySelectorAll('.rc-outcome-card');
+    cards.forEach(function(card){
+      card.addEventListener('click', function(){
+        card.classList.toggle('active');
+      });
+    });
+  }
+
+  /* ── Status Chip Hover Highlight ────────────────────── */
+  function initChipInteraction(){
+    var chips = document.querySelectorAll('.rc-chip');
+    chips.forEach(function(chip){
+      chip.addEventListener('mouseenter', function(){
+        var system = chip.getAttribute('data-system');
+        var systemLower = system.toLowerCase();
+        document.querySelectorAll('.rc-meta-tag').forEach(function(tag){
+          if(tag.textContent.toLowerCase().indexOf(systemLower) !== -1){
+            tag.style.background = 'rgba(255,106,0,.2)';
+            tag.style.borderColor = 'rgba(255,106,0,.4)';
+          }
+        });
+      });
+      chip.addEventListener('mouseleave', function(){
+        document.querySelectorAll('.rc-meta-tag').forEach(function(tag){
+          tag.style.background = '';
+          tag.style.borderColor = '';
+        });
+      });
+    });
+  }
+
+  /* ── Init All ───────────────────────────────────────── */
+  function initRecoverySection(){
+    initBioCanvas();
+    initLabTabs();
+    initStackBuilder();
+    initJourneyAnimation();
+    initOutcomeCards();
+    initChipInteraction();
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initRecoverySection);
+  } else {
+    initRecoverySection();
   }
 
 })();
