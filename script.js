@@ -3045,7 +3045,7 @@ document.addEventListener('keydown', function(e){
 
     function loop(ts){
       if(!running) return;
-      var dt = Math.min(ts-t0, 50)/1000;
+      var dt = Math.min(ts-t0, 50)/1000; /* cap to 50ms to prevent jumps when tab is inactive */
       t0 = ts;
       ctx.clearRect(0,0, cvs.width, cvs.height);
       ctx.save();
@@ -3186,16 +3186,18 @@ document.addEventListener('keydown', function(e){
 
   VerticalFX.prototype.update = function(dt){
     this.time += dt;
-    this.barPct = clamp(this.barPct + dt*0.9, 0, 0.82); /* climb to ~39.5/48 */
+    this.barPct = clamp(this.barPct + dt*0.9, 0, 0.82); /* ~82% of bar height to represent 39.5″ */
     this.gridOffset = (this.gridOffset + 30*dt) % 20;
     for(var i=0;i<this.particles.length;i++){
       var p = this.particles[i];
       p.wobble += p.wobbleSpd*dt;
       p.x += p.vx*dt + Math.sin(p.wobble)*0.3;
       p.y += p.vy*dt;
-      if(p.y < -10) this.particles[i] = this._spawn();
-      if(this.particles[i] === p) this.particles[i].y = p.y;
-      else this.particles[i].y = this.h + 5;
+      if(p.y < -10){
+        /* Respawn at bottom and reset upward drift */
+        this.particles[i] = this._spawn();
+        this.particles[i].y = this.h + 5;
+      }
     }
     for(var j=0;j<this.ticks.length;j++){
       var tgt = (j/12 < this.barPct) ? 0.7 : 0.1;
@@ -3383,7 +3385,7 @@ document.addEventListener('keydown', function(e){
 
   RASFX.prototype.update = function(dt){
     this.time += dt;
-    this.arcPct = clamp(this.arcPct + dt*0.7, 0, 0.978);
+    this.arcPct = clamp(this.arcPct + dt*0.7, 0, 0.978); /* 97.8% = 9.78/10 RAS score */
     this.sweepAngle += dt*1.8;
     this.innerPulse = 0.3 + 0.2*Math.sin(this.time*3);
 
