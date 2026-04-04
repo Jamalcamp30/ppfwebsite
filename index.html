@@ -1677,22 +1677,145 @@
 </div>
 </section>
 
-<section class="section" id="media">
-<div class="container">
-<span class="eyebrow">Athlete testimonials</span>
-<h2 class="section-title reveal">Built on Power. Proven by People. Hear the PPF Experience in Their Words.</h2>
+<section class="section pos-section" id="media">
+<!-- Scanning grid background -->
+<div class="pos-scan-grid" aria-hidden="true"></div>
+<div class="pos-glow-orb" aria-hidden="true"></div>
 
-<div class="testimonial-grid reveal" style="margin-top:28px">
-<article class="card quote-card"><h3>Jalen Camp</h3><div class="quote-meta">Wide Receiver • Georgia Tech • Trained for 2021 Draft Class</div><p>"PPF gave me a training environment that was disciplined, detailed, and built around performance that translates. Every phase had purpose. The work on speed, power, movement quality, and testing preparation helped me walk into the draft process sharper, more confident, and better prepared to perform when it counted."</p></article>
-<article class="card quote-card"><h3>Travis Bell</h3><div class="quote-meta">Defensive Line • Kennesaw State • Trained for 2023 Draft Class</div><p>"PPF kept the preparation professional from start to finish. The structure, the coaching, and the expectation every day made the difference. I never felt like I was just working out. I felt like I was training with intention for a real opportunity."</p></article>
-<article class="card quote-card"><h3>Jack Coco</h3><div class="quote-meta">Long Snapper • Georgia Tech • Trained for 2022 Draft Class</div><p>"What stood out to me at PPF was how organized the work was. The room stays demanding, but it stays personal. You know exactly what you are being asked to improve, and you feel that every detail is there to help you present better when teams start evaluating."</p></article>
-<article class="card quote-card"><h3>Nathan Cottrell</h3><div class="quote-meta">Georgia Tech • Trained for 2020 Draft Class</div><p>"PPF brings a real standard to the process. It is competitive, but it is also precise. The coaching does not waste reps, and the expectation is that you show up every day ready to improve something measurable."</p></article>
-<article class="card quote-card"><h3>Ahmarean Brown</h3><div class="quote-meta">Wide Receiver • Georgia Tech / South Carolina • Trained for 2024 Draft Class</div><p>"PPF creates a performance environment that feels intentional from the moment you walk in. The work is sharp, demanding, and purposeful, and the standard inside the room brings your preparation in line with the level you are working to reach."</p></article>
-<article class="card quote-card"><h3>Robert Cooper</h3><div class="quote-meta">Defensive Tackle • Florida State • Trained for 2023 Draft Class</div><p>"The work at PPF stayed centered on exactly what matters when big men are being evaluated. The room demanded conditioning, power, movement efficiency, and consistency every day. That level of structure helped me carry more confidence into the pre-draft process and show up with a stronger profile when it was time to perform."</p></article>
-<article class="card quote-card"><h3>Kyler Baugh</h3><div class="quote-meta">Defensive Tackle • Minnesota / Houston Christian • Trained for 2024 Draft Class</div><p>"PPF made the preparation feel sharp, specific, and professional. The standard never drifted. Every block of work was tied to movement quality, testing detail, and the kind of physical readiness that has to show up when teams are looking closely. That clarity gives the process real value."</p></article>
-<article class="card quote-card"><h3>Torricelli Simpkins III</h3><div class="quote-meta">Offensive Line • North Carolina Central / South Carolina • Trained for 2025 Draft Class</div><p>"PPF gave the process a level of discipline that matched what the moment requires. The training stayed intentional, the expectations stayed high, and the details never got casual. It is the type of environment that helps an athlete look more complete on testing day and more prepared in every part of the evaluation."</p></article>
+<div class="container">
+
+<!-- Rotating headline -->
+<div class="pos-rotating-headline reveal">
+  <span class="pos-headline-text" data-headlines='["The Standard Speaks","Verified by the Athletes","Built in the Room","Proven Under Pressure","When the Preparation Is Real, the Voices Sound Different"]'>The Standard Speaks</span>
+  <div class="pos-headline-bar" aria-hidden="true"></div>
 </div>
-<div class="testimonial-close reveal">Real preparation leaves a real impression. The standard shows up in the work, the testing, and the way athletes carry themselves when opportunity arrives.</div>
+
+<h2 class="section-title pos-title reveal">Built in the Room. <span class="pos-title-accent">Proven by the Athletes.</span></h2>
+<p class="pos-subtitle reveal">These are not opinions floating in space. These are voices tied to real athletes, real roles, real preparation, and real outcomes.</p>
+
+<!-- Position filters -->
+<div class="pos-filters reveal" role="tablist" aria-label="Filter athletes by position">
+  <button class="pos-filter-btn active" data-filter="All" role="tab" aria-selected="true">All</button>
+  <button class="pos-filter-btn" data-filter="WR" role="tab" aria-selected="false">WR</button>
+  <button class="pos-filter-btn" data-filter="OL" role="tab" aria-selected="false">OL</button>
+  <button class="pos-filter-btn" data-filter="DL" role="tab" aria-selected="false">DL</button>
+  <button class="pos-filter-btn" data-filter="DB" role="tab" aria-selected="false">DB</button>
+  <button class="pos-filter-btn" data-filter="RB" role="tab" aria-selected="false">RB</button>
+  <button class="pos-filter-btn" data-filter="Specialist" role="tab" aria-selected="false">Specialist</button>
+</div>
+
+<!-- Journey mode toggle -->
+<div class="pos-journey-toggle reveal">
+  <span class="pos-toggle-label">View:</span>
+  <button class="pos-journey-btn active" data-journey="athlete">By Athlete</button>
+  <button class="pos-journey-btn" data-journey="draft-prep">Draft Prep</button>
+  <button class="pos-journey-btn" data-journey="pro-day">Pro Day</button>
+  <button class="pos-journey-btn" data-journey="development">Development</button>
+  <button class="pos-journey-btn" data-journey="standard">Performance Standard</button>
+</div>
+
+<!-- ═══ CINEMATIC SPOTLIGHT STAGE ═══ -->
+<div class="pos-spotlight reveal" id="posSpotlight">
+  <!-- Animated waveform behind the quote -->
+  <canvas class="pos-waveform" id="posWaveform" aria-hidden="true"></canvas>
+
+  <div class="pos-spotlight-inner">
+    <!-- LEFT: Dramatic athlete portrait -->
+    <div class="pos-portrait-wrap">
+      <div class="pos-portrait-frame">
+        <img class="pos-portrait-img" id="posPortrait" src="Jalen.Camp.Texans.featured.latest.jpg" alt="Jalen Camp portrait" loading="lazy">
+        <div class="pos-portrait-overlay" aria-hidden="true"></div>
+        <div class="pos-portrait-edge" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <!-- CENTER: Oversized quote treatment -->
+    <div class="pos-quote-stage">
+      <div class="pos-kinetic-marks" aria-hidden="true">
+        <span class="pos-mark pos-mark-open">&ldquo;</span>
+        <span class="pos-mark pos-mark-close">&rdquo;</span>
+      </div>
+      <blockquote class="pos-quote-text" id="posQuoteText">
+        PPF gave me a training environment that was <em class="pos-emphasis">disciplined</em>, detailed, and built around performance that translates. Every phase had purpose.
+      </blockquote>
+      <div class="pos-athlete-name" id="posAthleteName">Jalen Camp</div>
+
+      <!-- Proof ribbon under the quote -->
+      <div class="pos-proof-ribbon" id="posProofRibbon">
+        <span class="pos-chip" data-type="vert"><span class="pos-chip-label">Vert</span><span class="pos-chip-value">39.5"</span></span>
+        <span class="pos-chip" data-type="bench"><span class="pos-chip-label">Bench</span><span class="pos-chip-value">30</span></span>
+        <span class="pos-chip" data-type="forty"><span class="pos-chip-label">40</span><span class="pos-chip-value">4.39</span></span>
+        <span class="pos-chip" data-type="ras"><span class="pos-chip-label">RAS</span><span class="pos-chip-value">9.78</span></span>
+        <span class="pos-chip" data-type="pos"><span class="pos-chip-label">Pos</span><span class="pos-chip-value">WR</span></span>
+        <span class="pos-chip" data-type="class"><span class="pos-chip-label">Class</span><span class="pos-chip-value">2021</span></span>
+      </div>
+    </div>
+
+    <!-- RIGHT: Proof stack -->
+    <div class="pos-proof-stack" id="posProofStack">
+      <div class="pos-stack-item"><span class="pos-stack-label">Position</span><span class="pos-stack-value" id="posStackPos">Wide Receiver</span></div>
+      <div class="pos-stack-item"><span class="pos-stack-label">School</span><span class="pos-stack-value" id="posStackSchool">Georgia Tech</span></div>
+      <div class="pos-stack-item"><span class="pos-stack-label">Draft Class</span><span class="pos-stack-value" id="posStackClass">2021</span></div>
+      <div class="pos-stack-item"><span class="pos-stack-label">Trained For</span><span class="pos-stack-value" id="posStackTrained">NFL Draft</span></div>
+      <div class="pos-stack-item pos-stack-highlight"><span class="pos-stack-label">Pro Destination</span><span class="pos-stack-value" id="posStackPro">Houston Texans</span></div>
+      <div class="pos-stack-item"><span class="pos-stack-label">Best Trait</span><span class="pos-stack-value" id="posStackTrait">Elite burst-to-size ratio</span></div>
+    </div>
+  </div>
+
+  <!-- "Inside the Testimonial" expandable layer -->
+  <div class="pos-inside-panel" id="posInsidePanel">
+    <button class="pos-inside-toggle" id="posInsideToggle" aria-expanded="false">
+      <span class="pos-inside-icon">&#9660;</span> Inside the Testimonial
+    </button>
+    <div class="pos-inside-content" id="posInsideContent">
+      <div class="pos-inside-grid">
+        <div class="pos-inside-item"><span class="pos-inside-label">What Stood Out</span><span class="pos-inside-value" id="posInsideStoodOut">Disciplined environment with purpose-driven structure</span></div>
+        <div class="pos-inside-item"><span class="pos-inside-label">What Improved</span><span class="pos-inside-value" id="posInsideImproved">Speed, power, movement quality, testing preparation</span></div>
+        <div class="pos-inside-item"><span class="pos-inside-label">The Environment</span><span class="pos-inside-value" id="posInsideEnv">Professional, detailed, performance-driven</span></div>
+        <div class="pos-inside-item"><span class="pos-inside-label">Why It Mattered</span><span class="pos-inside-value" id="posInsideWhy">Walked into the draft process sharper, more confident</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAGNETIC ATHLETE RAIL ═══ -->
+<div class="pos-rail-wrap reveal">
+  <div class="pos-rail" id="posRail" role="listbox" aria-label="Select an athlete">
+    <!-- Cards injected by JS -->
+  </div>
+  <div class="pos-rail-connector" id="posRailConnector" aria-hidden="true"></div>
+</div>
+
+<!-- ═══ OUTCOME STRIP ═══ -->
+<div class="pos-outcome-strip reveal" aria-label="Performance outcomes">
+  <div class="pos-ticker-track">
+    <span class="pos-ticker-item">Verified Preparation</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+    <span class="pos-ticker-item">Position-Specific Coaching</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+    <span class="pos-ticker-item">Testing Structure</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+    <span class="pos-ticker-item">Real Accountability</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+    <span class="pos-ticker-item">Personal Environment</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+    <span class="pos-ticker-item">Performance That Carries</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+    <span class="pos-ticker-item">Verified Preparation</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+    <span class="pos-ticker-item">Position-Specific Coaching</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+    <span class="pos-ticker-item">Testing Structure</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+    <span class="pos-ticker-item">Real Accountability</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+    <span class="pos-ticker-item">Personal Environment</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+    <span class="pos-ticker-item">Performance That Carries</span>
+    <span class="pos-ticker-sep" aria-hidden="true">◆</span>
+  </div>
+</div>
+
 </div>
 </section>
 
