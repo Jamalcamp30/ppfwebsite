@@ -768,6 +768,632 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   document.querySelectorAll('.reveal').forEach(function(el){ observer.observe(el); });
 })();
 
+/* ══════════════════════════════════════════════════════════
+   PPF DRAFT COMMAND CENTER — Engine
+   ══════════════════════════════════════════════════════════ */
+(function(){
+  var section = document.querySelector('.dc-section');
+  if(!section) return;
+
+  /* ── Featured Athlete Data (from existing HTML content) ── */
+  var featuredAthletes = [
+    {name:'Jalen Camp',pos:'WR',school:'Georgia Tech',pro:'Jacksonville Jaguars',
+     photo:'Jalen.Camp.Texans.featured.latest.jpg',
+     bio:'Explosive size-speed profile with verified jump ability, bench strength, and receiver measurables that command attention across the board.',
+     link:'https://ramblinwreck.com/camp-selected-in-6th-round-of-nfl-draft/',linkText:'Official draft story',
+     stats:[{val:'39.5″',label:'Vertical',pct:95},{val:'30 reps',label:'Bench',pct:88},{val:'4.39',label:'40-Yard',pct:82}]},
+    {name:'Travis Bell',pos:'DT',school:'Kennesaw State',pro:'Chicago Bears',
+     photo:'Travis.Bell.2.jpeg',
+     bio:'Power, movement, and pro-day presence in a defensive line frame that carries real production and real attention on testing day.',
+     link:'https://ksuowls.com/news/2023/4/29/football-travis-bell-makes-history-as-first-owl-selected-in-nfl-draft.aspx',linkText:'Official draft story',
+     stats:[{val:'305 lb',label:'Frame',pct:92},{val:'30 reps',label:'Bench',pct:88},{val:'5.05',label:'40-Yard',pct:45}]},
+    {name:'Nathan Cottrell',pos:'RB',school:'Georgia Tech',pro:'Jacksonville Jaguars',
+     photo:'Nate.Cottrell.jpeg',
+     bio:'Backfield speed and pro-level versatility that translate cleanly from training to the next level.',
+     link:'https://ramblinwreck.com/cottrell-signs-with-jaguars/',linkText:'Official signing story',
+     stats:[{val:'4.38',label:'40-Yard',pct:90},{val:'29 reps',label:'Bench',pct:85},{val:'122″',label:'Broad',pct:80}]},
+    {name:'Jack Coco',pos:'LS',school:'Georgia Tech',pro:'Green Bay Packers',
+     photo:'Jack.Coco.png',
+     bio:'Specialist development built on detail, consistency, and clean execution in every phase of the work.',
+     link:'https://www.packers.com/news/longform/long-odds-didn-t-deter-jack-coco-from-chasing-his-nfl-dream',linkText:'Official Packers story',
+     stats:[{val:'9.92',label:'RAS',pct:99},{val:'245 lb',label:'Frame',pct:70},{val:'Elite',label:'Specialist',pct:95}]},
+    {name:'Kyler Baugh',pos:'DT',school:'Houston Christian • Minnesota',pro:'New Orleans Saints',
+     photo:'78106e1b-2316-486c-88f1-dd55eeed4922.png',
+     bio:'Heavy-body movement, verified explosion, and strength numbers that put size and athletic ability on the same line.',
+     link:'https://www.neworleanssaints.com/news/new-orleans-saints-agree-to-terms-with-15-undrafted-free-agents',linkText:'Official Saints signing',
+     stats:[{val:'33.5″',label:'Vertical',pct:80},{val:'34 reps',label:'Bench',pct:100},{val:'305 lb',label:'Frame',pct:92}]},
+    {name:'Torricelli Simpkins',pos:'OL',school:'North Carolina Central • South Carolina',pro:'New Orleans Saints',
+     photo:'Torricelli.Simpkins.featured.new.jpg',
+     bio:'Power, size, and movement from the offensive line with a profile that carries cleanly into the professional level.',
+     link:'https://www.neworleanssaints.com/team/players-roster/torricelli-simpkins-iii/',linkText:'Official Saints roster',
+     stats:[{val:'312 lb',label:'Frame',pct:95},{val:'24 reps',label:'Bench',pct:70},{val:'OL',label:'Position',pct:85}]},
+    {name:'Dymere Miller',pos:'WR',school:'Monmouth • Rutgers',pro:'New York Jets',
+     photo:'04286b51-da30-4a14-9689-581c51b5628d.jpeg',
+     bio:'Verified top-end speed and receiver production that carry real value when the board turns to pace, separation, and finish.',
+     link:'https://www.newyorkjets.com/news/jets-2025-undrafted-free-agents',linkText:'Official Jets signing',
+     stats:[{val:'4.32',label:'40-Yard',pct:96},{val:'9.01',label:'RAS',pct:90},{val:'185 lb',label:'Frame',pct:55}]},
+    {name:'Ahmarean Brown',pos:'WR',school:'Georgia Tech • South Carolina',pro:'Cleveland Browns',
+     photo:'AB.Brown.png',
+     bio:'Blazing verified speed, instant separation ability, and a return-game profile that brings real pace and stress to the field.',
+     link:'https://heavy.com/sports/nfl/cleveland-browns/ahmarean-brown-signed-udfa-jamari-thrash/',linkText:'Browns signing story',
+     stats:[{val:'4.29',label:'40-Yard',pct:99},{val:'38″',label:'Vertical',pct:92},{val:'175 lb',label:'Frame',pct:45}]},
+    {name:'Robert Cooper',pos:'DT',school:'Florida State',pro:'Miami Dolphins',
+     photo:'Robert.Cooper.jpeg',
+     bio:'Interior size, anchor strength, and pro-ready mass that fit naturally into a featured draft profile.',
+     link:'https://www.miamidolphins.com/news/sign-cooper',linkText:'Official Dolphins signing',
+     stats:[{val:'320 lb',label:'Frame',pct:97},{val:'26 reps',label:'Bench',pct:76},{val:'DT',label:'Position',pct:80}]}
+  ];
+
+  var currentFeatured = 0;
+
+  /* ── Section Activation on Scroll ─────────────────────── */
+  var activated = false;
+  var sectionObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting && !activated){
+        activated = true;
+        section.classList.add('dc-activated');
+        animateTitle();
+        animateStatsStrip();
+        setTimeout(function(){ animateHeroChips(); }, 800);
+      }
+    });
+  },{threshold:.08});
+  sectionObs.observe(section);
+
+  /* ── Title Letter-by-Letter Animation ─────────────────── */
+  function animateTitle(){
+    var title = section.querySelector('.dc-title');
+    if(!title || title.classList.contains('dc-text-revealed')) return;
+    var text = title.textContent;
+    title.textContent = '';
+    for(var i = 0; i < text.length; i++){
+      var span = document.createElement('span');
+      span.className = 'dc-letter';
+      span.textContent = text[i] === ' ' ? '\u00a0' : text[i];
+      span.style.transitionDelay = (i * 25) + 'ms';
+      title.appendChild(span);
+    }
+    requestAnimationFrame(function(){
+      title.classList.add('dc-text-revealed');
+    });
+  }
+
+  /* ── Stats Strip Counter Animation ────────────────────── */
+  function animateStatsStrip(){
+    var nums = section.querySelectorAll('.dc-stat-num');
+    nums.forEach(function(el){
+      var target = parseFloat(el.getAttribute('data-count')) || 0;
+      var decimals = parseInt(el.getAttribute('data-decimals')) || 0;
+      var start = 0;
+      var duration = 1500;
+      var startTime = null;
+      function tick(ts){
+        if(!startTime) startTime = ts;
+        var progress = Math.min((ts - startTime) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        var current = start + (target - start) * eased;
+        el.textContent = current.toFixed(decimals);
+        if(progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  /* ── Animate Hero Stat Chip Bars ──────────────────────── */
+  function animateHeroChips(){
+    var chips = section.querySelectorAll('.dc-stat-chip');
+    chips.forEach(function(chip){
+      var bar = chip.querySelector('.dc-chip-bar');
+      if(bar){
+        var pct = bar.getAttribute('data-pct') || 0;
+        bar.style.setProperty('--pct', pct);
+        chip.classList.add('dc-bar-animated');
+      }
+    });
+  }
+
+  /* ── Background Grid Canvas ───────────────────────────── */
+  var canvas = document.getElementById('dcGridCanvas');
+  if(canvas){
+    var ctx = canvas.getContext('2d');
+    function resizeCanvas(){
+      canvas.width = section.offsetWidth;
+      canvas.height = section.offsetHeight;
+      drawGrid();
+    }
+    function drawGrid(){
+      if(!ctx) return;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.strokeStyle = 'rgba(255,106,0,0.04)';
+      ctx.lineWidth = 0.5;
+      var spacing = 60;
+      for(var x = 0; x < canvas.width; x += spacing){
+        ctx.beginPath();
+        ctx.moveTo(x,0);
+        ctx.lineTo(x,canvas.height);
+        ctx.stroke();
+      }
+      for(var y = 0; y < canvas.height; y += spacing){
+        ctx.beginPath();
+        ctx.moveTo(0,y);
+        ctx.lineTo(canvas.width,y);
+        ctx.stroke();
+      }
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+  }
+
+  /* ── Tab Switching (Command Control Strip) ─────────────── */
+  var dcTabs = section.querySelectorAll('.dc-tab');
+  var dcPanels = section.querySelectorAll('.dc-panel');
+
+  dcTabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      var targetTab = tab.getAttribute('data-tab');
+      var targetPanel = document.getElementById('dc-' + targetTab);
+      if(!targetPanel) return;
+
+      /* Deactivate all tabs */
+      dcTabs.forEach(function(t){ t.classList.remove('active'); });
+      tab.classList.add('active');
+
+      /* Animate out current panel, then show new one */
+      var currentPanel = section.querySelector('.dc-panel:not(.dc-hidden)');
+      if(currentPanel && currentPanel !== targetPanel){
+        currentPanel.classList.add('dc-exiting');
+        setTimeout(function(){
+          dcPanels.forEach(function(p){ p.classList.add('dc-hidden'); p.classList.remove('dc-exiting'); });
+          targetPanel.classList.remove('dc-hidden');
+          /* Trigger metric animations when metrics tab opens */
+          if(targetTab === 'metrics'){
+            triggerMetricAnimations();
+          }
+          /* Re-stagger card animations */
+          restaggerCards(targetPanel);
+        }, 300);
+      }
+    });
+  });
+
+  /* ── Featured Hero Rail ───────────────────────────────── */
+  function buildSelectorRail(){
+    var track = document.getElementById('dcSelectorTrack');
+    if(!track) return;
+    track.innerHTML = '';
+    featuredAthletes.forEach(function(athlete, idx){
+      var thumb = document.createElement('div');
+      thumb.className = 'dc-selector-thumb' + (idx === 0 ? ' active' : '');
+      thumb.innerHTML = '<img loading="lazy" alt="' + esc(athlete.name) + '" src="' + esc(athlete.photo) + '"/>';
+      thumb.addEventListener('click', function(){
+        selectFeaturedAthlete(idx);
+      });
+      track.appendChild(thumb);
+    });
+  }
+
+  function selectFeaturedAthlete(idx){
+    if(idx === currentFeatured) return;
+    currentFeatured = idx;
+    var a = featuredAthletes[idx];
+
+    /* Update hero image */
+    var img = document.getElementById('dcHeroImg');
+    if(img){
+      img.style.opacity = '0';
+      img.style.transform = 'scale(1.05)';
+      setTimeout(function(){
+        img.src = a.photo;
+        img.alt = a.name + ' professional photo';
+        img.style.transition = 'opacity .5s ease, transform .5s ease';
+        img.style.opacity = '1';
+        img.style.transform = 'scale(1)';
+      }, 250);
+    }
+
+    /* Update info with animation */
+    var nameEl = document.getElementById('dcHeroName');
+    var posEl = document.getElementById('dcHeroPos');
+    var schoolEl = document.getElementById('dcHeroSchool');
+    var proEl = document.getElementById('dcHeroPro');
+    var bioEl = document.getElementById('dcHeroBio');
+    var linkEl = document.getElementById('dcHeroLink');
+    var verifiedEl = document.getElementById('dcVerified');
+
+    /* Fade out, update, fade in */
+    var infoEls = [nameEl, posEl, schoolEl, proEl, bioEl];
+    infoEls.forEach(function(el){
+      if(el){ el.style.transition = 'opacity .2s ease, transform .2s ease'; el.style.opacity = '0'; el.style.transform = 'translateY(6px)'; }
+    });
+
+    setTimeout(function(){
+      if(nameEl) nameEl.textContent = a.name;
+      if(posEl) posEl.textContent = a.pos;
+      if(schoolEl) schoolEl.textContent = a.school;
+      if(proEl) proEl.textContent = a.pro;
+      if(bioEl) bioEl.textContent = a.bio;
+      if(linkEl){ linkEl.href = a.link; linkEl.textContent = a.linkText; }
+
+      /* Update stat chips */
+      var statsContainer = document.getElementById('dcHeroStats');
+      if(statsContainer && a.stats){
+        statsContainer.innerHTML = '';
+        a.stats.forEach(function(s){
+          var chip = document.createElement('div');
+          chip.className = 'dc-stat-chip';
+          chip.innerHTML = '<span class="dc-chip-val">' + s.val + '</span><span class="dc-chip-label">' + s.label + '</span><div class="dc-chip-bar" data-pct="' + s.pct + '"></div>';
+          statsContainer.appendChild(chip);
+        });
+        /* Animate bars after render */
+        setTimeout(function(){ animateHeroChips(); }, 100);
+      }
+
+      /* Fade in */
+      infoEls.forEach(function(el, i){
+        if(el){
+          el.style.transitionDelay = (i * 60) + 'ms';
+          el.style.opacity = '1';
+          el.style.transform = 'none';
+        }
+      });
+
+      /* Verified strip pulse */
+      if(verifiedEl){
+        verifiedEl.style.transition = 'none';
+        verifiedEl.style.opacity = '0';
+        verifiedEl.style.transform = 'translateX(-10px)';
+        setTimeout(function(){
+          verifiedEl.style.transition = 'opacity .5s ease .4s, transform .5s ease .4s';
+          verifiedEl.style.opacity = '1';
+          verifiedEl.style.transform = 'none';
+        }, 50);
+      }
+    }, 250);
+
+    /* Update selector thumbnails */
+    var thumbs = section.querySelectorAll('.dc-selector-thumb');
+    thumbs.forEach(function(t, i){
+      t.classList.toggle('active', i === idx);
+    });
+  }
+
+  buildSelectorRail();
+
+  /* ── DraftData lookup map for O(1) access ───────────────── */
+  var draftDataMap = {};
+  draftData.forEach(function(a){ draftDataMap[a.name] = a; });
+
+  /* ── Alumni Legacy Grid Rendering ─────────────────────── */
+  function renderAlumniGrid(data){
+    var grid = document.getElementById('dcAlumniGrid');
+    if(!grid) return;
+    grid.innerHTML = '';
+    uniqueByName(data).forEach(function(item){
+      var card = document.createElement('div');
+      card.className = 'dc-legacy-card';
+      card.setAttribute('data-position', item.position);
+      var photo = playerPhotos[item.name] || item.photo || '';
+      var imgHtml = photo ?
+        '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '"/>' :
+        '<div class="avatar">' + esc(item.name.charAt(0)) + '</div>';
+      card.innerHTML =
+        '<div class="dc-legacy-thumb">' + imgHtml + '</div>' +
+        '<div class="dc-legacy-info">' +
+          '<h4>' + esc(item.name) + '</h4>' +
+          '<p>' + esc(item.team || '') + '</p>' +
+          '<div class="dc-legacy-badges">' +
+            '<span class="dc-legacy-badge">' + esc(item.position) + '</span>' +
+            '<span class="dc-legacy-badge">' + esc(item.school) + '</span>' +
+          '</div>' +
+        '</div>';
+      card.addEventListener('click', function(){ openBoardLock(item); });
+      grid.appendChild(card);
+    });
+    restaggerCards(grid);
+  }
+  renderAlumniGrid(alumni);
+
+  /* Alumni search */
+  var alumniSearchInput = document.getElementById('dcAlumniSearch');
+  if(alumniSearchInput){
+    alumniSearchInput.addEventListener('input', function(){
+      var q = alumniSearchInput.value.toLowerCase().trim();
+      var activeFilter = getActiveFilter('dcAlumniFilters');
+      var filtered = alumni.filter(function(item){
+        var matchFilter = activeFilter === 'all' || item.position === activeFilter;
+        var matchSearch = !q || [item.name,item.position,item.school,item.team].join(' ').toLowerCase().includes(q);
+        return matchFilter && matchSearch;
+      });
+      renderAlumniGrid(filtered);
+    });
+  }
+
+  /* Alumni filters */
+  setupDcFilter('dcAlumniFilters', alumni, renderAlumniGrid, 'dcAlumniSearch');
+
+  /* ── Room / Athlete Board Rendering ───────────────────── */
+  function renderRoomGrid(data){
+    var grid = document.getElementById('dcRoomGrid');
+    if(!grid) return;
+    grid.innerHTML = '';
+    uniqueByName(data).forEach(function(item){
+      var card = document.createElement('div');
+      card.className = 'dc-athlete-card';
+      card.setAttribute('data-position', item.position);
+      var photo = playerPhotos[item.name] || item.photo || '';
+      var imgHtml = photo ?
+        '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '"/>' :
+        '<div class="avatar">' + esc(item.name.charAt(0)) + '</div>';
+      card.innerHTML =
+        '<div class="dc-legacy-thumb">' + imgHtml + '</div>' +
+        '<div class="dc-legacy-info">' +
+          '<h4>' + esc(item.name) + '</h4>' +
+          '<p>' + esc(item.team || '') + '</p>' +
+          '<div class="dc-legacy-badges">' +
+            '<span class="dc-legacy-badge">' + esc(item.position) + '</span>' +
+            '<span class="dc-legacy-badge">' + esc(item.school) + '</span>' +
+          '</div>' +
+        '</div>';
+      card.addEventListener('click', function(){ openBoardLock(item); });
+      grid.appendChild(card);
+    });
+    restaggerCards(grid);
+  }
+  renderRoomGrid(roomBoard);
+
+  /* Room search */
+  var roomSearchInput = document.getElementById('dcRoomSearch');
+  if(roomSearchInput){
+    roomSearchInput.addEventListener('input', function(){
+      var q = roomSearchInput.value.toLowerCase().trim();
+      var activeFilter = getActiveFilter('dcRoomFilters');
+      var sortVal = document.getElementById('dcSortSelect') ? document.getElementById('dcSortSelect').value : 'name';
+      var filtered = roomBoard.filter(function(item){
+        var matchFilter = activeFilter === 'all' || item.position === activeFilter;
+        var matchSearch = !q || [item.name,item.position,item.school,item.team].join(' ').toLowerCase().includes(q);
+        return matchFilter && matchSearch;
+      });
+      filtered = sortData(filtered, sortVal);
+      renderRoomGrid(filtered);
+    });
+  }
+
+  /* Room filters */
+  setupDcFilter('dcRoomFilters', roomBoard, renderRoomGrid, 'dcRoomSearch');
+
+  /* Sort handler */
+  var sortSelect = document.getElementById('dcSortSelect');
+  if(sortSelect){
+    sortSelect.addEventListener('change', function(){
+      var q = roomSearchInput ? roomSearchInput.value.toLowerCase().trim() : '';
+      var activeFilter = getActiveFilter('dcRoomFilters');
+      var filtered = roomBoard.filter(function(item){
+        var matchFilter = activeFilter === 'all' || item.position === activeFilter;
+        var matchSearch = !q || [item.name,item.position,item.school,item.team].join(' ').toLowerCase().includes(q);
+        return matchFilter && matchSearch;
+      });
+      filtered = sortData(filtered, sortSelect.value);
+      renderRoomGrid(filtered);
+    });
+  }
+
+  function sortData(data, key){
+    return data.slice().sort(function(a, b){
+      if(key === 'position') return (a.position || '').localeCompare(b.position || '');
+      return (a.name || '').localeCompare(b.name || '');
+    });
+  }
+
+  /* View toggle (grid/compact) */
+  var viewBtns = section.querySelectorAll('.dc-view-btn');
+  viewBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      viewBtns.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      var grid = document.getElementById('dcRoomGrid');
+      if(!grid) return;
+      if(btn.getAttribute('data-view') === 'compact'){
+        grid.classList.add('dc-compact');
+      } else {
+        grid.classList.remove('dc-compact');
+      }
+    });
+  });
+
+  /* ── Metric Leaders Animations ────────────────────────── */
+  function triggerMetricAnimations(){
+    /* Metric hero cards stagger entrance */
+    var heroGrid = section.querySelector('.dc-metric-heroes');
+    if(heroGrid) heroGrid.classList.add('dc-in-view');
+
+    /* Animate metric values (count up) */
+    section.querySelectorAll('.dc-metric-hero').forEach(function(card){
+      card.classList.add('dc-counted');
+      var valEl = card.querySelector('.dc-mh-value');
+      if(valEl){
+        var target = parseFloat(valEl.getAttribute('data-target')) || 0;
+        var decimals = parseInt(valEl.getAttribute('data-decimals')) || 0;
+        var prefix = valEl.getAttribute('data-prefix') || '';
+        var duration = 1800;
+        var startTime = null;
+        function tick(ts){
+          if(!startTime) startTime = ts;
+          var progress = Math.min((ts - startTime) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 3);
+          var current = Math.abs(target) * eased;
+          valEl.textContent = prefix + current.toFixed(decimals);
+          if(progress < 1) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+      }
+      /* Animate fill bar */
+      var fill = card.querySelector('.dc-mh-fill');
+      if(fill){
+        var pct = fill.getAttribute('data-pct') || 0;
+        fill.style.setProperty('--pct', pct);
+      }
+    });
+
+    /* Leaderboard animations */
+    section.querySelectorAll('.dc-leaderboard').forEach(function(lb, i){
+      setTimeout(function(){
+        lb.classList.add('dc-in-view');
+        lb.querySelectorAll('.dc-lb-row').forEach(function(row){
+          row.classList.add('dc-bar-in');
+        });
+      }, i * 150);
+    });
+  }
+
+  /* If metrics is the active panel on load (unlikely but safe) */
+  if(!document.getElementById('dc-metrics').classList.contains('dc-hidden')){
+    triggerMetricAnimations();
+  }
+
+  /* ── Board Lock (Focus Mode) ──────────────────────────── */
+  var lockOverlay = document.getElementById('dcBoardLock');
+  var lockContent = document.getElementById('dcLockContent');
+
+  function openBoardLock(item){
+    if(!lockOverlay || !lockContent) return;
+    var d = findDraftData(item.name);
+    var photo = playerPhotos[item.name] || item.photo || '';
+    var statsHtml = '';
+    if(d){
+      var metrics = [
+        {label:'40-Yard',val:d.forty},
+        {label:'Vertical',val:d.vert ? d.vert + '″' : null},
+        {label:'Bench',val:d.bench ? d.bench + ' reps' : null},
+        {label:'Broad',val:d.broad ? d.broad + '″' : null},
+        {label:'Split',val:d.split},
+        {label:'Weight',val:d.weight ? d.weight + ' lbs' : null},
+        {label:'RAS',val:d.ras}
+      ];
+      metrics.forEach(function(m){
+        if(m.val != null){
+          statsHtml += '<div class="dc-lock-stat"><strong>' + m.val + '</strong><span>' + m.label + '</span></div>';
+        }
+      });
+    }
+
+    var summary = d ? d.summary : (item.team || '');
+    var bestTrait = d ? d.bestTrait : '';
+
+    lockContent.innerHTML =
+      '<button class="dc-lock-close" aria-label="Close">&times;</button>' +
+      '<div class="dc-lock-header">' +
+        '<div class="dc-lock-img">' + (photo ? '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '"/>' : '') + '</div>' +
+        '<div class="dc-lock-info">' +
+          '<h3 class="dc-lock-name">' + esc(item.name) + '</h3>' +
+          '<div class="dc-lock-meta">' +
+            '<span class="dc-hero-tag dc-pos-tag">' + esc(item.position || item.pos || '') + '</span>' +
+            '<span class="dc-hero-tag">' + esc(item.school || '') + '</span>' +
+            (item.pro ? '<span class="dc-hero-tag dc-pro-tag">' + esc(item.pro) + '</span>' : '') +
+          '</div>' +
+          (bestTrait ? '<p style="color:var(--orange2);font-weight:800;font-size:13px;margin-top:8px;text-transform:uppercase;letter-spacing:.08em">' + esc(bestTrait) + '</p>' : '') +
+          '<p class="dc-lock-bio">' + esc(summary) + '</p>' +
+          '<div class="dc-lock-verified">' +
+            '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 8l2 2 4-4" stroke="#ff6a00" stroke-width="1.5"/><circle cx="8" cy="8" r="7" stroke="#ff6a00" stroke-width="1.2"/></svg>' +
+            'PPF VERIFIED PROFILE' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      (statsHtml ? '<div class="dc-lock-stats">' + statsHtml + '</div>' : '');
+
+    lockOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    /* Close handlers */
+    lockContent.querySelector('.dc-lock-close').addEventListener('click', closeBoardLock);
+    lockOverlay.addEventListener('click', function(e){
+      if(e.target === lockOverlay) closeBoardLock();
+    });
+  }
+
+  function closeBoardLock(){
+    if(!lockOverlay) return;
+    lockOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  /* Close on Escape */
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeBoardLock();
+  });
+
+  function findDraftData(name){
+    return draftDataMap[name] || null;
+  }
+
+  /* ── Shared Helpers ───────────────────────────────────── */
+  function getActiveFilter(containerId){
+    var container = document.getElementById(containerId);
+    if(!container) return 'all';
+    var active = container.querySelector('.dc-filter.active');
+    return active ? active.getAttribute('data-filter') : 'all';
+  }
+
+  function setupDcFilter(containerId, data, renderFn, searchId){
+    var container = document.getElementById(containerId);
+    if(!container) return;
+    var btns = container.querySelectorAll('.dc-filter');
+    btns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        btns.forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        var filter = btn.getAttribute('data-filter');
+        var searchInput = document.getElementById(searchId);
+        var q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        var filtered = data.filter(function(item){
+          var matchFilter = filter === 'all' || item.position === filter;
+          var matchSearch = !q || [item.name,item.position,item.school,item.team].join(' ').toLowerCase().includes(q);
+          return matchFilter && matchSearch;
+        });
+        renderFn(filtered);
+      });
+    });
+  }
+
+  function restaggerCards(container){
+    var cards = container.querySelectorAll('.dc-legacy-card, .dc-athlete-card');
+    cards.forEach(function(card, i){
+      card.style.animationDelay = (i * 0.04) + 's';
+    });
+  }
+
+  /* ── Metric in-view observer for direct scroll (not just tab switch) ── */
+  var metricHeroes = section.querySelector('.dc-metric-heroes');
+  if(metricHeroes){
+    var metricObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          triggerMetricAnimations();
+          metricObs.unobserve(entry.target);
+        }
+      });
+    },{threshold:.2});
+    metricObs.observe(metricHeroes);
+  }
+
+  /* ── Leaderboard bar in-view ──────────────────────────── */
+  section.querySelectorAll('.dc-leaderboard').forEach(function(lb){
+    var lbObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          lb.classList.add('dc-in-view');
+          lb.querySelectorAll('.dc-lb-row').forEach(function(row){
+            row.classList.add('dc-bar-in');
+          });
+          lbObs.unobserve(entry.target);
+        }
+      });
+    },{threshold:.3});
+    lbObs.observe(lb);
+  });
+
+})();
+
 /* ── Coach Command Center — Enhanced Interactivity ── */
 (function(){
   var section = document.querySelector('.cc-section');
