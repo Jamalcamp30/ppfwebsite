@@ -4581,7 +4581,8 @@ document.addEventListener('keydown', function(e){
         c.classList.add('pos-rail-active');
         c.setAttribute('aria-selected','true');
         // Scroll active card into view
-        c.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+        var scrollBehavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+        c.scrollIntoView({behavior:scrollBehavior,block:'nearest',inline:'center'});
       } else {
         c.classList.remove('pos-rail-active');
         c.setAttribute('aria-selected','false');
@@ -4691,7 +4692,7 @@ document.addEventListener('keydown', function(e){
     var el = document.querySelector('.pos-headline-text');
     if(!el) return;
     var headlines;
-    try { headlines = JSON.parse(el.getAttribute('data-headlines')); } catch(e){ return; }
+    try { headlines = JSON.parse(el.getAttribute('data-headlines')); } catch(e){ console.warn('POS: headline parse error',e); return; }
     if(!headlines || headlines.length < 2) return;
     var idx = 0;
     setInterval(function(){
@@ -4796,14 +4797,19 @@ document.addEventListener('keydown', function(e){
     setupKeyboard();
     updateRailActive();
 
-    // Add 3D tilt to spotlight
+    // Add 3D tilt to spotlight (throttled via rAF)
     var spotlight = document.querySelector('.pos-spotlight');
     if(spotlight){
+      var tiltRAF = null;
       spotlight.addEventListener('mousemove',function(e){
-        var rect = spotlight.getBoundingClientRect();
-        var x = (e.clientX - rect.left) / rect.width - 0.5;
-        var y = (e.clientY - rect.top) / rect.height - 0.5;
-        spotlight.style.transform = 'perspective(1200px) rotateY(' + (x * 2) + 'deg) rotateX(' + (-y * 2) + 'deg)';
+        if(tiltRAF) return;
+        tiltRAF = requestAnimationFrame(function(){
+          var rect = spotlight.getBoundingClientRect();
+          var x = (e.clientX - rect.left) / rect.width - 0.5;
+          var y = (e.clientY - rect.top) / rect.height - 0.5;
+          spotlight.style.transform = 'perspective(1200px) rotateY(' + (x * 2) + 'deg) rotateX(' + (-y * 2) + 'deg)';
+          tiltRAF = null;
+        });
       });
       spotlight.addEventListener('mouseleave',function(){
         spotlight.style.transform = '';
