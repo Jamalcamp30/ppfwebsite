@@ -8,21 +8,27 @@
   const intro = document.querySelector('.cinematic-intro');
   const bar = document.querySelector('.intro-bar span');
   if(!intro) return;
+  let done = false;
+  function finish(){
+    if(done) return;
+    done = true;
+    if(bar) bar.style.width = '100%';
+    setTimeout(function(){
+      intro.classList.add('done');
+      /* Remove from stacking context after transition */
+      setTimeout(function(){ intro.style.display = 'none'; }, 1000);
+    }, 600);
+  }
   let progress = 0;
-  const tick = setInterval(()=>{
-    progress += Math.random()*8 + 3;
+  const tick = setInterval(function(){
+    progress += Math.random()*12 + 5;
     if(progress > 100) progress = 100;
     if(bar) bar.style.width = progress + '%';
-    if(progress >= 100){
-      clearInterval(tick);
-      setTimeout(()=> intro.classList.add('done'), 1000);
-    }
-  },200);
-  window.addEventListener('load',()=>{
-    progress = 100;
-    if(bar) bar.style.width = '100%';
-    setTimeout(()=> intro.classList.add('done'), 1400);
-  });
+    if(progress >= 100){ clearInterval(tick); finish(); }
+  }, 120);
+  window.addEventListener('load', finish);
+  /* Absolute max: never block more than 2.5 s */
+  setTimeout(finish, 2500);
 })();
 
 /* ── Scroll Progress Bar ─────────────────────────────────── */
@@ -2866,63 +2872,265 @@ var draftData = [
 
 /* ── Persona Overlay ─────────────────────────────────────── */
 (function(){
-  var overlay = document.getElementById('persona-overlay');
-  var skip = document.getElementById('persona-skip');
+  var overlay   = document.getElementById('persona-overlay');
+  var skip      = document.getElementById('persona-skip');
+  var banner    = document.getElementById('persona-banner');
+  var bannerLbl = document.getElementById('persona-banner-label');
+  var bannerChg = document.getElementById('persona-banner-change');
   if(!overlay) return;
 
-  // Wait for cinematic intro to finish
-  var intro = document.querySelector('.cinematic-intro');
-  if(intro){
-    if(intro.classList.contains('done')){
-      overlay.style.display = 'flex';
-    } else {
-      var observer = new MutationObserver(function(mutations){
-        mutations.forEach(function(m){
-          if(m.type === 'attributes' && intro.classList.contains('done')){
-            observer.disconnect();
-            overlay.style.display = 'flex';
-          }
-        });
-      });
-      observer.observe(intro, {attributes:true, attributeFilter:['class']});
+  /* ── Persona content data ──────────────────────────────── */
+  var personaConfig = {
+    'middle-school':{
+      label:'Middle School',
+      eyebrow:'Foundation training for young athletes',
+      title:'Build the <span class="accent">athletic foundation</span> that separates athletes before high school.',
+      sub:'PPF builds movement quality, coordination, and athletic habits that create lasting separation. Start building the base now — every rep at this stage is a multiplier for everything that comes next.',
+      pills:['Movement mechanics','Speed foundations','Coordination & agility','Strength basics','Habit building'],
+      cta1:{text:'Start Foundation Training',href:'#contact'},
+      cta2:{text:'Find Your Path',href:'#find-path'},
+      stats:[
+        {val:'25',suf:'+',desc:'years coaching athletes from youth through the NFL'},
+        {val:'12000',suf:'',desc:'square feet of training space built for speed, power, and football movement'},
+        {val:'100',suf:'+',desc:'athletes developed through structured PPF programming across all levels'},
+        {val:'6',suf:'',desc:'days per week of structured training available'}
+      ],
+      scroll:'#find-path'
+    },
+    'high-school':{
+      label:'High School',
+      eyebrow:'High school athlete development',
+      title:'Get <span class="accent">recruiting-ready</span> before the evaluation window closes.',
+      sub:'Speed, strength, and position-specific development for college recruiting, elite camps, and next-level competition. The athletes who prepare before the coaches start watching are the ones who get the calls.',
+      pills:['Recruiting prep','Speed development','Position work','Camp performance','Strength & power'],
+      cta1:{text:'Start Your Development',href:'#contact'},
+      cta2:{text:'Find Your Path',href:'#find-path'},
+      stats:[
+        {val:'4.29',suf:'',desc:'featured 40-yard dash mark already on the PPF board'},
+        {val:'39.5',suf:'″',desc:'vertical benchmark posted by a 226-pound receiver'},
+        {val:'25',suf:'+',desc:'years of CSCS-certified coaching experience'},
+        {val:'12000',suf:'',desc:'square feet of training space built for football development'}
+      ],
+      scroll:'#find-path'
+    },
+    'college':{
+      label:'College',
+      eyebrow:'Collegiate athlete performance',
+      title:'Train like <span class="accent">evaluation season</span> starts tomorrow.',
+      sub:'Advanced performance training, measurable development, and position work for athletes competing at the collegiate level and preparing for combine-style evaluation. Every phase is designed to widen your edge when scouts are watching.',
+      pills:['Combine preparation','Position-specific work','Measurable development','Pro day standards','Speed & power testing'],
+      cta1:{text:'Start Your Program',href:'#contact'},
+      cta2:{text:'See the Draft Board',href:'#draft-board'},
+      stats:[
+        {val:'4.29',suf:'',desc:'featured 40-yard dash mark on the PPF board'},
+        {val:'39.5',suf:'″',desc:'vertical benchmark posted by a 226-pound receiver'},
+        {val:'30',suf:'+',desc:'bench-press reps featured by high-level athletes in the room'},
+        {val:'12000',suf:'',desc:'square feet of training space built for elite development'}
+      ],
+      scroll:'#system'
+    },
+    'draft-prep':{
+      label:'Draft Prep',
+      eyebrow:'2027 combine and pro day prep',
+      title:'Build a <span class="accent">draft-ready</span> profile before the room ever questions it.',
+      sub:'Full-cycle combine and pro day preparation — verified testing, measurable gains, and a profile built to hold up when the room is watching. Every phase at PPF is structured to sharpen movement quality, raise usable output, and eliminate weak links.',
+      pills:['40-yard dash precision','Vertical & broad jump transfer','Position-specific movement','Camp-ready body composition','Recovery & readiness'],
+      cta1:{text:'Start Your 2027 Draft Prep',href:'#contact'},
+      cta2:{text:'See the Athlete Board',href:'#draft-board'},
+      stats:[
+        {val:'12000',suf:'',desc:'square feet of training space built for speed, power, and football movement'},
+        {val:'4.29',suf:'',desc:'featured 40-yard dash mark already on the PPF board'},
+        {val:'39.5',suf:'″',desc:'vertical benchmark posted by a 226-pound receiver'},
+        {val:'30',suf:'+',desc:'bench-press reps featured by multiple high-level athletes in the room'}
+      ],
+      scroll:'#draft-room'
+    },
+    'adult':{
+      label:'Adult Performance',
+      eyebrow:'Adult performance training',
+      title:'Train with <span class="accent">elite-level</span> structure, accountability, and results.',
+      sub:'Structured performance training built for adults who take training seriously. Elite-level programming, measurable results, and a standard that does not lower because you are no longer in school. The work is the same — so are the expectations.',
+      pills:['Elite programming','Strength & power','Speed development','Body composition','Performance accountability'],
+      cta1:{text:'Start Adult Performance',href:'#contact'},
+      cta2:{text:'Find Your Path',href:'#find-path'},
+      stats:[
+        {val:'25',suf:'+',desc:'years of CSCS-certified coaching experience'},
+        {val:'12000',suf:'',desc:'square feet of training space built for performance'},
+        {val:'6',suf:'',desc:'days per week of training availability'},
+        {val:'100',suf:'+',desc:'athletes across all levels developed through PPF programming'}
+      ],
+      scroll:'#find-path'
+    },
+    'recovery':{
+      label:'Recovery',
+      eyebrow:'Performance recovery & support',
+      title:'Recover with the same <span class="accent">precision</span> you bring to training.',
+      sub:'A direct performance support system built for output, repair, and readiness. Compression, PEMF, infrared sauna, cold plunge, red light therapy, and clinical-grade nutrition support — structured by phase, aligned with demands, delivered through trusted specialists.',
+      pills:['Compression therapy','Cold plunge','Infrared sauna','PEMF therapy','Red light therapy'],
+      cta1:{text:'Build Your Recovery Stack',href:'#recovery'},
+      cta2:{text:'See Recovery Programs',href:'#recovery'},
+      stats:[
+        {val:'6',suf:'',desc:'elite recovery modalities available at PPF through R5 & Alliance partnerships'},
+        {val:'25',suf:'+',desc:'years of experience optimizing athlete recovery protocols'},
+        {val:'12000',suf:'',desc:'square feet of facility space including full recovery infrastructure'},
+        {val:'100',suf:'+',desc:'athletes supported through structured recovery programming'}
+      ],
+      scroll:'#recovery'
+    },
+    'parent':{
+      label:'Parent / Family',
+      eyebrow:'For parents & families',
+      title:'Give your athlete the <span class="accent">structured environment</span> that creates real results.',
+      sub:'We welcome family conversations. Learn about our programs, tour the facility, and see what structured athlete development looks like at PPF. Our coaches work directly with families to build transparent, results-driven development plans.',
+      pills:['Program transparency','Family communication','Structured development','Measurable progress','Safe training environment'],
+      cta1:{text:'Schedule a Facility Tour',href:'#contact'},
+      cta2:{text:'Find the Right Path',href:'#find-path'},
+      stats:[
+        {val:'25',suf:'+',desc:'years coaching athletes and working with families at every level'},
+        {val:'12000',suf:'',desc:'square feet of professional training facility'},
+        {val:'100',suf:'+',desc:'families who have trusted PPF with their athlete\'s development'},
+        {val:'6',suf:'',desc:'days per week of supervised structured training'}
+      ],
+      scroll:'#contact'
     }
-  } else {
-    overlay.style.display = 'flex';
+  };
+
+  /* ── Apply persona content changes ────────────────────── */
+  function applyPersona(p){
+    var cfg = personaConfig[p];
+    if(!cfg) return;
+    var ey  = document.getElementById('hero-eyebrow');
+    var ht  = document.getElementById('hero-title');
+    var hs  = document.getElementById('hero-sub');
+    var hp  = document.getElementById('hero-pills');
+    var ha  = document.getElementById('hero-actions');
+    var hst = document.getElementById('hero-stats');
+    /* Fade elements out, update content, fade back in */
+    var fadeEls = [ey,ht,hs,hp,ha,hst].filter(Boolean);
+    fadeEls.forEach(function(el){ el.classList.add('persona-fade','fading'); });
+    setTimeout(function(){
+      if(ey) ey.textContent = cfg.eyebrow;
+      if(ht) ht.innerHTML  = cfg.title;
+      if(hs) hs.textContent = cfg.sub;
+      if(hp){
+        hp.innerHTML = cfg.pills.map(function(t){
+          return '<div class="pill">' + t + '</div>';
+        }).join('');
+      }
+      if(ha){
+        ha.innerHTML =
+          '<a class="btn primary" href="' + cfg.cta1.href + '">' + cfg.cta1.text + '</a>' +
+          '<a class="btn secondary" href="' + cfg.cta2.href + '">' + cfg.cta2.text + '</a>';
+      }
+      if(hst){
+        hst.innerHTML = cfg.stats.map(function(s){
+          var display = s.val + (s.suf||'');
+          return '<div class="stat"><strong data-count="' + s.val + '" data-suffix="' + (s.suf||'') + '">' + display + '</strong><span>' + s.desc + '</span></div>';
+        }).join('');
+        /* Re-trigger counter animation for new elements */
+        setTimeout(function(){
+          hst.querySelectorAll('[data-count]').forEach(function(el){
+            var countStr = el.getAttribute('data-count');
+            var suffix   = el.getAttribute('data-suffix') || '';
+            var isFloat  = countStr.indexOf('.') !== -1;
+            var end      = parseFloat(countStr);
+            var duration = 1400;
+            var startT   = performance.now();
+            (function step(now){
+              var t = Math.min((now - startT) / duration, 1);
+              var e = 1 - Math.pow(1 - t, 3);
+              var c = e * end;
+              el.textContent = isFloat ? c.toFixed(2) + suffix : Math.round(c).toLocaleString() + suffix;
+              if(t < 1) requestAnimationFrame(step);
+            })(performance.now());
+          });
+        }, 50);
+      }
+      /* Fade back in */
+      requestAnimationFrame(function(){
+        fadeEls.forEach(function(el){ el.classList.remove('fading'); });
+      });
+      /* Show persona banner */
+      if(banner && bannerLbl){
+        bannerLbl.textContent = cfg.label;
+        banner.classList.add('visible');
+      }
+      document.body.setAttribute('data-persona', p);
+    }, 280);
+  }
+
+  /* ── Show / close overlay ──────────────────────────────── */
+  function showOverlay(){
+    overlay.classList.remove('done');
+    overlay.classList.add('ps-open');
   }
 
   function closeOverlay(){
     overlay.classList.add('done');
+    overlay.classList.remove('ps-open');
   }
 
-  if(skip) skip.addEventListener('click', closeOverlay);
+  /* ── Wait for cinematic intro, with fallback ─────────── */
+  var shown = false;
+  var fallbackTimer = null;
 
+  function tryShow(){
+    if(shown) return;
+    shown = true;
+    if(fallbackTimer) clearTimeout(fallbackTimer);
+    showOverlay();
+  }
+
+  /* Safety net: always show after 3 s regardless */
+  fallbackTimer = setTimeout(tryShow, 3000);
+
+  var intro = document.querySelector('.cinematic-intro');
+  if(!intro){
+    tryShow();
+  } else if(intro.classList.contains('done')){
+    tryShow();
+  } else {
+    var obs = new MutationObserver(function(){
+      if(intro.classList.contains('done')){
+        obs.disconnect();
+        tryShow();
+      }
+    });
+    obs.observe(intro, {attributes:true, attributeFilter:['class']});
+  }
+
+  /* ── Wire skip button ──────────────────────────────────── */
+  if(skip) skip.addEventListener('click', function(){
+    closeOverlay();
+  });
+
+  /* ── Wire persona buttons ──────────────────────────────── */
   document.querySelectorAll('.persona-btn').forEach(function(btn){
     btn.addEventListener('click', function(){
-      var persona = btn.getAttribute('data-persona');
-      // Store selected persona
-      document.body.setAttribute('data-persona', persona);
+      var p = btn.getAttribute('data-persona');
+      /* Visual feedback */
+      document.querySelectorAll('.persona-btn').forEach(function(b){ b.classList.remove('selected'); });
+      btn.classList.add('selected');
       closeOverlay();
-
-      // Auto-scroll to relevant section based on persona
-      var targets = {
-        'middle-school':'#find-path',
-        'high-school':'#find-path',
-        'college':'#system',
-        'draft-prep':'#draft-room',
-        'adult':'#find-path',
-        'recovery':'#recovery',
-        'parent':'#contact'
-      };
-      var target = targets[persona];
-      if(target && target !== '#top'){
+      applyPersona(p);
+      /* Scroll after overlay fade-out completes (~600ms transition + buffer) */
+      var cfg = personaConfig[p];
+      if(cfg && cfg.scroll){
         setTimeout(function(){
-          var el = document.querySelector(target);
+          var el = document.querySelector(cfg.scroll);
           if(el) el.scrollIntoView({behavior:'smooth'});
-        }, 900);
+        }, 800);
       }
     });
   });
+
+  /* ── Wire banner "Change" button ───────────────────────── */
+  if(bannerChg) bannerChg.addEventListener('click', function(){
+    if(banner) banner.classList.remove('visible');
+    showOverlay();
+  });
 })();
+
 
 /* ── Draft Room — PPF Scout Console ──────────────────────── */
 (function(){
