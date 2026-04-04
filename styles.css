@@ -2290,7 +2290,7 @@ table th{color:var(--orange2)!important;font-weight:900}
   0%{transform:translateY(-100%);opacity:0}
   10%{opacity:1}
   90%{opacity:1}
-  100%{transform:translateY(calc(100vh * 3));opacity:0}
+  100%{transform:translateY(100%);opacity:0}
 }
 .dc-ambient{
   position:absolute;inset:0;

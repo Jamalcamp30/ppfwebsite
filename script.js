@@ -965,7 +965,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     featuredAthletes.forEach(function(athlete, idx){
       var thumb = document.createElement('div');
       thumb.className = 'dc-selector-thumb' + (idx === 0 ? ' active' : '');
-      thumb.innerHTML = '<img loading="lazy" alt="' + athlete.name + '" src="' + athlete.photo + '"/>';
+      thumb.innerHTML = '<img loading="lazy" alt="' + esc(athlete.name) + '" src="' + esc(athlete.photo) + '"/>';
       thumb.addEventListener('click', function(){
         selectFeaturedAthlete(idx);
       });
@@ -1060,6 +1060,10 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
 
   buildSelectorRail();
 
+  /* ── DraftData lookup map for O(1) access ───────────────── */
+  var draftDataMap = {};
+  draftData.forEach(function(a){ draftDataMap[a.name] = a; });
+
   /* ── Alumni Legacy Grid Rendering ─────────────────────── */
   function renderAlumniGrid(data){
     var grid = document.getElementById('dcAlumniGrid');
@@ -1071,16 +1075,16 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       card.setAttribute('data-position', item.position);
       var photo = playerPhotos[item.name] || item.photo || '';
       var imgHtml = photo ?
-        '<img loading="lazy" alt="' + item.name + '" src="' + photo + '"/>' :
-        '<div class="avatar">' + item.name.charAt(0) + '</div>';
+        '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '"/>' :
+        '<div class="avatar">' + esc(item.name.charAt(0)) + '</div>';
       card.innerHTML =
         '<div class="dc-legacy-thumb">' + imgHtml + '</div>' +
         '<div class="dc-legacy-info">' +
-          '<h4>' + item.name + '</h4>' +
-          '<p>' + (item.team || '') + '</p>' +
+          '<h4>' + esc(item.name) + '</h4>' +
+          '<p>' + esc(item.team || '') + '</p>' +
           '<div class="dc-legacy-badges">' +
-            '<span class="dc-legacy-badge">' + item.position + '</span>' +
-            '<span class="dc-legacy-badge">' + item.school + '</span>' +
+            '<span class="dc-legacy-badge">' + esc(item.position) + '</span>' +
+            '<span class="dc-legacy-badge">' + esc(item.school) + '</span>' +
           '</div>' +
         '</div>';
       card.addEventListener('click', function(){ openBoardLock(item); });
@@ -1119,16 +1123,16 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
       card.setAttribute('data-position', item.position);
       var photo = playerPhotos[item.name] || item.photo || '';
       var imgHtml = photo ?
-        '<img loading="lazy" alt="' + item.name + '" src="' + photo + '"/>' :
-        '<div class="avatar">' + item.name.charAt(0) + '</div>';
+        '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '"/>' :
+        '<div class="avatar">' + esc(item.name.charAt(0)) + '</div>';
       card.innerHTML =
         '<div class="dc-legacy-thumb">' + imgHtml + '</div>' +
         '<div class="dc-legacy-info">' +
-          '<h4>' + item.name + '</h4>' +
-          '<p>' + (item.team || '') + '</p>' +
+          '<h4>' + esc(item.name) + '</h4>' +
+          '<p>' + esc(item.team || '') + '</p>' +
           '<div class="dc-legacy-badges">' +
-            '<span class="dc-legacy-badge">' + item.position + '</span>' +
-            '<span class="dc-legacy-badge">' + item.school + '</span>' +
+            '<span class="dc-legacy-badge">' + esc(item.position) + '</span>' +
+            '<span class="dc-legacy-badge">' + esc(item.school) + '</span>' +
           '</div>' +
         '</div>';
       card.addEventListener('click', function(){ openBoardLock(item); });
@@ -1279,16 +1283,16 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     lockContent.innerHTML =
       '<button class="dc-lock-close" aria-label="Close">&times;</button>' +
       '<div class="dc-lock-header">' +
-        '<div class="dc-lock-img">' + (photo ? '<img loading="lazy" alt="' + item.name + '" src="' + photo + '"/>' : '') + '</div>' +
+        '<div class="dc-lock-img">' + (photo ? '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '"/>' : '') + '</div>' +
         '<div class="dc-lock-info">' +
-          '<h3 class="dc-lock-name">' + item.name + '</h3>' +
+          '<h3 class="dc-lock-name">' + esc(item.name) + '</h3>' +
           '<div class="dc-lock-meta">' +
-            '<span class="dc-hero-tag dc-pos-tag">' + (item.position || item.pos || '') + '</span>' +
-            '<span class="dc-hero-tag">' + (item.school || '') + '</span>' +
-            (item.pro ? '<span class="dc-hero-tag dc-pro-tag">' + item.pro + '</span>' : '') +
+            '<span class="dc-hero-tag dc-pos-tag">' + esc(item.position || item.pos || '') + '</span>' +
+            '<span class="dc-hero-tag">' + esc(item.school || '') + '</span>' +
+            (item.pro ? '<span class="dc-hero-tag dc-pro-tag">' + esc(item.pro) + '</span>' : '') +
           '</div>' +
-          (bestTrait ? '<p style="color:var(--orange2);font-weight:800;font-size:13px;margin-top:8px;text-transform:uppercase;letter-spacing:.08em">' + bestTrait + '</p>' : '') +
-          '<p class="dc-lock-bio">' + summary + '</p>' +
+          (bestTrait ? '<p style="color:var(--orange2);font-weight:800;font-size:13px;margin-top:8px;text-transform:uppercase;letter-spacing:.08em">' + esc(bestTrait) + '</p>' : '') +
+          '<p class="dc-lock-bio">' + esc(summary) + '</p>' +
           '<div class="dc-lock-verified">' +
             '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M6 8l2 2 4-4" stroke="#ff6a00" stroke-width="1.5"/><circle cx="8" cy="8" r="7" stroke="#ff6a00" stroke-width="1.2"/></svg>' +
             'PPF VERIFIED PROFILE' +
@@ -1319,10 +1323,7 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
   });
 
   function findDraftData(name){
-    for(var i = 0; i < draftData.length; i++){
-      if(draftData[i].name === name) return draftData[i];
-    }
-    return null;
+    return draftDataMap[name] || null;
   }
 
   /* ── Shared Helpers ───────────────────────────────────── */
