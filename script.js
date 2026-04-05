@@ -6439,24 +6439,68 @@ document.addEventListener('keydown', function(e){
   var section = document.getElementById('carryover');
   if(!section) return;
 
-  /* ── Canvas: animated connector arcs ──────────────────────── */
+  /* ── Refs ──────────────────────────────────────────────────── */
   var canvas = document.getElementById('coCanvas');
   var ctx = canvas ? canvas.getContext('2d') : null;
-  var rafId = null;
-  var sectionVisible = false;
+  var filmCanvas = document.getElementById('coFilmCanvas');
+  var filmCtx = filmCanvas ? filmCanvas.getContext('2d') : null;
+  var filmViewport = document.getElementById('coFilmViewport');
+  var filmRoom = document.getElementById('coFilmRoom');
+  var tcEl = document.getElementById('coTimecode');
+  var proofStat = document.getElementById('coProofStat');
+  var proofText = document.getElementById('coProofText');
+  var phaseButtonsEl = document.getElementById('coPhaseButtons');
+  var cards = Array.prototype.slice.call(section.querySelectorAll('.co-tab'));
+  var morphItems = Array.prototype.slice.call(section.querySelectorAll('.co-morph-item'));
 
+  var rafId = null;
+  var filmRafId = null;
+  var sectionVisible = false;
+  var activePhase = 'acceleration';
+  var phaseStart = 0;
+  var booted = false;
+
+  /* ── Phase Data ────────────────────────────────────────────── */
+  var phaseData = {
+    acceleration: {
+      stat: '4.29',
+      proof: 'Resisted sprint loading \u2192 Usable acceleration & transition speed'
+    },
+    force: {
+      stat: '39.5\u2033',
+      proof: 'Depth drops & trap-bar pulls \u2192 Explosion & projection under speed'
+    },
+    redirection: {
+      stat: '6.82',
+      proof: 'COD drills & route mechanics \u2192 Football-specific body control'
+    },
+    readiness: {
+      stat: '30+',
+      proof: 'Work capacity building \u2192 Camp readiness & sustained output'
+    }
+  };
+
+  /* ── Canvas sizing ─────────────────────────────────────────── */
   function resizeCanvas(){
-    if(!canvas) return;
-    canvas.width = section.offsetWidth;
-    canvas.height = section.offsetHeight;
+    if(canvas){
+      canvas.width = section.offsetWidth;
+      canvas.height = section.offsetHeight;
+    }
+  }
+  function resizeFilmCanvas(){
+    if(filmCanvas && filmViewport){
+      filmCanvas.width = filmViewport.offsetWidth;
+      filmCanvas.height = filmViewport.offsetHeight;
+    }
   }
 
+  /* ── Connector arcs (background canvas) ────────────────────── */
   function drawConnectors(time){
     if(!ctx || !sectionVisible){rafId = null; return;}
     ctx.clearRect(0,0,canvas.width,canvas.height);
 
-    var cards = section.querySelectorAll('.co-card');
-    if(cards.length < 2){
+    var cardEls = section.querySelectorAll('.co-card');
+    if(cardEls.length < 2){
       rafId = requestAnimationFrame(drawConnectors);
       return;
     }
@@ -6467,15 +6511,14 @@ document.addEventListener('keydown', function(e){
 
     var sRect = section.getBoundingClientRect();
 
-    for(var i = 0; i < cards.length - 1; i++){
-      var a = cards[i].getBoundingClientRect();
-      var b = cards[i+1].getBoundingClientRect();
+    for(var i = 0; i < cardEls.length - 1; i++){
+      var a = cardEls[i].getBoundingClientRect();
+      var b = cardEls[i+1].getBoundingClientRect();
       var ax = a.left + a.width/2 - sRect.left;
       var ay = a.top + a.height/2 - sRect.top;
       var bx = b.left + b.width/2 - sRect.left;
       var by = b.top + b.height/2 - sRect.top;
 
-      /* Animated dash offset */
       var offset = (time * 0.03) % 28;
       ctx.lineDashOffset = -offset;
 
@@ -6487,15 +6530,15 @@ document.addEventListener('keydown', function(e){
       ctx.stroke();
     }
 
-    /* Pulse dots at card centers */
-    cards.forEach(function(card, idx){
+    ctx.setLineDash([]);
+    cardEls.forEach(function(card, idx){
       var r = card.getBoundingClientRect();
-      var cx = r.left + r.width/2 - sRect.left;
-      var cy = r.top + r.height/2 - sRect.top;
+      var centerX = r.left + r.width/2 - sRect.left;
+      var centerY = r.top + r.height/2 - sRect.top;
       var pulse = 3 + Math.sin(time * 0.003 + idx * 1.5) * 2;
 
       ctx.beginPath();
-      ctx.arc(cx, cy, pulse, 0, Math.PI * 2);
+      ctx.arc(centerX, centerY, pulse, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(255,106,0,' + (0.15 + Math.sin(time * 0.003 + idx) * 0.08) + ')';
       ctx.fill();
     });
@@ -6503,8 +6546,374 @@ document.addEventListener('keydown', function(e){
     rafId = requestAnimationFrame(drawConnectors);
   }
 
-  /* ── Scroll morph: numbers → labels ──────────────────────── */
-  var morphItems = section.querySelectorAll('.co-morph-item');
+  /* ── Film Canvas: Athlete wireframe + phase overlays ───────── */
+  function drawFilm(timestamp){
+    if(!filmCtx || !sectionVisible){filmRafId = null; return;}
+    var w = filmCanvas.width;
+    var h = filmCanvas.height;
+    if(w === 0 || h === 0){filmRafId = requestAnimationFrame(drawFilm); return;}
+
+    filmCtx.clearRect(0,0,w,h);
+
+    var cx = w * 0.5;
+    var cy = h * 0.42;
+    var scale = Math.min(w, h) * 0.003;
+    var elapsed = (timestamp - phaseStart) / 1000;
+    var breathe = 1 + 0.006 * Math.sin(elapsed * 0.8);
+
+    /* ── Athlete wireframe ──────────────────────────────────── */
+    filmCtx.save();
+    filmCtx.translate(cx, cy);
+    filmCtx.scale(breathe, breathe);
+    filmCtx.strokeStyle = 'rgba(255,106,0,0.2)';
+    filmCtx.lineWidth = 1.5;
+    filmCtx.lineCap = 'round';
+
+    /* Head */
+    filmCtx.beginPath();
+    filmCtx.arc(0, -70*scale, 16*scale, 0, Math.PI*2);
+    filmCtx.stroke();
+    /* Torso */
+    filmCtx.beginPath();
+    filmCtx.moveTo(0, -54*scale);
+    filmCtx.lineTo(0, 20*scale);
+    filmCtx.stroke();
+    /* Shoulders */
+    filmCtx.beginPath();
+    filmCtx.moveTo(-35*scale, -40*scale);
+    filmCtx.lineTo(35*scale, -40*scale);
+    filmCtx.stroke();
+    /* Left arm */
+    filmCtx.beginPath();
+    filmCtx.moveTo(-35*scale, -40*scale);
+    filmCtx.lineTo(-50*scale, 10*scale);
+    filmCtx.stroke();
+    /* Right arm */
+    filmCtx.beginPath();
+    filmCtx.moveTo(35*scale, -40*scale);
+    filmCtx.lineTo(50*scale, 10*scale);
+    filmCtx.stroke();
+    /* Left leg */
+    filmCtx.beginPath();
+    filmCtx.moveTo(0, 20*scale);
+    filmCtx.lineTo(-25*scale, 80*scale);
+    filmCtx.stroke();
+    /* Right leg */
+    filmCtx.beginPath();
+    filmCtx.moveTo(0, 20*scale);
+    filmCtx.lineTo(25*scale, 80*scale);
+    filmCtx.stroke();
+
+    filmCtx.restore();
+
+    /* ── Phase-specific overlays ────────────────────────────── */
+    var alpha = Math.min(elapsed / 0.6, 1);
+    filmCtx.save();
+    filmCtx.globalAlpha = alpha;
+    filmCtx.translate(cx, cy);
+
+    if(activePhase === 'acceleration'){
+      drawAcceleration(filmCtx, scale, elapsed);
+    } else if(activePhase === 'force'){
+      drawForce(filmCtx, scale, elapsed);
+    } else if(activePhase === 'redirection'){
+      drawRedirection(filmCtx, scale, elapsed);
+    } else if(activePhase === 'readiness'){
+      drawReadiness(filmCtx, scale, elapsed);
+    }
+
+    filmCtx.restore();
+    filmRafId = requestAnimationFrame(drawFilm);
+  }
+
+  /* ── Acceleration Phase Drawing ────────────────────────────── */
+  function drawAcceleration(c, s, t){
+    c.strokeStyle = 'rgba(255,106,0,0.5)';
+    c.lineWidth = 1;
+
+    /* Shin angle lines */
+    c.beginPath();
+    c.moveTo(-25*s, 80*s);
+    c.lineTo(-40*s, 50*s);
+    c.stroke();
+    c.beginPath();
+    c.moveTo(25*s, 80*s);
+    c.lineTo(10*s, 50*s);
+    c.stroke();
+
+    /* Sprint lane markers */
+    var i;
+    for(i = 0; i < 6; i++){
+      var lx = -80*s + i * 32*s;
+      c.beginPath();
+      c.moveTo(lx, 90*s);
+      c.lineTo(lx + 18*s, 90*s);
+      c.stroke();
+    }
+
+    /* Stride trail dots */
+    c.fillStyle = 'rgba(255,106,0,0.3)';
+    var prevAlpha = c.globalAlpha;
+    for(i = 0; i < 5; i++){
+      var dx = -90*s + i * 20*s;
+      c.globalAlpha = (0.1 + (i/5) * 0.4) * prevAlpha;
+      c.beginPath();
+      c.arc(dx, 85*s, 3*s, 0, Math.PI*2);
+      c.fill();
+    }
+    c.globalAlpha = prevAlpha;
+
+    /* Speed arcs */
+    c.strokeStyle = 'rgba(255,106,0,0.15)';
+    var a;
+    for(a = 0; a < 3; a++){
+      var aRadius = (40 + a * 25) * s;
+      var aStart = -Math.PI * 0.6;
+      var aEnd = aStart + Math.min(t * 0.5, Math.PI * 0.4);
+      c.beginPath();
+      c.arc(-30*s, 30*s, aRadius, aStart, aEnd);
+      c.stroke();
+    }
+
+    /* Callout */
+    c.fillStyle = 'rgba(255,106,0,0.6)';
+    c.font = (9*s) + 'px "JetBrains Mono", monospace';
+    c.fillText('10yd 1.48s', -70*s, 105*s);
+  }
+
+  /* ── Force Vector Phase Drawing ────────────────────────────── */
+  function drawForce(c, s, t){
+    c.strokeStyle = 'rgba(255,140,50,0.5)';
+    c.lineWidth = 1.5;
+
+    /* Ground-force arrows pointing up */
+    var j;
+    for(j = -1; j <= 1; j++){
+      c.beginPath();
+      c.moveTo(j*20*s, 82*s);
+      c.lineTo(j*15*s, 35*s);
+      c.stroke();
+      c.beginPath();
+      c.moveTo(j*15*s - 5*s, 45*s);
+      c.lineTo(j*15*s, 35*s);
+      c.lineTo(j*15*s + 5*s, 45*s);
+      c.stroke();
+    }
+
+    /* Jump transfer glow rings */
+    c.strokeStyle = 'rgba(255,106,0,0.12)';
+    c.lineWidth = 1;
+    var prevAlpha = c.globalAlpha;
+    var r;
+    for(r = 1; r <= 4; r++){
+      var ringRadius = r * 22 * s;
+      var ringAlpha = 0.3 - r * 0.05;
+      var pulse = 1 + 0.08 * Math.sin(t * 2 + r);
+      c.globalAlpha = Math.max(ringAlpha, 0.05) * prevAlpha;
+      c.beginPath();
+      c.arc(0, 30*s, ringRadius * pulse, 0, Math.PI*2);
+      c.stroke();
+    }
+    c.globalAlpha = prevAlpha;
+
+    /* Broad jump arc */
+    c.strokeStyle = 'rgba(255,106,0,0.3)';
+    c.setLineDash([4,4]);
+    c.beginPath();
+    c.moveTo(-30*s, 80*s);
+    c.quadraticCurveTo(20*s, -20*s, 70*s, 80*s);
+    c.stroke();
+    c.setLineDash([]);
+
+    /* Callout */
+    c.fillStyle = 'rgba(255,140,50,0.6)';
+    c.font = (9*s) + 'px "JetBrains Mono", monospace';
+    c.fillText('39.5\u2033 VERT', 40*s, 20*s);
+  }
+
+  /* ── Redirection Phase Drawing ─────────────────────────────── */
+  function drawRedirection(c, s, t){
+    c.strokeStyle = 'rgba(255,170,80,0.5)';
+    c.lineWidth = 1;
+
+    /* Foot plant dots */
+    c.fillStyle = 'rgba(255,106,0,0.5)';
+    var plants = [[-40,80],[-10,75],[20,80],[50,75]];
+    plants.forEach(function(p){
+      c.beginPath();
+      c.arc(p[0]*s, p[1]*s, 4*s, 0, Math.PI*2);
+      c.fill();
+    });
+
+    /* Hip turn path arc */
+    c.strokeStyle = 'rgba(255,170,80,0.4)';
+    c.lineWidth = 1.5;
+    c.beginPath();
+    c.arc(0, 20*s, 18*s, -Math.PI*0.3, Math.PI*0.8);
+    c.stroke();
+
+    /* COD route lines (zigzag) */
+    c.strokeStyle = 'rgba(255,106,0,0.3)';
+    c.setLineDash([6,4]);
+    c.beginPath();
+    c.moveTo(-60*s, 50*s);
+    c.lineTo(-30*s, 20*s);
+    c.lineTo(0, 50*s);
+    c.lineTo(30*s, 20*s);
+    c.lineTo(60*s, 50*s);
+    c.stroke();
+    c.setLineDash([]);
+
+    /* Callout */
+    c.fillStyle = 'rgba(255,170,80,0.6)';
+    c.font = (9*s) + 'px "JetBrains Mono", monospace';
+    c.fillText('6.82 3-CONE', -75*s, -55*s);
+  }
+
+  /* ── Camp Readiness Phase Drawing ──────────────────────────── */
+  function drawReadiness(c, s, t){
+    /* Fatigue meter bars */
+    c.fillStyle = 'rgba(255,106,0,0.3)';
+    c.strokeStyle = 'rgba(255,106,0,0.2)';
+    c.lineWidth = 0.5;
+    var bars = [0.9, 0.85, 0.8, 0.75, 0.82];
+    var b;
+    for(b = 0; b < bars.length; b++){
+      var bx = -60*s + b * 28*s;
+      var bh = bars[b] * 50 * s;
+      c.fillRect(bx, 90*s - bh, 16*s, bh);
+      c.strokeRect(bx, 90*s - 50*s, 16*s, 50*s);
+    }
+
+    /* Repeatability rings */
+    c.strokeStyle = 'rgba(100,200,180,0.25)';
+    c.lineWidth = 1;
+    var r;
+    for(r = 1; r <= 3; r++){
+      var rPulse = 1 + 0.06 * Math.sin(t * 1.5 + r);
+      c.beginPath();
+      c.arc(0, -20*s, r * 25 * s * rPulse, 0, Math.PI*2);
+      c.stroke();
+    }
+
+    /* Sustained output indicator bars */
+    c.fillStyle = 'rgba(100,200,180,0.2)';
+    var si;
+    for(si = 0; si < 3; si++){
+      var ow = (60 - si * 12) * s;
+      c.fillRect(-ow/2, (-50 - si*15)*s, ow, 6*s);
+    }
+
+    /* Callout */
+    c.fillStyle = 'rgba(100,200,180,0.5)';
+    c.font = (9*s) + 'px "JetBrains Mono", monospace';
+    c.fillText('30+ REPS', -45*s, -90*s);
+  }
+
+  /* ── Phase switching ───────────────────────────────────────── */
+  function setPhase(phase){
+    if(phase === activePhase) return;
+    activePhase = phase;
+    phaseStart = performance.now();
+
+    /* Update tab cards */
+    cards.forEach(function(card){
+      card.classList.toggle('active', card.getAttribute('data-phase') === phase);
+    });
+
+    /* Update phase buttons */
+    var btns = phaseButtonsEl ? Array.prototype.slice.call(phaseButtonsEl.querySelectorAll('.co-phase-btn')) : [];
+    btns.forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-phase') === phase);
+    });
+
+    /* Update proof row */
+    var data = phaseData[phase];
+    if(data && proofStat && proofText){
+      proofStat.textContent = data.stat;
+      proofText.textContent = data.proof;
+    }
+  }
+
+  /* ── Tab card click handlers ───────────────────────────────── */
+  cards.forEach(function(card){
+    card.addEventListener('click', function(){
+      var phase = this.getAttribute('data-phase');
+      if(phase) setPhase(phase);
+    });
+  });
+
+  /* ── Phase button click handlers ───────────────────────────── */
+  if(phaseButtonsEl){
+    Array.prototype.slice.call(phaseButtonsEl.querySelectorAll('.co-phase-btn')).forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var phase = this.getAttribute('data-phase');
+        if(phase) setPhase(phase);
+      });
+    });
+  }
+
+  /* ── Morph chip tooltips ───────────────────────────────────── */
+  var activeTooltip = null;
+
+  var TOOLTIP_FADE_MS = 300;
+
+  function makeTooltipRow(key, val){
+    var row = document.createElement('div');
+    row.className = 'co-morph-tooltip-row';
+    var keySpan = document.createElement('span');
+    keySpan.className = 'co-morph-tooltip-key';
+    keySpan.textContent = key;
+    var valueSpan = document.createElement('span');
+    valueSpan.className = 'co-morph-tooltip-val';
+    valueSpan.textContent = val;
+    row.appendChild(keySpan);
+    row.appendChild(valueSpan);
+    return row;
+  }
+
+  morphItems.forEach(function(item){
+    item.addEventListener('click', function(e){
+      e.stopPropagation();
+      closeTooltip();
+
+      var trained = item.getAttribute('data-trained') || '';
+      var improved = item.getAttribute('data-improved') || '';
+      var field = item.getAttribute('data-field') || '';
+
+      var tip = document.createElement('div');
+      tip.className = 'co-morph-tooltip';
+      tip.appendChild(makeTooltipRow('What we trained', trained));
+      tip.appendChild(makeTooltipRow('What improved', improved));
+      tip.appendChild(makeTooltipRow('Field value', field));
+
+      item.appendChild(tip);
+      activeTooltip = tip;
+
+      requestAnimationFrame(function(){
+        tip.classList.add('co-tooltip-visible');
+      });
+    });
+    item.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        item.click();
+      }
+    });
+  });
+
+  function closeTooltip(){
+    if(activeTooltip){
+      activeTooltip.classList.remove('co-tooltip-visible');
+      var el = activeTooltip;
+      setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, TOOLTIP_FADE_MS);
+      activeTooltip = null;
+    }
+  }
+
+  document.addEventListener('click', function(){ closeTooltip(); });
+
+  /* ── Scroll morph: numbers → labels ────────────────────────── */
   var morphObserver = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if(entry.isIntersecting){
@@ -6524,22 +6933,38 @@ document.addEventListener('keydown', function(e){
     morphObserver.observe(item);
   });
 
-  /* ── Film-room show trigger ──────────────────────────────── */
-  var filmRoom = section.querySelector('.co-film-room');
+  /* ── Film-room show trigger ────────────────────────────────── */
   if(filmRoom){
     var filmObserver = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
         if(entry.isIntersecting){
           entry.target.classList.add('show');
           startTimecode();
+          resizeFilmCanvas();
+          if(!filmRafId && sectionVisible){
+            phaseStart = performance.now();
+            filmRafId = requestAnimationFrame(drawFilm);
+          }
         }
       });
     },{threshold:0.1});
     filmObserver.observe(filmRoom);
   }
 
-  /* ── Film-room timecode ─────────────────────────────────── */
-  var tcEl = section.querySelector('.co-film-timecode');
+  /* ── Closer cinematic reveal ───────────────────────────────── */
+  var closer = section.querySelector('.co-closer');
+  if(closer){
+    var closerObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('co-closer-visible');
+        }
+      });
+    },{threshold:0.3});
+    closerObserver.observe(closer);
+  }
+
+  /* ── Film-room timecode ────────────────────────────────────── */
   var tcRunning = false;
   var tcStart = 0;
 
@@ -6562,18 +6987,35 @@ document.addEventListener('keydown', function(e){
 
   function pad(n){return n < 10 ? '0' + String(n) : String(n);}
 
-  /* ── Section visibility for canvas ──────────────────────── */
+  /* ── Boot-up sequence ──────────────────────────────────────── */
+  function bootSequence(){
+    if(booted) return;
+    booted = true;
+    section.classList.add('co-booted');
+  }
+
+  /* ── Section visibility ────────────────────────────────────── */
   var sectionObserver = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       sectionVisible = entry.isIntersecting;
-      if(sectionVisible && !rafId){
+      if(sectionVisible){
+        bootSequence();
         resizeCanvas();
-        rafId = requestAnimationFrame(drawConnectors);
+        resizeFilmCanvas();
+        if(!rafId){
+          rafId = requestAnimationFrame(drawConnectors);
+        }
+        if(!filmRafId && filmRoom && filmRoom.classList.contains('show')){
+          filmRafId = requestAnimationFrame(drawFilm);
+        }
       }
     });
   },{threshold:0.05});
   sectionObserver.observe(section);
 
-  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('resize', function(){
+    resizeCanvas();
+    resizeFilmCanvas();
+  });
 
 })();
