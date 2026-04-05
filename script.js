@@ -6431,3 +6431,151 @@ document.addEventListener('keydown', function(e){
   }
 
 })();
+
+/* ═══ CARRYOVER SECTION ENGINE ═══════════════════════════════ */
+(function(){
+  'use strict';
+
+  var section = document.getElementById('carryover');
+  if(!section) return;
+
+  /* ── Canvas: animated connector arcs ──────────────────────── */
+  var canvas = document.getElementById('coCanvas');
+  var ctx = canvas ? canvas.getContext('2d') : null;
+  var rafId = null;
+  var sectionVisible = false;
+
+  function resizeCanvas(){
+    if(!canvas) return;
+    canvas.width = section.offsetWidth;
+    canvas.height = section.offsetHeight;
+  }
+
+  function drawConnectors(time){
+    if(!ctx || !sectionVisible){rafId = null; return;}
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    var cards = section.querySelectorAll('.co-card');
+    if(cards.length < 2){
+      rafId = requestAnimationFrame(drawConnectors);
+      return;
+    }
+
+    ctx.strokeStyle = 'rgba(255,106,0,0.08)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([6,8]);
+
+    var sRect = section.getBoundingClientRect();
+
+    for(var i = 0; i < cards.length - 1; i++){
+      var a = cards[i].getBoundingClientRect();
+      var b = cards[i+1].getBoundingClientRect();
+      var ax = a.left + a.width/2 - sRect.left;
+      var ay = a.top + a.height/2 - sRect.top;
+      var bx = b.left + b.width/2 - sRect.left;
+      var by = b.top + b.height/2 - sRect.top;
+
+      /* Animated dash offset */
+      var offset = (time * 0.03) % 28;
+      ctx.lineDashOffset = -offset;
+
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      var cpx = (ax + bx) / 2;
+      var cpy = Math.min(ay, by) - 40 + Math.sin(time * 0.001 + i) * 15;
+      ctx.quadraticCurveTo(cpx, cpy, bx, by);
+      ctx.stroke();
+    }
+
+    /* Pulse dots at card centers */
+    cards.forEach(function(card, idx){
+      var r = card.getBoundingClientRect();
+      var cx = r.left + r.width/2 - sRect.left;
+      var cy = r.top + r.height/2 - sRect.top;
+      var pulse = 3 + Math.sin(time * 0.003 + idx * 1.5) * 2;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, pulse, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,106,0,' + (0.15 + Math.sin(time * 0.003 + idx) * 0.08) + ')';
+      ctx.fill();
+    });
+
+    rafId = requestAnimationFrame(drawConnectors);
+  }
+
+  /* ── Scroll morph: numbers → labels ──────────────────────── */
+  var morphItems = section.querySelectorAll('.co-morph-item');
+  var morphObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var items = entry.target.querySelectorAll ? 
+          entry.target.querySelectorAll('.co-morph-item') : [entry.target];
+        if(entry.target.classList.contains('co-morph-item')){
+          items = [entry.target];
+        }
+        items.forEach(function(item, i){
+          setTimeout(function(){
+            item.classList.add('morphed');
+          }, i * 200);
+        });
+      }
+    });
+  },{threshold:0.3});
+
+  morphItems.forEach(function(item){
+    morphObserver.observe(item);
+  });
+
+  /* ── Film-room show trigger ──────────────────────────────── */
+  var filmRoom = section.querySelector('.co-film-room');
+  if(filmRoom){
+    var filmObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('show');
+          startTimecode();
+        }
+      });
+    },{threshold:0.2});
+    filmObserver.observe(filmRoom);
+  }
+
+  /* ── Film-room timecode ─────────────────────────────────── */
+  var tcEl = section.querySelector('.co-film-timecode');
+  var tcRunning = false;
+  var tcStart = 0;
+
+  function startTimecode(){
+    if(tcRunning || !tcEl) return;
+    tcRunning = true;
+    tcStart = performance.now();
+    tickTimecode();
+  }
+
+  function tickTimecode(){
+    if(!tcRunning) return;
+    var elapsed = performance.now() - tcStart;
+    var s = Math.floor(elapsed / 1000) % 60;
+    var m = Math.floor(elapsed / 60000) % 60;
+    var ms = Math.floor((elapsed % 1000) / 10);
+    tcEl.textContent = pad(m) + ':' + pad(s) + ':' + pad(ms);
+    requestAnimationFrame(tickTimecode);
+  }
+
+  function pad(n){return n < 10 ? '0' + n : '' + n;}
+
+  /* ── Section visibility for canvas ──────────────────────── */
+  var sectionObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      sectionVisible = entry.isIntersecting;
+      if(sectionVisible && !rafId){
+        resizeCanvas();
+        rafId = requestAnimationFrame(drawConnectors);
+      }
+    });
+  },{threshold:0.05});
+  sectionObserver.observe(section);
+
+  window.addEventListener('resize', resizeCanvas);
+
+})();
