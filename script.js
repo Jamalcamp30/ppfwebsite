@@ -7273,7 +7273,7 @@ document.addEventListener('keydown', function(e){
     rail.appendChild(scan);
 
     for(var y = 0; y <= 100; y++){
-      var pct = (y / 100) * 100;
+      var pct = y;
 
       if(y % 10 === 0){
         var labelIdx = y / 10;
@@ -7310,7 +7310,7 @@ document.addEventListener('keydown', function(e){
     sectionYards.forEach(function(s){
       var cp = document.createElement('div');
       cp.className = 'fpr-checkpoint';
-      cp.style.top = (s.yard / 100 * 100) + '%';
+      cp.style.top = s.yard + '%';
       cp.dataset.section = s.id;
       rail.appendChild(cp);
     });
