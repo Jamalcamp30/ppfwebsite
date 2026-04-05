@@ -64,15 +64,23 @@
 <!-- Cursor Glow -->
 <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
 
-<!-- Cinematic Intro -->
+<!-- Cinematic Intro — 3-Phase Sequence -->
 <div class="cinematic-intro" aria-hidden="true">
   <div class="intro-vignette"></div>
+  <canvas class="intro-system-canvas" id="intro-system-canvas"></canvas>
   <div class="intro-content">
+    <!-- Phase 1: Logo Ignition -->
     <div class="intro-logo-reveal">
       <img alt="PPF Athletics" src="https://static.wixstatic.com/media/86a15f_872649b65d214d5f81965bb77a2a2039~mv2.png/v1/fill/w_218%2Ch_131%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01%2Cenc_avif%2Cquality_auto/PPF%20logo%20%28dark%20background%29.png" width="218" height="131"/>
+      <div class="intro-logo-pulse"></div>
     </div>
-    <div class="intro-line"></div>
-    <div class="intro-tagline">Power • Performance • Fitness</div>
+    <div class="intro-words">
+      <span class="intro-word">POWER</span>
+      <span class="intro-word">PERFORMANCE</span>
+      <span class="intro-word">FITNESS</span>
+    </div>
+    <!-- Phase 2: System tag -->
+    <div class="intro-system-tag">BUILT FOR EVALUATION SEASON</div>
     <div class="intro-bar"><span></span></div>
   </div>
 </div>
@@ -183,44 +191,59 @@
   </video>
   <div class="hero-video-overlay"></div>
 </div>
+<canvas class="hero-measure-canvas" id="hero-measure-canvas" aria-hidden="true"></canvas>
 <div class="container hero-grid">
-<div class="reveal">
+<!-- LEFT LANE: Authority -->
+<div class="hero-authority reveal">
+<div class="hero-phrase">TIMED. MEASURED. COACHED. VERIFIED.</div>
 <span class="eyebrow" id="hero-eyebrow">2027 combine and pro day prep</span>
 <h1 class="hero-title" id="hero-title">Build a <span class="accent">draft-ready</span> profile before the room ever questions it.</h1>
 <p class="hero-sub" id="hero-sub">Our work shows up where it matters most: on the stopwatch, on the jump sheet, through change of direction, and inside the position work. Every phase at PPF is structured to sharpen movement quality, raise usable output, eliminate weak links, and build a profile that looks fast, powerful, efficient, and fully prepared when evaluation season arrives.</p>
-<div class="pill-row" id="hero-pills" style="margin-top:22px">
-<div class="pill">40-yard dash precision</div>
-<div class="pill">Vertical &amp; broad jump transfer</div>
-<div class="pill">Position-specific movement</div>
-<div class="pill">Camp-ready body composition</div>
-<div class="pill">Recovery &amp; readiness</div>
+<div class="pill-row hero-profile-build" id="hero-pills" style="margin-top:22px">
+<div class="pill" data-metric="speed">40-yard dash precision</div>
+<div class="pill" data-metric="jump">Vertical &amp; broad jump transfer</div>
+<div class="pill" data-metric="movement">Position-specific movement</div>
+<div class="pill" data-metric="body">Camp-ready body composition</div>
+<div class="pill" data-metric="recovery">Recovery &amp; readiness</div>
 </div>
 <div class="hero-actions" id="hero-actions">
-<a class="btn primary" href="#contact">Start your 2027 training plan</a>
+<a class="btn primary hero-cta-primary" href="#contact" data-hover="Begin profile build">Start your 2027 training plan</a>
+<div class="hero-cta-wrap">
 <a class="btn secondary" href="#draft-board">See the athlete board</a>
+<span class="cta-preview">Verified speed, jumps, strength, and RAS markers</span>
 </div>
+</div>
+</div>
+<!-- RIGHT LANE: Living Athlete System -->
+<div class="hero-system-lane reveal">
+<canvas class="hero-athlete-canvas" id="hero-athlete-canvas" aria-hidden="true"></canvas>
+<!-- Richard Camp — Architect Anchor -->
+<div class="hero-camp-anchor">
+<img class="camp-portrait" alt="Richard Camp — Performance Director at PPF Athletics" src="https://github.com/user-attachments/assets/f8aa6dd9-2dc5-4b43-830f-911ad36f0b13"/>
+<div class="camp-info">
+<strong class="camp-name">RICHARD CAMP</strong>
+<span class="camp-role">Founder / Performance Director</span>
+<span class="camp-creds">25+ years · CSCS · Draft-prep structure built on precision, intensity, and transfer</span>
+<em class="camp-line">The standard here is coached, not assumed.</em>
+</div>
+</div>
+</div>
+</div>
+<!-- BOTTOM LANE: Verified Proof Bar -->
+<div class="hero-proof-bar">
+<div class="container">
 <div class="stats-grid" id="hero-stats">
-<div class="stat"><strong data-count="12000" data-suffix="">12,000</strong><span>square feet of training space built for speed, power, and football movement</span></div>
-<div class="stat"><strong data-count="4.29">4.29</strong><span>featured 40-yard dash mark already on the PPF board</span></div>
-<div class="stat"><strong data-count="39.5" data-suffix="″">39.5″</strong><span>vertical benchmark posted by a 226-pound receiver</span></div>
-<div class="stat"><strong data-count="30" data-suffix="+">30+</strong><span>bench-press reps featured by multiple high-level athletes in the room</span></div>
-</div>
-<div class="logo-strip">
-<div class="logo-tag">combine prep</div>
-<div class="logo-tag">pro day speed</div>
-<div class="logo-tag">senior-year acceleration</div>
-<div class="logo-tag">NFL camp standards</div>
+<div class="stat"><strong data-count="12000" data-suffix="">12,000</strong><span>SQ FT</span></div>
+<div class="stat"><strong data-count="4.29">4.29</strong><span>FEATURED 40</span></div>
+<div class="stat"><strong data-count="39.5" data-suffix="″">39.5″</strong><span>VERTICAL</span></div>
+<div class="stat"><strong data-count="30" data-suffix="+">30+</strong><span>BENCH REPS</span></div>
 </div>
 </div>
-<div class="hero-card reveal">
-<div class="photo">
-<div class="hero-photo-badge"><span>Richard Camp</span><strong>Owner of PPF Athletics</strong></div>
-<img alt="Richard Camp on the field at PPF Athletics" src="https://github.com/user-attachments/assets/f8aa6dd9-2dc5-4b43-830f-911ad36f0b13">
-</img></div>
-<div class="copy">
-<h3>Built for athletes who want the details handled the right way.</h3>
-<p>Richard Camp directs athlete development at PPF Athletics through a proven training model defined by structure, intensity, and results. With more than 25 years of experience and CSCS-certified credentials, he equips athletes for the demands of elite testing and competitive performance by developing the physical qualities that separate serious prospects—explosion, velocity, strength, coordination, and control. His standard is exacting, his process is deliberate, and his mission is to ensure athletes are fully prepared for the moments that shape careers.</p>
 </div>
+<!-- Scroll Transition: Turf-to-Data Merge -->
+<div class="hero-scroll-transition">
+<div class="container">
+<span class="scroll-transition-text">How the profile gets built</span>
 </div>
 </div>
 </header>
