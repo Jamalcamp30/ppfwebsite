@@ -89,12 +89,15 @@
     ctx.quadraticCurveTo(cx, cy-80, cx+200, cy+100);
     ctx.stroke();
 
-    /* Split timer marks along bottom */
+    /* Split timer marks along bottom — scaled to viewport */
     ctx.fillStyle = 'rgba(255,106,0,0.08)';
     ctx.font = '10px Inter, monospace';
     var splits = ['0.00','1.48','2.52','3.18','4.29'];
+    var splitSpread = Math.min(W * 0.4, 300);
+    var splitStart  = cx - splitSpread / 2;
+    var splitStep   = splitSpread / (splits.length - 1);
     for(var s=0;s<splits.length;s++){
-      ctx.fillText(splits[s], cx - 100 + s*50, H - 40);
+      ctx.fillText(splits[s], splitStart + s * splitStep, H - 40);
     }
 
     rafId = requestAnimationFrame(drawSystem);
@@ -127,11 +130,14 @@
   }, 100);
 
   window.addEventListener('load', function(){
-    /* Let the intro play at least 3.8s for Phase 1+2 feel */
-    setTimeout(finish, 800);
+    /* Let the intro play at least 4.2s so all 3 phases are visible */
+    var elapsed = performance.now();
+    var minPlay = 4200;
+    var remaining = Math.max(minPlay - elapsed, 400);
+    setTimeout(finish, remaining);
   });
-  /* Absolute max: never block more than 5s */
-  setTimeout(finish, 5000);
+  /* Absolute max: never block more than 5.5s */
+  setTimeout(finish, 5500);
 })();
 
 /* ── Scroll Progress Bar ─────────────────────────────────── */
@@ -6345,15 +6351,15 @@ document.addEventListener('keydown', function(e){
     if(!pills.length) return;
 
     pills.forEach(function(pill, i){
-      /* Activate each pill sequentially */
+      /* Activate each pill sequentially with longer hold */
       setTimeout(function(){
         pill.classList.add('pb-active');
         /* After active highlight, settle to done state */
         setTimeout(function(){
           pill.classList.remove('pb-active');
           pill.classList.add('pb-done');
-        }, 600);
-      }, i * 450);
+        }, 700);
+      }, i * 500);
     });
   }
 
@@ -6373,12 +6379,24 @@ document.addEventListener('keydown', function(e){
     items.forEach(function(item, i){
       setTimeout(function(){
         item.classList.add('proof-in');
-      }, i * 150);
+      }, i * 180);
     });
   }
 
   /* Trigger proof bar after pills */
   setTimeout(animateProofBarItems, 7200);
+
+  /* ── Title Impact Flash — subtle glow when headline lands ── */
+  var heroTitle = document.getElementById('hero-title');
+  if(heroTitle){
+    setTimeout(function(){
+      heroTitle.style.textShadow = '0 0 40px rgba(255,106,0,.2), 0 0 80px rgba(255,106,0,.08)';
+      setTimeout(function(){
+        heroTitle.style.transition = 'text-shadow 1.2s ease-out';
+        heroTitle.style.textShadow = 'none';
+      }, 200);
+    }, 5500); /* fires right after the slam at 5s + .55s animation */
+  }
 
   /* Also trigger on scroll if user scrolls early */
   if(proofBarEl){
@@ -6518,11 +6536,13 @@ document.addEventListener('keydown', function(e){
       var elapsed = (timestamp - aPhase) / 1000;
 
       /* Draw athlete wireframe silhouette */
+      var breathe = 1 + 0.006 * Math.sin(elapsed * 0.8);
       aCtx.save();
       aCtx.translate(cx, cy);
+      aCtx.scale(breathe, breathe);
 
       /* Head */
-      aCtx.strokeStyle = 'rgba(255,106,0,0.15)';
+      aCtx.strokeStyle = 'rgba(255,106,0,0.18)';
       aCtx.lineWidth = 1.5;
       aCtx.beginPath();
       aCtx.arc(0, -70*scale, 16*scale, 0, Math.PI*2);
@@ -6638,15 +6658,16 @@ document.addEventListener('keydown', function(e){
           aCtx.fillText('RECOVERY OK', -50*scale, -110*scale);
         }
         if(m.label === 'PROFILE'){
-          /* Final draft-ready border */
-          aCtx.strokeStyle = m.color;
+          /* Final draft-ready border with subtle pulse */
+          var profilePulse = 0.5 + 0.15 * Math.sin(elapsed * 1.5);
+          aCtx.strokeStyle = 'rgba(255,106,0,' + profilePulse + ')';
           aCtx.lineWidth = 2;
           aCtx.setLineDash([4,4]);
           var bw = 90*scale, bh = 110*scale;
           aCtx.strokeRect(-bw, -bh, bw*2, bh + 90*scale);
           aCtx.setLineDash([]);
           /* DRAFT READY label */
-          aCtx.fillStyle = 'rgba(255,106,0,0.7)';
+          aCtx.fillStyle = 'rgba(255,106,0,' + Math.min(profilePulse + 0.2, 0.8) + ')';
           aCtx.font = 'bold ' + (11*scale) + 'px Inter, sans-serif';
           aCtx.textAlign = 'center';
           aCtx.fillText('DRAFT READY', 0, -bh - 8*scale);
