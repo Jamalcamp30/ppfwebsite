@@ -1502,8 +1502,8 @@ ul,ol{list-style:none}
   opacity:0;transition:opacity .5s ease}
 .cc-card:hover .cc-card-edge-glow{opacity:1}
 
-.cc-card-portrait{position:relative;height:260px;overflow:hidden;background:#0a0a0a}
-.cc-card-portrait img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;
+.cc-card-portrait{position:relative;height:320px;overflow:hidden;background:#0a0a0a}
+.cc-card-portrait img{width:100%;height:100%;object-fit:cover;object-position:center 25%;display:block;
   transition:transform .7s var(--ease-out-expo),filter .7s var(--ease-out-expo)}
 .cc-card:hover .cc-card-portrait img{transform:scale(1.06);filter:brightness(1.06)}
 
@@ -1694,7 +1694,7 @@ ul,ol{list-style:none}
   .cc-hero-portrait{min-height:320px}
   .cc-hero-intel{padding:24px 20px 24px}
   .cc-pillar-grid{grid-template-columns:1fr}
-  .cc-card-portrait{height:220px}
+  .cc-card-portrait{height:280px}
   .cc-pipeline{padding:28px 20px}
   .cc-pipeline-track{flex-direction:column;align-items:center}
   .cc-pipe-connector{width:2px;height:20px;margin-top:0}
@@ -2323,7 +2323,7 @@ textarea{min-height:140px;resize:vertical}
 }
 
 /* ── Scroll Anchor Offsets ───────────────────────────────── */
-#system,#draft-board,#measurables,#ras-board,#coach,#media,#recovery,#contact,#draft-room,#facility-gallery{scroll-margin-top:136px}
+#carryover,#ppf-process,#system,#draft-board,#measurables,#ras-board,#coach,#media,#recovery,#contact,#draft-room,#facility-gallery{scroll-margin-top:136px}
 #recovery{scroll-margin-top:148px}
 
 /* ── Custom Scrollbar ────────────────────────────────────── */
@@ -3215,7 +3215,288 @@ table th{color:var(--orange2)!important;font-weight:900}
   grid-template-columns:repeat(2,1fr);
 }
 
-/* ══ TAB 4: METRIC LEADERS LAB ══════════════════════════ */
+/* ══════════════════════════════════════════════════════════
+   FOOTBALL-THEMED CARD ANIMATIONS — Turf, Position, Impact
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Resting state: turf texture & edge glow ─────────────── */
+.dc-legacy-card,
+.dc-athlete-card{
+  perspective:800px;
+  transform-style:preserve-3d;
+}
+.dc-legacy-card .dc-card-turf,
+.dc-athlete-card .dc-card-turf{
+  position:absolute;inset:0;pointer-events:none;z-index:0;border-radius:18px;overflow:hidden;
+  background:
+    repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(255,255,255,.015) 48px,rgba(255,255,255,.015) 49px),
+    linear-gradient(180deg,rgba(34,120,50,.03),transparent 60%);
+  opacity:.7;transition:opacity .5s ease;
+}
+.dc-legacy-card:hover .dc-card-turf,
+.dc-athlete-card:hover .dc-card-turf{opacity:1}
+
+/* Faint yard-line sweep under cards */
+.dc-legacy-card .dc-card-yardline,
+.dc-athlete-card .dc-card-yardline{
+  position:absolute;bottom:0;left:0;right:0;height:2px;pointer-events:none;z-index:0;
+  background:linear-gradient(90deg,transparent 10%,rgba(255,255,255,.06) 30%,rgba(255,255,255,.06) 70%,transparent 90%);
+  opacity:0;transition:opacity .5s ease;
+}
+.dc-legacy-card:hover .dc-card-yardline,
+.dc-athlete-card:hover .dc-card-yardline{opacity:1}
+
+/* Soft edge glow on rest */
+.dc-legacy-card .dc-card-edge-glow,
+.dc-athlete-card .dc-card-edge-glow{
+  position:absolute;inset:-1px;border-radius:18px;pointer-events:none;z-index:0;
+  box-shadow:inset 0 0 20px rgba(255,106,0,.04),0 0 12px rgba(34,120,50,.03);
+  transition:box-shadow .4s ease;
+}
+.dc-legacy-card:hover .dc-card-edge-glow,
+.dc-athlete-card:hover .dc-card-edge-glow{
+  box-shadow:inset 0 0 30px rgba(255,106,0,.08),0 0 20px rgba(255,106,0,.06);
+}
+
+/* ── Hover: lift, tilt, burst ────────────────────────────── */
+.dc-legacy-card:hover,
+.dc-athlete-card:hover{
+  transform:translateY(-6px) rotateX(1deg) rotateY(-1.5deg);
+  border-color:rgba(255,106,0,.22);
+  box-shadow:0 18px 48px rgba(0,0,0,.35),0 0 24px rgba(255,106,0,.06);
+}
+
+/* ── Turf pellet particles (shared with ow-) ─────────────── */
+.dc-pellet{
+  position:absolute;width:3px;height:3px;border-radius:50%;
+  pointer-events:none;z-index:10;
+  background:rgba(34,120,50,.6);
+  animation:dcPelletBurst var(--pel-dur,.6s) var(--ease-out-expo) forwards;
+}
+.dc-pellet:nth-child(odd){background:rgba(20,80,30,.5)}
+@keyframes dcPelletBurst{
+  0%{transform:translate(0,0) scale(1);opacity:1}
+  100%{transform:translate(var(--pel-x,10px),var(--pel-y,-15px)) scale(.3);opacity:0}
+}
+
+/* ── Grass blade particles ───────────────────────────────── */
+.dc-grass{
+  position:absolute;width:1.5px;height:8px;border-radius:1px;
+  pointer-events:none;z-index:10;
+  background:linear-gradient(to top,rgba(34,120,50,.5),rgba(60,160,70,.3));
+  transform-origin:bottom center;
+  animation:dcGrassFly var(--gr-dur,.7s) var(--ease-out-expo) forwards;
+}
+@keyframes dcGrassFly{
+  0%{transform:translate(0,0) rotate(0deg) scale(1);opacity:1}
+  100%{transform:translate(var(--gr-x,8px),var(--gr-y,-20px)) rotate(var(--gr-r,45deg)) scale(.4);opacity:0}
+}
+
+/* ── Cleat scratch mark ──────────────────────────────────── */
+.dc-cleat-scratch{
+  position:absolute;bottom:4px;pointer-events:none;z-index:5;
+  width:18px;height:2px;border-radius:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,.12),transparent);
+  animation:dcCleatScratch .5s var(--ease-out-expo) forwards;
+}
+@keyframes dcCleatScratch{
+  0%{width:0;opacity:1}
+  70%{width:18px;opacity:.8}
+  100%{width:18px;opacity:0}
+}
+
+/* ── Impact shockwave pulse ──────────────────────────────── */
+.dc-impact-pulse{
+  position:absolute;border-radius:50%;pointer-events:none;z-index:5;
+  width:40px;height:40px;
+  border:1px solid rgba(255,106,0,.3);
+  animation:dcImpactPulse .6s var(--ease-out-expo) forwards;
+}
+@keyframes dcImpactPulse{
+  0%{transform:scale(0);opacity:1}
+  100%{transform:scale(2.5);opacity:0}
+}
+
+/* ── Position-specific action trail overlay ───────────────── */
+.dc-action-trail{
+  position:absolute;inset:0;pointer-events:none;z-index:3;
+  overflow:hidden;border-radius:18px;opacity:0;
+  transition:opacity .3s ease;
+}
+.dc-legacy-card:hover .dc-action-trail,
+.dc-athlete-card:hover .dc-action-trail{opacity:1}
+
+/* QB — spiral trail from right to left */
+.dc-action-trail[data-pos="QB"]::after,
+.dc-action-trail[data-pos="QB"]::before{content:"";}
+.dc-action-trail[data-pos="QB"]{
+  background:
+    radial-gradient(ellipse 20% 60% at 80% 50%,rgba(255,106,0,.08),transparent),
+    linear-gradient(225deg,transparent 60%,rgba(255,106,0,.04) 80%,transparent 100%);
+  animation:dcTrailQB .7s var(--ease-out-expo) forwards;
+}
+@keyframes dcTrailQB{
+  0%{clip-path:inset(0 100% 0 0)}
+  100%{clip-path:inset(0 0 0 0)}
+}
+
+/* RB — hard cut burst from center-bottom */
+.dc-action-trail[data-pos="RB"]{
+  background:radial-gradient(circle at 50% 90%,rgba(255,106,0,.1),transparent 60%);
+  animation:dcTrailRB .6s var(--ease-out-expo) forwards;
+}
+@keyframes dcTrailRB{
+  0%{clip-path:circle(0% at 50% 90%)}
+  100%{clip-path:circle(100% at 50% 90%)}
+}
+
+/* WR — vertical stem line rising */
+.dc-action-trail[data-pos="WR"]{
+  background:linear-gradient(0deg,rgba(255,106,0,.06) 0%,rgba(255,106,0,.1) 60%,transparent 100%);
+  animation:dcTrailWR .7s var(--ease-out-expo) forwards;
+}
+@keyframes dcTrailWR{
+  0%{clip-path:inset(100% 30% 0 30%)}
+  100%{clip-path:inset(0 0 0 0)}
+}
+
+/* TE — seam release, diagonal sweep */
+.dc-action-trail[data-pos="TE"]{
+  background:linear-gradient(135deg,rgba(255,106,0,.06),transparent 50%,rgba(255,106,0,.05));
+  animation:dcTrailTE .65s var(--ease-out-expo) forwards;
+}
+@keyframes dcTrailTE{
+  0%{clip-path:polygon(0 100%,0 100%,0 100%)}
+  100%{clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+}
+
+/* OL — pancake drive from left */
+.dc-action-trail[data-pos="OL"]{
+  background:linear-gradient(90deg,rgba(255,106,0,.08),transparent 70%);
+  animation:dcTrailOL .55s var(--ease-out-expo) forwards;
+}
+@keyframes dcTrailOL{
+  0%{clip-path:inset(0 100% 0 0)}
+  100%{clip-path:inset(0 0 0 0)}
+}
+
+/* DL — violent get-off from bottom */
+.dc-action-trail[data-pos="DL"],
+.dc-action-trail[data-pos="DT"]{
+  background:radial-gradient(ellipse 80% 40% at 50% 100%,rgba(255,106,0,.1),transparent);
+  animation:dcTrailDL .5s var(--ease-out-expo) forwards;
+}
+@keyframes dcTrailDL{
+  0%{clip-path:inset(100% 0 0 0)}
+  40%{clip-path:inset(40% 0 0 0)}
+  100%{clip-path:inset(0 0 0 0)}
+}
+
+/* EDGE — speed rush arc from right corner */
+.dc-action-trail[data-pos="EDGE"]{
+  background:
+    radial-gradient(ellipse 50% 80% at 95% 80%,rgba(255,106,0,.08),transparent),
+    linear-gradient(200deg,transparent 40%,rgba(255,106,0,.05));
+  animation:dcTrailEdge .7s var(--ease-out-expo) forwards;
+}
+@keyframes dcTrailEdge{
+  0%{clip-path:circle(0% at 100% 100%)}
+  100%{clip-path:circle(150% at 100% 100%)}
+}
+
+/* LB — downhill trigger from top center */
+.dc-action-trail[data-pos="LB"]{
+  background:linear-gradient(180deg,rgba(255,106,0,.08),transparent 70%);
+  animation:dcTrailLB .55s var(--ease-out-expo) forwards;
+}
+@keyframes dcTrailLB{
+  0%{clip-path:inset(0 0 100% 0)}
+  100%{clip-path:inset(0 0 0 0)}
+}
+
+/* CB — flip hips, diagonal */
+.dc-action-trail[data-pos="CB"],
+.dc-action-trail[data-pos="DB"]{
+  background:linear-gradient(225deg,rgba(255,106,0,.08),transparent 50%,rgba(255,106,0,.04));
+  animation:dcTrailCB .65s var(--ease-out-expo) forwards;
+}
+@keyframes dcTrailCB{
+  0%{clip-path:polygon(100% 0,100% 0,100% 0)}
+  100%{clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+}
+
+/* S — angle trigger, radial from top-right */
+.dc-action-trail[data-pos="S"]{
+  background:radial-gradient(circle at 80% 20%,rgba(255,106,0,.1),transparent 60%);
+  animation:dcTrailS .65s var(--ease-out-expo) forwards;
+}
+@keyframes dcTrailS{
+  0%{clip-path:circle(0% at 80% 20%)}
+  100%{clip-path:circle(120% at 80% 20%)}
+}
+
+/* Specialist / LS / ATH — clean arc */
+.dc-action-trail[data-pos="LS"],
+.dc-action-trail[data-pos="K"],
+.dc-action-trail[data-pos="P"],
+.dc-action-trail[data-pos="ATH"]{
+  background:
+    linear-gradient(0deg,transparent 40%,rgba(255,106,0,.06)),
+    radial-gradient(ellipse 40% 30% at 50% 10%,rgba(255,255,255,.04),transparent);
+  animation:dcTrailSpec .7s var(--ease-out-expo) forwards;
+}
+@keyframes dcTrailSpec{
+  0%{clip-path:inset(0 50% 100% 50%)}
+  100%{clip-path:inset(0 0 0 0)}
+}
+
+/* ── Card expanded state (click) ─────────────────────────── */
+.dc-legacy-card.dc-card-expanded,
+.dc-athlete-card.dc-card-expanded{
+  grid-column:1 / -1;
+  min-height:auto;
+  border-color:rgba(255,106,0,.25);
+  background:rgba(255,255,255,.04);
+  box-shadow:0 24px 60px rgba(0,0,0,.4),0 0 40px rgba(255,106,0,.06);
+  animation:dcCardExpand .5s var(--ease-out-expo) forwards;
+}
+@keyframes dcCardExpand{
+  0%{opacity:.9;transform:translateY(4px) scale(.99)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+.dc-card-expand-info{
+  display:none;margin-top:12px;padding-top:12px;border-top:1px solid rgba(255,255,255,.06);
+  animation:dcExpandInfoIn .4s var(--ease-out-expo) .15s both;
+}
+.dc-card-expanded .dc-card-expand-info{display:block}
+@keyframes dcExpandInfoIn{
+  0%{opacity:0;transform:translateY(8px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+.dc-card-expand-info p{
+  font-size:13px;color:var(--muted);line-height:1.7;margin:0 0 8px;
+}
+.dc-card-expand-info .dc-expand-stats{
+  display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;
+}
+.dc-card-expand-info .dc-expand-stat{
+  padding:5px 12px;border-radius:100px;font-size:11px;font-weight:700;
+  background:rgba(255,106,0,.08);border:1px solid rgba(255,106,0,.12);color:var(--orange2);
+}
+
+/* ── OL syrup ooze easter egg ────────────────────────────── */
+.dc-syrup-ooze{
+  position:absolute;top:0;left:10%;right:10%;height:6px;pointer-events:none;z-index:10;
+  background:linear-gradient(180deg,rgba(139,90,43,.6),rgba(139,90,43,.2));
+  border-radius:0 0 8px 8px;
+  animation:dcSyrupOoze 1.2s var(--ease-out-expo) forwards;
+  transform-origin:top center;
+}
+@keyframes dcSyrupOoze{
+  0%{transform:scaleY(0);opacity:0}
+  30%{transform:scaleY(1);opacity:.8}
+  100%{transform:scaleY(1.5);opacity:0}
+}
 .dc-metric-heroes{
   display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px;
 }
@@ -3572,7 +3853,7 @@ table th{color:var(--orange2)!important;font-weight:900}
   .brand{gap:10px;min-width:0}
   .brand span strong{font-size:15px}
   .brand span small{font-size:10px}
-  #system,#draft-board,#measurables,#ras-board,#coach,#media,#recovery,#contact{scroll-margin-top:118px}
+  #carryover,#ppf-process,#system,#draft-board,#measurables,#ras-board,#coach,#media,#recovery,#contact{scroll-margin-top:118px}
   .draft-ticker{top:72px}
   .hero{padding-top:176px}
   .hero h1,.section-title{font-size:clamp(30px,8vw,52px)}
@@ -4866,6 +5147,22 @@ table th{color:var(--orange2)!important;font-weight:900}
 }
 .dr-card:hover .dr-card-dossier-btn{opacity:1}
 .dr-card-dossier-btn:hover{background:var(--orange);border-color:var(--orange);color:#111}
+
+/* ── DR Card football texture overlays ───────────────────── */
+.dr-card .dc-card-turf{
+  position:absolute;inset:0;pointer-events:none;z-index:0;border-radius:16px;overflow:hidden;
+  background:
+    repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(255,255,255,.015) 48px,rgba(255,255,255,.015) 49px),
+    linear-gradient(180deg,rgba(34,120,50,.03),transparent 60%);
+  opacity:.5;transition:opacity .5s ease;
+}
+.dr-card:hover .dc-card-turf{opacity:.9}
+.dr-card .dc-action-trail{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  overflow:hidden;border-radius:16px;opacity:0;
+  transition:opacity .3s ease;
+}
+.dr-card:hover .dc-action-trail{opacity:1}
 
 /* ── Right Pane ──────────────────────────────────── */
 .dr-pane-right{

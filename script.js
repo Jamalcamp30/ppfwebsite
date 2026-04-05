@@ -1447,6 +1447,117 @@ var draftData = [
     draftData.forEach(function(a){ draftDataMap[a.name] = a; });
   }
 
+  /* ── Football Card Animation Engine ────────────────────── */
+  function dcSpawnPellets(card){
+    var rect = card.getBoundingClientRect();
+    var count = 6 + Math.floor(Math.random() * 5);
+    for(var i = 0; i < count; i++){
+      var pel = document.createElement('span');
+      pel.className = 'dc-pellet';
+      var startX = Math.random() * rect.width;
+      var side = Math.random() > 0.5 ? 1 : -1;
+      var dx = (8 + Math.random() * 18) * side;
+      var dy = -(5 + Math.random() * 22);
+      var dur = 0.4 + Math.random() * 0.35;
+      pel.style.left = startX + 'px';
+      pel.style.bottom = '0';
+      pel.style.setProperty('--pel-x', dx + 'px');
+      pel.style.setProperty('--pel-y', dy + 'px');
+      pel.style.setProperty('--pel-dur', dur + 's');
+      pel.style.width = (2 + Math.random() * 2) + 'px';
+      pel.style.height = pel.style.width;
+      card.appendChild(pel);
+      (function(el){ setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, dur * 1000 + 50); })(pel);
+    }
+  }
+
+  function dcSpawnGrass(card){
+    var rect = card.getBoundingClientRect();
+    var count = 3 + Math.floor(Math.random() * 4);
+    for(var i = 0; i < count; i++){
+      var grass = document.createElement('span');
+      grass.className = 'dc-grass';
+      var startX = Math.random() < 0.5 ? Math.random() * 12 : rect.width - Math.random() * 12;
+      var side = startX < rect.width / 2 ? -1 : 1;
+      var dx = (5 + Math.random() * 14) * side;
+      var dy = -(10 + Math.random() * 25);
+      var dr = (30 + Math.random() * 60) * side;
+      var dur = 0.5 + Math.random() * 0.3;
+      grass.style.left = startX + 'px';
+      grass.style.bottom = '0';
+      grass.style.height = (6 + Math.random() * 6) + 'px';
+      grass.style.setProperty('--gr-x', dx + 'px');
+      grass.style.setProperty('--gr-y', dy + 'px');
+      grass.style.setProperty('--gr-r', dr + 'deg');
+      grass.style.setProperty('--gr-dur', dur + 's');
+      card.appendChild(grass);
+      (function(el){ setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, dur * 1000 + 50); })(grass);
+    }
+  }
+
+  function dcSpawnCleatScratch(card){
+    var rect = card.getBoundingClientRect();
+    var scratch = document.createElement('span');
+    scratch.className = 'dc-cleat-scratch';
+    scratch.style.left = (20 + Math.random() * (rect.width - 50)) + 'px';
+    card.appendChild(scratch);
+    setTimeout(function(){ if(scratch.parentNode) scratch.parentNode.removeChild(scratch); }, 600);
+  }
+
+  function dcSpawnImpactPulse(card){
+    var rect = card.getBoundingClientRect();
+    var pulse = document.createElement('span');
+    pulse.className = 'dc-impact-pulse';
+    pulse.style.left = (rect.width * 0.3 + Math.random() * rect.width * 0.4) + 'px';
+    pulse.style.top = (rect.height * 0.3 + Math.random() * rect.height * 0.4) + 'px';
+    card.appendChild(pulse);
+    setTimeout(function(){ if(pulse.parentNode) pulse.parentNode.removeChild(pulse); }, 700);
+  }
+
+  function dcSpawnSyrupOoze(card){
+    var ooze = document.createElement('span');
+    ooze.className = 'dc-syrup-ooze';
+    card.appendChild(ooze);
+    setTimeout(function(){ if(ooze.parentNode) ooze.parentNode.removeChild(ooze); }, 1300);
+  }
+
+  /* Position-specific extra effects on hover */
+  var positionEffects = {
+    'QB': function(card){ dcSpawnCleatScratch(card); },
+    'RB': function(card){ dcSpawnImpactPulse(card); dcSpawnCleatScratch(card); },
+    'WR': function(card){ /* vertical stem already handled by trail */ },
+    'TE': function(card){ dcSpawnImpactPulse(card); },
+    'OL': function(card){ dcSpawnImpactPulse(card); setTimeout(function(){ dcSpawnSyrupOoze(card); }, 500); },
+    'DL': function(card){ dcSpawnImpactPulse(card); dcSpawnCleatScratch(card); },
+    'DT': function(card){ dcSpawnImpactPulse(card); dcSpawnCleatScratch(card); },
+    'EDGE': function(card){ dcSpawnCleatScratch(card); },
+    'LB': function(card){ dcSpawnImpactPulse(card); },
+    'CB': function(card){ dcSpawnCleatScratch(card); },
+    'DB': function(card){ dcSpawnCleatScratch(card); },
+    'S': function(card){ dcSpawnCleatScratch(card); }
+  };
+
+  function initDcCardAnimations(grid){
+    var cards = grid.querySelectorAll('.dc-legacy-card, .dc-athlete-card');
+    cards.forEach(function(card){
+      /* Reset action trail animation on hover */
+      card.addEventListener('mouseenter', function(){
+        var pos = card.getAttribute('data-position') || '';
+        dcSpawnPellets(card);
+        dcSpawnGrass(card);
+        /* Reset action trail to replay */
+        var trail = card.querySelector('.dc-action-trail');
+        if(trail){
+          trail.style.animation = 'none';
+          void trail.offsetWidth;
+          trail.style.animation = '';
+        }
+        /* Position-specific extras */
+        if(positionEffects[pos]) positionEffects[pos](card);
+      });
+    });
+  }
+
   /* ── Alumni Legacy Grid Rendering ─────────────────────── */
   function renderAlumniGrid(data){
     var grid = document.getElementById('dcAlumniGrid');
@@ -1461,6 +1572,10 @@ var draftData = [
         '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '"/>' :
         '<div class="avatar">' + esc(item.name.charAt(0)) + '</div>';
       card.innerHTML =
+        '<div class="dc-card-turf"></div>' +
+        '<div class="dc-card-edge-glow"></div>' +
+        '<div class="dc-card-yardline"></div>' +
+        '<div class="dc-action-trail" data-pos="' + esc(item.position) + '"></div>' +
         '<div class="dc-legacy-thumb">' + imgHtml + '</div>' +
         '<div class="dc-legacy-info">' +
           '<h4>' + esc(item.name) + '</h4>' +
@@ -1473,6 +1588,7 @@ var draftData = [
       card.addEventListener('click', function(){ openBoardLock(item); });
       grid.appendChild(card);
     });
+    initDcCardAnimations(grid);
     restaggerCards(grid);
   }
   renderAlumniGrid(alumni);
@@ -1509,6 +1625,10 @@ var draftData = [
         '<img loading="lazy" alt="' + esc(item.name) + '" src="' + esc(photo) + '"/>' :
         '<div class="avatar">' + esc(item.name.charAt(0)) + '</div>';
       card.innerHTML =
+        '<div class="dc-card-turf"></div>' +
+        '<div class="dc-card-edge-glow"></div>' +
+        '<div class="dc-card-yardline"></div>' +
+        '<div class="dc-action-trail" data-pos="' + esc(item.position) + '"></div>' +
         '<div class="dc-legacy-thumb">' + imgHtml + '</div>' +
         '<div class="dc-legacy-info">' +
           '<h4>' + esc(item.name) + '</h4>' +
@@ -1531,6 +1651,7 @@ var draftData = [
       });
       grid.appendChild(card);
     });
+    initDcCardAnimations(grid);
     restaggerCards(grid);
   }
   renderRoomGrid(roomBoard);
@@ -2512,9 +2633,21 @@ var draftData = [
   }
 
   links.forEach(function(link){
-    link.addEventListener('click', function(){
+    link.addEventListener('click', function(e){
+      e.preventDefault();
       var id = this.getAttribute('href').slice(1);
+      var target = document.getElementById(id);
+      if(target){
+        var offset = navHeight() + 16;
+        var top = target.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
       setActive(id);
+      /* Close mobile nav if open */
+      var mobileNav = document.querySelector('.nav-links');
+      if(mobileNav) mobileNav.classList.remove('open');
+      var toggle = document.querySelector('.nav-toggle');
+      if(toggle) toggle.setAttribute('aria-expanded','false');
     });
   });
 
@@ -3105,6 +3238,53 @@ var draftData = [
 /* ── Draft Room — PPF Scout Console ──────────────────────── */
 (function(){
 
+/* ── DR Card pellet/grass spawners ────────────────────────── */
+function drSpawnPellets(card){
+  var rect = card.getBoundingClientRect();
+  var count = 5 + Math.floor(Math.random() * 4);
+  for(var i = 0; i < count; i++){
+    var pel = document.createElement('span');
+    pel.className = 'dc-pellet';
+    var startX = Math.random() * rect.width;
+    var side = Math.random() > 0.5 ? 1 : -1;
+    var dx = (8 + Math.random() * 16) * side;
+    var dy = -(5 + Math.random() * 20);
+    var dur = 0.35 + Math.random() * 0.3;
+    pel.style.left = startX + 'px';
+    pel.style.bottom = '0';
+    pel.style.setProperty('--pel-x', dx + 'px');
+    pel.style.setProperty('--pel-y', dy + 'px');
+    pel.style.setProperty('--pel-dur', dur + 's');
+    pel.style.width = (2 + Math.random() * 2) + 'px';
+    pel.style.height = pel.style.width;
+    card.appendChild(pel);
+    (function(el){ setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, dur * 1000 + 50); })(pel);
+  }
+}
+function drSpawnGrass(card){
+  var rect = card.getBoundingClientRect();
+  var count = 2 + Math.floor(Math.random() * 3);
+  for(var i = 0; i < count; i++){
+    var grass = document.createElement('span');
+    grass.className = 'dc-grass';
+    var startX = Math.random() < 0.5 ? Math.random() * 10 : rect.width - Math.random() * 10;
+    var side = startX < rect.width / 2 ? -1 : 1;
+    var dx = (5 + Math.random() * 12) * side;
+    var dy = -(8 + Math.random() * 20);
+    var dr = (25 + Math.random() * 50) * side;
+    var dur = 0.45 + Math.random() * 0.25;
+    grass.style.left = startX + 'px';
+    grass.style.bottom = '0';
+    grass.style.height = (5 + Math.random() * 5) + 'px';
+    grass.style.setProperty('--gr-x', dx + 'px');
+    grass.style.setProperty('--gr-y', dy + 'px');
+    grass.style.setProperty('--gr-r', dr + 'deg');
+    grass.style.setProperty('--gr-dur', dur + 's');
+    card.appendChild(grass);
+    (function(el){ setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, dur * 1000 + 50); })(grass);
+  }
+}
+
 
 
 /* ── Position Intel Data ──────────────────────────────────── */
@@ -3405,6 +3585,8 @@ function renderBoard(){
     if(a.weight !== null) statsHTML += '<span class="dr-stat">' + a.weight + ' lbs</span>';
 
     card.innerHTML =
+      '<div class="dc-card-turf"></div>' +
+      '<div class="dc-action-trail" data-pos="' + drEsc(a.pos) + '"></div>' +
       '<div class="dr-card-check">\u2713</div>' +
       '<button class="dr-card-dossier-btn" data-dossier="' + idx + '" type="button" title="Open dossier">\u2295</button>' +
       '<img class="dr-card-photo" src="' + a.photo + '" alt="' + drEsc(a.name) + '" loading="lazy">' +
@@ -3457,6 +3639,18 @@ function renderBoard(){
     });
     card.addEventListener('mouseleave', function(){
       card.style.transform = '';
+    });
+
+    /* Football hover effects — pellets and grass */
+    card.addEventListener('mouseenter', function(){
+      drSpawnPellets(card);
+      drSpawnGrass(card);
+      var trail = card.querySelector('.dc-action-trail');
+      if(trail){
+        trail.style.animation = 'none';
+        void trail.offsetWidth;
+        trail.style.animation = '';
+      }
     });
 
     boardGrid.appendChild(card);
