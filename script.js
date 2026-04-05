@@ -107,7 +107,7 @@
   setTimeout(function(){
     intro.classList.add('phase2');
     drawSystem();
-  }, 2800);
+  }, 4500);
 
   function finish(){
     if(done) return;
@@ -123,21 +123,21 @@
   /* Progress bar */
   var progress = 0;
   var tick = setInterval(function(){
-    progress += Math.random()*8 + 3;
+    progress += Math.random()*3 + 1;
     if(progress > 100) progress = 100;
     if(bar) bar.style.width = progress + '%';
     if(progress >= 100){ clearInterval(tick); finish(); }
-  }, 100);
+  }, 150);
 
   window.addEventListener('load', function(){
     /* Let the intro play at least 4.2s so all 3 phases are visible */
     var elapsed = performance.now();
-    var minPlay = 4200;
+    var minPlay = 8000;
     var remaining = Math.max(minPlay - elapsed, 400);
     setTimeout(finish, remaining);
   });
   /* Absolute max: never block more than 5.5s */
-  setTimeout(finish, 5500);
+  setTimeout(finish, 10000);
 })();
 
 /* ── Scroll Progress Bar ─────────────────────────────────── */
@@ -6518,7 +6518,7 @@ document.addEventListener('keydown', function(e){
         });
       }
     });
-  },{threshold:0.3});
+  },{threshold:0.15});
 
   morphItems.forEach(function(item){
     morphObserver.observe(item);
@@ -6534,7 +6534,7 @@ document.addEventListener('keydown', function(e){
           startTimecode();
         }
       });
-    },{threshold:0.2});
+    },{threshold:0.1});
     filmObserver.observe(filmRoom);
   }
 

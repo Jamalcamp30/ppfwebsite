@@ -2767,12 +2767,15 @@ table th{color:var(--orange2)!important;font-weight:900}
   padding:6px;border-radius:16px;
   background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.07);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;-ms-overflow-style:none;
 }
+.dc-control-strip::-webkit-scrollbar{display:none}
 .dc-tab{
   appearance:none;display:flex;align-items:center;gap:8px;
-  padding:14px 22px;border-radius:12px;border:1px solid transparent;
+  padding:10px 16px;border-radius:12px;border:1px solid transparent;
   background:transparent;color:var(--muted);cursor:pointer;
-  font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.08em;
+  font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.08em;
   transition:all .4s var(--ease-out-expo);position:relative;overflow:hidden;
 }
 .dc-tab-icon{display:flex;align-items:center;opacity:.6;transition:opacity .35s ease}
@@ -3429,9 +3432,9 @@ table th{color:var(--orange2)!important;font-weight:900}
   .dc-stats-strip{flex-wrap:wrap;gap:4px;padding:10px 6px}
   .dc-stat-item{padding:4px 10px}
   .dc-stat-num{font-size:18px}
-  .dc-control-strip{flex-wrap:wrap;gap:4px;padding:4px}
+  .dc-control-strip{gap:4px;padding:4px}
   .dc-tab{padding:10px 14px;font-size:11px;gap:6px}
-  .dc-tab-text{display:none}
+  .dc-tab-text{font-size:9px}
   .dc-hero-main{grid-template-columns:1fr;gap:20px}
   .dc-hero-image{max-width:320px;margin:0 auto}
   .dc-hero-name{font-size:32px}
@@ -3590,14 +3593,14 @@ table th{color:var(--orange2)!important;font-weight:900}
 /* Phase 1: Logo ignition */
 .intro-logo-reveal{
   position:relative;width:180px;height:108px;opacity:0;transform:scale(.8) translateY(30px);
-  animation:intro-logo-appear 1.6s var(--ease-out-expo) .3s forwards;
+  animation:intro-logo-appear 2.2s var(--ease-out-expo) .5s forwards;
 }
 .intro-logo-reveal img{width:100%;height:100%;object-fit:contain;position:relative;z-index:1}
 .intro-logo-pulse{
   position:absolute;inset:-4px;border-radius:16px;z-index:0;
   background:transparent;opacity:0;
   box-shadow:0 0 0 0 rgba(255,106,0,0);
-  animation:intro-pulse-fire 1.4s var(--ease-out-expo) 1.4s forwards;
+  animation:intro-pulse-fire 1.6s var(--ease-out-expo) 2s forwards;
 }
 @keyframes intro-logo-appear{
   to{opacity:1;transform:scale(1) translateY(0)}
@@ -3619,9 +3622,9 @@ table th{color:var(--orange2)!important;font-weight:900}
   opacity:0;transform:translateY(10px) scale(.95);
   text-shadow:0 0 16px rgba(255,106,0,.15);
 }
-.intro-word:nth-child(1){animation:intro-word-in .55s var(--ease-out-expo) 2s forwards}
-.intro-word:nth-child(2){animation:intro-word-in .55s var(--ease-out-expo) 2.35s forwards}
-.intro-word:nth-child(3){animation:intro-word-in .55s var(--ease-out-expo) 2.7s forwards}
+.intro-word:nth-child(1){animation:intro-word-in .7s var(--ease-out-expo) 3.2s forwards}
+.intro-word:nth-child(2){animation:intro-word-in .7s var(--ease-out-expo) 3.8s forwards}
+.intro-word:nth-child(3){animation:intro-word-in .7s var(--ease-out-expo) 4.4s forwards}
 @keyframes intro-word-in{
   0%{opacity:0;transform:translateY(10px) scale(.95)}
   55%{opacity:1;transform:translateY(-2px) scale(1.02)}
@@ -3633,7 +3636,7 @@ table th{color:var(--orange2)!important;font-weight:900}
   font-size:12px;font-weight:800;letter-spacing:.3em;text-transform:uppercase;
   color:var(--orange);opacity:0;transform:translateY(14px);
   text-shadow:0 0 20px rgba(255,106,0,.25);
-  animation:intro-tag-in .7s var(--ease-out-expo) 3.4s forwards;
+  animation:intro-tag-in .7s var(--ease-out-expo) 5.5s forwards;
 }
 @keyframes intro-tag-in{
   0%{opacity:0;transform:translateY(14px)}
@@ -5256,7 +5259,7 @@ table th{color:var(--orange2)!important;font-weight:900}
   .dc-legacy-grid,.dc-athlete-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:980px){
-  .dc-control-strip{flex-wrap:wrap;gap:4px;padding:6px}
+  .dc-control-strip{gap:4px;padding:6px}
   .dc-tab{padding:10px 14px;font-size:11px}
   .dc-tab-text{display:inline}
   .dc-hero-main{grid-template-columns:1fr;gap:24px}
@@ -5353,7 +5356,7 @@ table th{color:var(--orange2)!important;font-weight:900}
 .co-card{
   perspective:900px;
   cursor:pointer;
-  min-height:380px;
+  min-height:340px;
 }
 .co-card-inner{
   position:relative;width:100%;height:100%;
@@ -5596,7 +5599,7 @@ table th{color:var(--orange2)!important;font-weight:900}
 }
 
 /* ── Responsive ─────────────────────────────────────────── */
-@media(max-width:1024px){
+@media(max-width:1200px){
   .co-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:600px){
