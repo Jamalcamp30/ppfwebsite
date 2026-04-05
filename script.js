@@ -335,7 +335,7 @@
   draw();
   document.addEventListener('visibilitychange', function(){
     if(document.hidden){ cancelAnimationFrame(rafId); }
-    else { rafId = requestAnimationFrame(draw); }
+    else { draw(); }
   });
 })();
 
