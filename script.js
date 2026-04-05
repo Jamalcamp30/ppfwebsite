@@ -7805,3 +7805,47 @@ document.addEventListener('keydown', function(e){
   }
 
 })();
+
+/* ── Proof Sub-Tab Navigation ──────────────────────────── */
+(function(){
+  var tabs = document.querySelectorAll('.proof-tab');
+  if(!tabs.length) return;
+  var nav = document.querySelector('.nav');
+  var subnav = document.querySelector('.proof-subnav');
+
+  /* Click handler: smooth scroll to sub-section */
+  tabs.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var targetId = this.getAttribute('data-target');
+      var target = document.getElementById(targetId);
+      if(!target) return;
+      var navH = nav ? nav.getBoundingClientRect().height : 0;
+      var subnavH = subnav ? subnav.offsetHeight : 0;
+      var top = target.getBoundingClientRect().top + window.scrollY - navH - subnavH - 8;
+      window.scrollTo({ top: top, behavior: 'smooth' });
+      tabs.forEach(function(t){ t.classList.remove('active'); });
+      this.classList.add('active');
+    });
+  });
+
+  /* Scroll-based active highlight */
+  var proofSections = Array.from(tabs).map(function(btn){
+    return { btn:btn, el:document.getElementById(btn.getAttribute('data-target')) };
+  }).filter(function(item){ return item.el; });
+
+  function updateProofActive(){
+    var navH = nav ? nav.getBoundingClientRect().height : 0;
+    var subnavH = subnav ? subnav.offsetHeight : 0;
+    var probeY = window.scrollY + navH + subnavH + 40;
+    var current = null;
+    proofSections.forEach(function(item){
+      if(probeY >= item.el.offsetTop) current = item;
+    });
+    if(current){
+      tabs.forEach(function(t){ t.classList.remove('active'); });
+      current.btn.classList.add('active');
+    }
+  }
+  window.addEventListener('scroll', updateProofActive, {passive:true});
+  updateProofActive();
+})();
