@@ -6508,11 +6508,9 @@ document.addEventListener('keydown', function(e){
   var morphObserver = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if(entry.isIntersecting){
-        var items = entry.target.querySelectorAll ? 
-          entry.target.querySelectorAll('.co-morph-item') : [entry.target];
-        if(entry.target.classList.contains('co-morph-item')){
-          items = [entry.target];
-        }
+        var items = entry.target.classList.contains('co-morph-item')
+          ? [entry.target]
+          : Array.prototype.slice.call(entry.target.querySelectorAll('.co-morph-item'));
         items.forEach(function(item, i){
           setTimeout(function(){
             item.classList.add('morphed');
@@ -6562,7 +6560,7 @@ document.addEventListener('keydown', function(e){
     requestAnimationFrame(tickTimecode);
   }
 
-  function pad(n){return n < 10 ? '0' + n : '' + n;}
+  function pad(n){return n < 10 ? '0' + String(n) : String(n);}
 
   /* ── Section visibility for canvas ──────────────────────── */
   var sectionObserver = new IntersectionObserver(function(entries){
