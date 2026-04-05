@@ -6387,6 +6387,8 @@ document.addEventListener('keydown', function(e){
   setTimeout(animateProofBarItems, 7200);
 
   /* ── Title Impact Flash — subtle glow when headline lands ── */
+  /* Title slam starts at 5s with .55s duration; flash fires just after */
+  var titleSlamEnd = 5000 + 550;
   var heroTitle = document.getElementById('hero-title');
   if(heroTitle){
     setTimeout(function(){
@@ -6395,7 +6397,7 @@ document.addEventListener('keydown', function(e){
         heroTitle.style.transition = 'text-shadow 1.2s ease-out';
         heroTitle.style.textShadow = 'none';
       }, 200);
-    }, 5500); /* fires right after the slam at 5s + .55s animation */
+    }, titleSlamEnd);
   }
 
   /* Also trigger on scroll if user scrolls early */

@@ -307,8 +307,7 @@ ul,ol{list-style:none}
 }
 
 /* Premium CTA — Primary with hover label swap */
-.hero-cta-primary{position:relative;overflow:hidden}
-.hero-cta-primary>span,.hero-cta-primary{transition:opacity .3s var(--ease-out-expo),transform .3s var(--ease-out-expo),color .3s var(--ease-out-expo)}
+.hero-cta-primary{position:relative;overflow:hidden;transition:color .3s var(--ease-out-expo)}
 .hero-cta-primary::after{
   content:attr(data-hover);position:absolute;inset:0;
   display:flex;align-items:center;justify-content:center;
