@@ -2734,13 +2734,12 @@ var draftData = [
   });
 })();
 
-/* ── Smooth Parallax on Hero Elements ───────────────────── */
+/* ── Smooth Parallax on THE STANDARD Elements ──────────── */
 (function(){
   if(window.matchMedia('(pointer: coarse)').matches) return;
-  var hero = document.querySelector('.hero');
-  var heroTitle = document.querySelector('.hero-title');
-  var heroSystem = document.querySelector('.hero-system-lane');
-  var proofBar = document.querySelector('.hero-proof-bar');
+  var hero = document.querySelector('.ts-hero');
+  var tsHeadline = document.querySelector('.ts-headline');
+  var tsMetrics = document.querySelector('.ts-metrics-wall');
   if(!hero) return;
 
   var ticking = false;
@@ -2748,10 +2747,9 @@ var draftData = [
     if(!ticking){
       requestAnimationFrame(function(){
         var y = window.scrollY;
-        if(y < window.innerHeight * 1.2){
-          if(heroTitle) heroTitle.style.transform = 'translateY(' + y * 0.04 + 'px)';
-          if(heroSystem) heroSystem.style.transform = 'translateY(' + y * -0.02 + 'px)';
-          if(proofBar) proofBar.style.transform = 'translateY(' + y * 0.015 + 'px)';
+        if(y < window.innerHeight * 1.5){
+          if(tsHeadline) tsHeadline.style.transform = 'translateY(' + y * 0.03 + 'px)';
+          if(tsMetrics) tsMetrics.style.transform = 'translateY(' + y * 0.012 + 'px)';
         }
         ticking = false;
       });
@@ -2763,7 +2761,7 @@ var draftData = [
 /* ── Enhanced 3D Card Tilt ──────────────────────────────── */
 (function(){
   if(window.matchMedia('(pointer: coarse)').matches) return;
-  var cards = document.querySelectorAll('.athlete-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card, .pos-guide-card, .dr-card, .facility-card, .rc-partner-card, .rc-lab-module, .rc-outcome-card, .rc-cta-card, .sys-proof-card, .sys-combine-note, .pt-cadence-item');
+  var cards = document.querySelectorAll('.athlete-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card, .pos-guide-card, .dr-card, .facility-card, .rc-partner-card, .rc-lab-module, .rc-outcome-card, .rc-cta-card, .sys-proof-card, .sys-combine-note, .pt-cadence-item, .ts-cat, .ts-metric');
   cards.forEach(function(card){
     card.addEventListener('mousemove', function(e){
       var rect = card.getBoundingClientRect();
@@ -6389,172 +6387,37 @@ document.addEventListener('keydown', function(e){
 })();
 
 /* ══════════════════════════════════════════════════════════
-   HERO ENGINE — Profile Build, Canvases, Proof Bar, Scroll Transition
+   THE STANDARD ENGINE — Proof Engine, Perspectives, Metrics, Canvas, Transition
    ══════════════════════════════════════════════════════════ */
 (function(){
-  var hero = document.querySelector('.hero');
+  var hero = document.querySelector('.ts-hero');
   if(!hero) return;
 
   var heroVisible = true;
-  var heroMeasureRafId = null;
-  var heroAthleteRafId = null;
-  var heroMeasureDraw = null;
-  var heroAthleteDraw = null;
+  var gridRafId = null;
+  var gridDraw = null;
   var heroVisObs = new IntersectionObserver(function(entries){
     heroVisible = entries[0].isIntersecting;
-    if(heroVisible){
-      if(!heroMeasureRafId && heroMeasureDraw){
-        heroMeasureRafId = requestAnimationFrame(heroMeasureDraw);
-      }
-      if(!heroAthleteRafId && heroAthleteDraw){
-        heroAthleteRafId = requestAnimationFrame(heroAthleteDraw);
-      }
+    if(heroVisible && !gridRafId && gridDraw){
+      gridRafId = requestAnimationFrame(gridDraw);
     }
   },{threshold:0.01});
   heroVisObs.observe(hero);
 
-  /* ── Profile Build — Staggered Pill Activation ────────── */
-  var pillRow = document.getElementById('hero-pills');
-  var profileBuildDone = false;
-
-  /* Create connecting line */
-  if(pillRow){
-    var connectLine = document.createElement('div');
-    connectLine.className = 'pill-connect-line';
-    pillRow.appendChild(connectLine);
-  }
-
-  function runProfileBuild(){
-    if(profileBuildDone) return;
-    profileBuildDone = true;
-    var pills = pillRow ? pillRow.querySelectorAll('.pill') : [];
-    if(!pills.length) return;
-
-    /* Measure total pill row width for connecting line */
-    var cLine = pillRow ? pillRow.querySelector('.pill-connect-line') : null;
-
-    pills.forEach(function(pill, i){
-      /* Activate each pill sequentially with longer hold */
-      setTimeout(function(){
-        pill.classList.add('pb-active');
-        /* Update connecting line width */
-        if(cLine){
-          cLine.classList.add('active');
-          var pct = ((i + 1) / pills.length) * 100;
-          cLine.style.width = pct + '%';
-        }
-        /* After active highlight, settle to done state */
-        setTimeout(function(){
-          pill.classList.remove('pb-active');
-          pill.classList.add('pb-done');
-        }, 700);
-      }, i * 500);
-    });
-  }
-
-  /* Trigger Profile Build after intro completes (~5.5s) */
-  setTimeout(function(){
-    runProfileBuild();
-  }, 5800);
-
-  /* ── Proof Bar — Mechanical Precision Animation ────────── */
-  var proofBarEl = document.querySelector('.hero-proof-bar');
-  var proofAnimDone = false;
-
-  function animateProofBarItems(){
-    if(proofAnimDone || !proofBarEl) return;
-    proofAnimDone = true;
-    var items = proofBarEl.querySelectorAll('.stat');
-    items.forEach(function(item, i){
-      setTimeout(function(){
-        item.classList.add('proof-in');
-        /* Count-up micro-animation on numeric stats */
-        var strong = item.querySelector('strong');
-        if(!strong) return;
-        var rawCount = strong.getAttribute('data-count');
-        if(!rawCount) return;
-        var target = parseFloat(rawCount);
-        if(isNaN(target)) return;
-        var suffix = strong.getAttribute('data-suffix') || '';
-        var hasComma = target >= 1000;
-        var isDecimal = rawCount.indexOf('.') !== -1;
-        var decimals = isDecimal ? (rawCount.split('.')[1] || '').length : 0;
-        var duration = 400;
-        var startTime = performance.now();
-        function countUp(now){
-          var progress = Math.min((now - startTime) / duration, 1);
-          /* Ease out quad */
-          var ease = 1 - (1 - progress) * (1 - progress);
-          var current = ease * target;
-          var display = isDecimal ? current.toFixed(decimals) : Math.round(current).toString();
-          if(hasComma && !isDecimal){
-            display = Math.round(current).toLocaleString();
-          }
-          strong.textContent = display + suffix;
-          if(progress < 1) requestAnimationFrame(countUp);
-        }
-        requestAnimationFrame(countUp);
-      }, i * 180);
-    });
-  }
-
-  /* Trigger proof bar after pills */
-  setTimeout(animateProofBarItems, 7200);
-
-  /* ── Title Impact Flash — aggressive lock-on glow when headline lands ── */
-  /* Title slam starts at 5s with .45s duration; flash fires just after */
-  var titleSlamEnd = 5000 + 450;
-  var heroTitle = document.getElementById('hero-title');
-  if(heroTitle){
-    setTimeout(function(){
-      heroTitle.style.textShadow = '0 0 60px rgba(255,255,255,.15), 0 0 40px rgba(255,106,0,.25), 0 0 80px rgba(255,106,0,.1)';
-      setTimeout(function(){
-        heroTitle.style.textShadow = '0 0 30px rgba(255,106,0,.18), 0 0 60px rgba(255,106,0,.06)';
-        setTimeout(function(){
-          heroTitle.style.transition = 'text-shadow 1.2s ease-out';
-          heroTitle.style.textShadow = 'none';
-        }, 120);
-      }, 100);
-    }, titleSlamEnd);
-  }
-
-  /* Also trigger on scroll if user scrolls early */
-  if(proofBarEl){
-    var pBarObs = new IntersectionObserver(function(entries){
-      if(entries[0].isIntersecting){
-        animateProofBarItems();
-        pBarObs.disconnect();
-      }
-    }, {threshold:0.3});
-    pBarObs.observe(proofBarEl);
-  }
-
-  /* ── Scroll Transition — Turf-to-Data Merge ───────────── */
-  var scrollTrans = document.querySelector('.hero-scroll-transition');
-  if(scrollTrans){
-    var stObs = new IntersectionObserver(function(entries){
-      if(entries[0].isIntersecting){
-        scrollTrans.classList.add('st-visible');
-        stObs.disconnect();
-      }
-    }, {threshold:0.5});
-    stObs.observe(scrollTrans);
-  }
-
-  /* ── Hero Measurement Grid Canvas (mouse-reactive) ────── */
-  var measureCanvas = document.getElementById('hero-measure-canvas');
-  if(measureCanvas && !window.matchMedia('(pointer: coarse)').matches){
-    var mCtx = measureCanvas.getContext('2d');
-    var mW, mH;
+  /* ── Grid Canvas (mouse-reactive measurement grid) ────── */
+  var gridCanvas = document.getElementById('ts-grid-canvas');
+  if(gridCanvas && !window.matchMedia('(pointer: coarse)').matches){
+    var gCtx = gridCanvas.getContext('2d');
+    var gW, gH;
     var mouseX = 0, mouseY = 0;
     var targetX = 0, targetY = 0;
 
-    function sizeMeasure(){
-      mW = measureCanvas.width  = hero.offsetWidth;
-      mH = measureCanvas.height = hero.offsetHeight;
+    function sizeGrid(){
+      gW = gridCanvas.width = hero.offsetWidth;
+      gH = gridCanvas.height = hero.offsetHeight;
     }
-    sizeMeasure();
-    window.addEventListener('resize', sizeMeasure);
+    sizeGrid();
+    window.addEventListener('resize', sizeGrid);
 
     hero.addEventListener('mousemove', function(e){
       var rect = hero.getBoundingClientRect();
@@ -6562,271 +6425,203 @@ document.addEventListener('keydown', function(e){
       targetY = e.clientY - rect.top;
     });
 
-    function drawMeasureGrid(){
-      if(!heroVisible){ heroMeasureRafId = null; return; }
-      mouseX += (targetX - mouseX) * 0.08;
-      mouseY += (targetY - mouseY) * 0.08;
+    function drawGrid(){
+      if(!heroVisible){ gridRafId = null; return; }
+      mouseX += (targetX - mouseX) * 0.06;
+      mouseY += (targetY - mouseY) * 0.06;
 
-      mCtx.clearRect(0,0,mW,mH);
+      gCtx.clearRect(0,0,gW,gH);
 
-      /* Subtle grid lines that shift with cursor */
-      var offsetX = (mouseX - mW/2) * 0.015;
-      var offsetY = (mouseY - mH/2) * 0.015;
-
-      mCtx.strokeStyle = 'rgba(255,106,0,0.03)';
-      mCtx.lineWidth = 0.5;
+      var offsetX = (mouseX - gW/2) * 0.012;
+      var offsetY = (mouseY - gH/2) * 0.012;
+      var spacing = 55;
 
       /* Horizontal yard-line marks */
-      var spacing = 60;
-      for(var y = offsetY % spacing; y < mH; y += spacing){
-        mCtx.beginPath();
-        mCtx.moveTo(0, y);
-        mCtx.lineTo(mW, y);
-        mCtx.stroke();
+      gCtx.strokeStyle = 'rgba(255,106,0,0.025)';
+      gCtx.lineWidth = 0.5;
+      for(var y = offsetY % spacing; y < gH; y += spacing){
+        gCtx.beginPath(); gCtx.moveTo(0,y); gCtx.lineTo(gW,y); gCtx.stroke();
+      }
+      for(var x = offsetX % spacing; x < gW; x += spacing){
+        gCtx.beginPath(); gCtx.moveTo(x,0); gCtx.lineTo(x,gH); gCtx.stroke();
       }
 
-      /* Vertical reference lines */
-      for(var x = offsetX % spacing; x < mW; x += spacing){
-        mCtx.beginPath();
-        mCtx.moveTo(x, 0);
-        mCtx.lineTo(x, mH);
-        mCtx.stroke();
-      }
-
-      /* Orange tracking line near cursor */
+      /* Cursor tracking crosshair */
       if(targetX > 0 && targetY > 0){
-        mCtx.strokeStyle = 'rgba(255,106,0,0.08)';
-        mCtx.lineWidth = 1;
+        gCtx.strokeStyle = 'rgba(255,106,0,0.07)';
+        gCtx.lineWidth = 1;
+        gCtx.beginPath(); gCtx.moveTo(mouseX - 50, mouseY); gCtx.lineTo(mouseX + 50, mouseY); gCtx.stroke();
+        gCtx.beginPath(); gCtx.moveTo(mouseX, mouseY - 50); gCtx.lineTo(mouseX, mouseY + 50); gCtx.stroke();
 
-        /* Horizontal tracking line */
-        mCtx.beginPath();
-        mCtx.moveTo(mouseX - 40, mouseY);
-        mCtx.lineTo(mouseX + 40, mouseY);
-        mCtx.stroke();
+        /* Crosshair glow */
+        gCtx.fillStyle = 'rgba(255,106,0,0.03)';
+        gCtx.beginPath(); gCtx.arc(mouseX, mouseY, 4, 0, Math.PI*2); gCtx.fill();
 
-        /* Vertical tracking line */
-        mCtx.beginPath();
-        mCtx.moveTo(mouseX, mouseY - 40);
-        mCtx.lineTo(mouseX, mouseY + 40);
-        mCtx.stroke();
-
-        /* Small crosshair glow */
-        mCtx.fillStyle = 'rgba(255,106,0,0.04)';
-        mCtx.beginPath();
-        mCtx.arc(mouseX, mouseY, 3, 0, Math.PI*2);
-        mCtx.fill();
+        /* Small measurement labels near cursor */
+        gCtx.fillStyle = 'rgba(255,106,0,0.08)';
+        gCtx.font = '9px Inter, monospace';
+        var xLabel = Math.round(mouseX / gW * 100) + 'yd';
+        gCtx.fillText(xLabel, mouseX + 8, mouseY - 8);
       }
 
-      heroMeasureRafId = requestAnimationFrame(drawMeasureGrid);
+      gridRafId = requestAnimationFrame(drawGrid);
     }
-    heroMeasureDraw = drawMeasureGrid;
-    heroMeasureRafId = requestAnimationFrame(drawMeasureGrid);
+    gridDraw = drawGrid;
+    gridRafId = requestAnimationFrame(drawGrid);
   }
 
-  /* ── Athlete Silhouette Canvas (right lane) ───────────── */
-  var athleteCanvas = document.getElementById('hero-athlete-canvas');
-  if(athleteCanvas){
-    var aCtx = athleteCanvas.getContext('2d');
-    var aW, aH;
-    var aPhase = 0;
-    var aStarted = false;
+  /* ── Proof Engine — Staggered Category Reveal ─────────── */
+  var proofEngine = document.getElementById('ts-proof-engine');
+  if(proofEngine){
+    var engineObs = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){
+        proofEngine.classList.add('ts-revealed');
+        engineObs.disconnect();
+      }
+    }, {threshold:0.2});
+    engineObs.observe(proofEngine);
+  }
 
-    function sizeAthlete(){
-      var parent = athleteCanvas.parentElement;
-      aW = athleteCanvas.width  = parent.offsetWidth;
-      aH = athleteCanvas.height = parent.offsetHeight;
+  /* Auto-reveal proof engine after intro even before scroll */
+  setTimeout(function(){
+    if(proofEngine && !proofEngine.classList.contains('ts-revealed')){
+      proofEngine.classList.add('ts-revealed');
     }
-    sizeAthlete();
-    window.addEventListener('resize', sizeAthlete);
+  }, 6200);
 
-    /* Metric categories that build the athlete */
-    var buildMetrics = [
-      {label:'SPEED',     color:'rgba(255,106,0,0.5)', delay:0},
-      {label:'POWER',     color:'rgba(255,140,50,0.4)', delay:0.8},
-      {label:'POSITION',  color:'rgba(255,170,80,0.35)', delay:1.6},
-      {label:'READINESS', color:'rgba(100,200,180,0.3)', delay:2.4},
-      {label:'PROFILE',   color:'rgba(255,106,0,0.6)', delay:3.2}
-    ];
+  /* ── Perspectives — Audience Tab Switching ──────────────── */
+  var perspBar = document.querySelector('.ts-persp-bar');
+  if(perspBar){
+    var perspBtns = perspBar.querySelectorAll('.ts-persp-btn');
+    var perspPanels = document.querySelectorAll('.ts-persp-panel');
 
-    function drawAthlete(timestamp){
-      if(!aStarted){ return; }
-      if(!heroVisible){ heroAthleteRafId = null; return; }
-      aCtx.clearRect(0,0,aW,aH);
+    perspBtns.forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var target = this.getAttribute('data-persp');
 
-      var cx = aW * 0.5;
-      var cy = aH * 0.42;
-      var scale = Math.min(aW, aH) * 0.003;
-      var elapsed = (timestamp - aPhase) / 1000;
+        /* Update active button */
+        perspBtns.forEach(function(b){ b.classList.remove('ts-persp-active'); });
+        this.classList.add('ts-persp-active');
 
-      /* Draw athlete wireframe silhouette */
-      var breathe = 1 + 0.006 * Math.sin(elapsed * 0.8);
-      aCtx.save();
-      aCtx.translate(cx, cy);
-      aCtx.scale(breathe, breathe);
-
-      /* Head */
-      aCtx.strokeStyle = 'rgba(255,106,0,0.18)';
-      aCtx.lineWidth = 1.5;
-      aCtx.beginPath();
-      aCtx.arc(0, -70*scale, 16*scale, 0, Math.PI*2);
-      aCtx.stroke();
-
-      /* Torso */
-      aCtx.beginPath();
-      aCtx.moveTo(0, -54*scale);
-      aCtx.lineTo(0, 20*scale);
-      aCtx.stroke();
-
-      /* Shoulders */
-      aCtx.beginPath();
-      aCtx.moveTo(-35*scale, -40*scale);
-      aCtx.lineTo(35*scale, -40*scale);
-      aCtx.stroke();
-
-      /* Arms */
-      aCtx.beginPath();
-      aCtx.moveTo(-35*scale, -40*scale);
-      aCtx.lineTo(-50*scale, 10*scale);
-      aCtx.stroke();
-      aCtx.beginPath();
-      aCtx.moveTo(35*scale, -40*scale);
-      aCtx.lineTo(50*scale, 10*scale);
-      aCtx.stroke();
-
-      /* Legs */
-      aCtx.beginPath();
-      aCtx.moveTo(0, 20*scale);
-      aCtx.lineTo(-25*scale, 80*scale);
-      aCtx.stroke();
-      aCtx.beginPath();
-      aCtx.moveTo(0, 20*scale);
-      aCtx.lineTo(25*scale, 80*scale);
-      aCtx.stroke();
-
-      aCtx.restore();
-
-      /* Draw metric layers building up */
-      buildMetrics.forEach(function(m){
-        var metricElapsed = elapsed - m.delay;
-        if(metricElapsed < 0) return;
-        var alpha = Math.min(metricElapsed / 0.6, 1);
-
-        aCtx.save();
-        aCtx.globalAlpha = alpha;
-        aCtx.translate(cx, cy);
-
-        /* Each metric draws a different overlay element */
-        if(m.label === 'SPEED'){
-          /* Acceleration lane markers */
-          aCtx.strokeStyle = m.color;
-          aCtx.lineWidth = 1;
-          for(var i=0;i<5;i++){
-            var lx = -80*scale + i * 40*scale;
-            aCtx.beginPath();
-            aCtx.moveTo(lx, 85*scale);
-            aCtx.lineTo(lx + 20*scale, 85*scale);
-            aCtx.stroke();
+        /* Switch panels */
+        perspPanels.forEach(function(panel){
+          if(panel.getAttribute('data-panel') === target){
+            panel.classList.add('ts-persp-visible');
+          } else {
+            panel.classList.remove('ts-persp-visible');
           }
-          /* Split time text */
-          aCtx.fillStyle = m.color;
-          aCtx.font = (9*scale) + 'px Inter, monospace';
-          aCtx.fillText('10yd 1.48s', -70*scale, 100*scale);
-        }
-        if(m.label === 'POWER'){
-          /* Force vectors rising from ground */
-          aCtx.strokeStyle = m.color;
-          aCtx.lineWidth = 1.5;
-          for(var j=-1;j<=1;j++){
-            aCtx.beginPath();
-            aCtx.moveTo(j*20*scale, 80*scale);
-            aCtx.lineTo(j*15*scale, 40*scale);
-            aCtx.stroke();
-            /* Arrowhead */
-            aCtx.beginPath();
-            aCtx.moveTo(j*15*scale - 4*scale, 48*scale);
-            aCtx.lineTo(j*15*scale, 40*scale);
-            aCtx.lineTo(j*15*scale + 4*scale, 48*scale);
-            aCtx.stroke();
-          }
-          aCtx.fillStyle = m.color;
-          aCtx.font = (9*scale) + 'px Inter, monospace';
-          aCtx.fillText('39.5" VERT', 40*scale, 30*scale);
-        }
-        if(m.label === 'POSITION'){
-          /* COD movement arcs */
-          aCtx.strokeStyle = m.color;
-          aCtx.lineWidth = 1;
-          aCtx.beginPath();
-          aCtx.moveTo(-60*scale, 50*scale);
-          aCtx.quadraticCurveTo(-30*scale, 20*scale, 0, 50*scale);
-          aCtx.quadraticCurveTo(30*scale, 80*scale, 60*scale, 50*scale);
-          aCtx.stroke();
-          /* Position tag */
-          aCtx.fillStyle = m.color;
-          aCtx.font = (9*scale) + 'px Inter, monospace';
-          aCtx.fillText('WR/DB ROUTES', -75*scale, -60*scale);
-        }
-        if(m.label === 'READINESS'){
-          /* Cooling/stability markers */
-          aCtx.strokeStyle = 'rgba(100,200,180,0.25)';
-          aCtx.lineWidth = 1;
-          /* Pulse rings */
-          for(var r=1;r<=3;r++){
-            aCtx.beginPath();
-            aCtx.arc(0, -20*scale, r*25*scale, 0, Math.PI*2);
-            aCtx.stroke();
-          }
-          aCtx.fillStyle = 'rgba(100,200,180,0.3)';
-          aCtx.font = (9*scale) + 'px Inter, monospace';
-          aCtx.fillText('RECOVERY OK', -50*scale, -110*scale);
-        }
-        if(m.label === 'PROFILE'){
-          /* Final profile border with subtle pulse */
-          var profilePulse = 0.5 + 0.15 * Math.sin(elapsed * 1.5);
-          aCtx.strokeStyle = 'rgba(255,106,0,' + profilePulse + ')';
-          aCtx.lineWidth = 2;
-          aCtx.setLineDash([4,4]);
-          var bw = 90*scale, bh = 110*scale;
-          aCtx.strokeRect(-bw, -bh, bw*2, bh + 90*scale);
-          aCtx.setLineDash([]);
-
-          /* Enhanced corner brackets instead of DRAFT READY label */
-          var bracketLen = 14*scale;
-          aCtx.strokeStyle = 'rgba(255,106,0,' + Math.min(profilePulse + 0.2, 0.8) + ')';
-          aCtx.lineWidth = 2;
-          aCtx.setLineDash([]);
-          /* Top-left bracket */
-          aCtx.beginPath();
-          aCtx.moveTo(-bw, -bh + bracketLen); aCtx.lineTo(-bw, -bh); aCtx.lineTo(-bw + bracketLen, -bh);
-          aCtx.stroke();
-          /* Top-right bracket */
-          aCtx.beginPath();
-          aCtx.moveTo(bw - bracketLen, -bh); aCtx.lineTo(bw, -bh); aCtx.lineTo(bw, -bh + bracketLen);
-          aCtx.stroke();
-          /* Bottom-left bracket */
-          aCtx.beginPath();
-          aCtx.moveTo(-bw, -bh + 90*scale - bracketLen); aCtx.lineTo(-bw, -bh + 90*scale); aCtx.lineTo(-bw + bracketLen, -bh + 90*scale);
-          aCtx.stroke();
-          /* Bottom-right bracket */
-          aCtx.beginPath();
-          aCtx.moveTo(bw - bracketLen, -bh + 90*scale); aCtx.lineTo(bw, -bh + 90*scale); aCtx.lineTo(bw, -bh + 90*scale - bracketLen);
-          aCtx.stroke();
-        }
-
-        aCtx.restore();
+        });
       });
-
-      heroAthleteRafId = requestAnimationFrame(drawAthlete);
-    }
-
-    /* Start athlete build after intro + headline */
-    heroAthleteDraw = drawAthlete;
-    setTimeout(function(){
-      aStarted = true;
-      aPhase = performance.now();
-      heroAthleteRafId = requestAnimationFrame(drawAthlete);
-    }, 5200);
+    });
   }
+
+  /* ── Metrics Wall — Count-Up Animation ─────────────────── */
+  var metricsWall = document.getElementById('ts-metrics');
+  var metricsCountDone = false;
+
+  function animateMetrics(){
+    if(metricsCountDone || !metricsWall) return;
+    metricsCountDone = true;
+    var items = metricsWall.querySelectorAll('.ts-metric');
+    items.forEach(function(item, i){
+      setTimeout(function(){
+        var numEl = item.querySelector('.ts-metric-num');
+        if(!numEl) return;
+        item.classList.add('ts-counted');
+
+        var rawCount = numEl.getAttribute('data-count');
+        if(!rawCount) return;
+        var target = parseFloat(rawCount);
+        if(isNaN(target)) return;
+        var suffix = numEl.getAttribute('data-suffix') || '';
+        var decimals = parseInt(numEl.getAttribute('data-decimals') || '0', 10);
+        var hasComma = target >= 1000 && decimals === 0;
+        var duration = 500;
+        var startTime = performance.now();
+
+        function countUp(now){
+          var progress = Math.min((now - startTime) / duration, 1);
+          var ease = 1 - (1 - progress) * (1 - progress);
+          var current = ease * target;
+          var display;
+          if(decimals > 0){
+            display = current.toFixed(decimals);
+          } else if(hasComma){
+            display = Math.round(current).toLocaleString();
+          } else {
+            display = Math.round(current).toString();
+          }
+          numEl.textContent = display + suffix;
+          if(progress < 1){
+            requestAnimationFrame(countUp);
+          } else {
+            /* Pulse effect on completion */
+            var pulse = document.createElement('div');
+            pulse.className = 'ts-metric-pulse-fx';
+            item.appendChild(pulse);
+            setTimeout(function(){ if(pulse.parentNode) pulse.parentNode.removeChild(pulse); }, 900);
+          }
+        }
+        requestAnimationFrame(countUp);
+      }, i * 200);
+    });
+  }
+
+  /* Trigger metrics after intro or on scroll */
+  setTimeout(animateMetrics, 7000);
+  if(metricsWall){
+    var mObs = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){
+        animateMetrics();
+        mObs.disconnect();
+      }
+    }, {threshold:0.3});
+    mObs.observe(metricsWall);
+  }
+
+  /* ── Title Impact Flash ────────────────────────────────── */
+  var tsHeadline = document.getElementById('ts-headline');
+  if(tsHeadline){
+    setTimeout(function(){
+      tsHeadline.style.textShadow = '0 0 60px rgba(255,255,255,.12), 0 0 40px rgba(255,106,0,.2), 0 0 80px rgba(255,106,0,.08)';
+      setTimeout(function(){
+        tsHeadline.style.textShadow = '0 0 30px rgba(255,106,0,.15), 0 0 60px rgba(255,106,0,.05)';
+        setTimeout(function(){
+          tsHeadline.style.transition = 'text-shadow 1.2s ease-out';
+          tsHeadline.style.textShadow = 'none';
+        }, 120);
+      }, 100);
+    }, 5650);
+  }
+
+  /* ── Transition Reveal ─────────────────────────────────── */
+  var tsTrans = document.getElementById('ts-transition');
+  if(tsTrans){
+    var trObs = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){
+        tsTrans.classList.add('ts-trans-visible');
+        trObs.disconnect();
+      }
+    }, {threshold:0.5});
+    trObs.observe(tsTrans);
+  }
+
+  /* ── Category Hover — Screen Reaction ──────────────────── */
+  var catCards = document.querySelectorAll('.ts-cat');
+  var videoOverlay = document.querySelector('.hero-video-overlay');
+  catCards.forEach(function(card){
+    card.addEventListener('mouseenter', function(){
+      if(videoOverlay){
+        videoOverlay.style.transition = 'background .6s ease';
+        videoOverlay.style.background = 'linear-gradient(180deg,rgba(5,5,5,.65) 0%,rgba(5,5,5,.35) 40%,rgba(5,5,5,.8) 100%)';
+      }
+    });
+    card.addEventListener('mouseleave', function(){
+      if(videoOverlay){
+        videoOverlay.style.background = '';
+      }
+    });
+  });
 
 })();
 
