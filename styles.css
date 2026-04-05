@@ -360,25 +360,6 @@ ul,ol{list-style:none}
   width:0;pointer-events:none;
 }
 .hero-profile-build .pill-connect-line.active{opacity:.35}
-/* Draft Ready status flash */
-.hero-profile-build .draft-ready-flash{
-  display:block;width:100%;text-align:center;
-  margin-top:10px;
-  font-size:10px;font-weight:900;letter-spacing:.4em;text-transform:uppercase;
-  color:var(--orange);opacity:0;pointer-events:none;
-  text-shadow:0 0 18px rgba(255,106,0,.3);
-}
-.hero-profile-build .draft-ready-flash.visible{
-  animation:draft-ready-blink .9s ease forwards;
-}
-@keyframes draft-ready-blink{
-  0%{opacity:0;transform:translateY(4px)}
-  15%{opacity:.9;transform:translateY(0)}
-  30%{opacity:.3}
-  45%{opacity:.85}
-  70%{opacity:.7;transform:translateY(0)}
-  100%{opacity:0;transform:translateY(-2px)}
-}
 .chip{
   padding:9px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.1);
   background:rgba(255,255,255,.04);font-size:12px;font-weight:700;color:#eceff3;
@@ -5843,6 +5824,40 @@ table th{color:var(--orange2)!important;font-weight:900}
   opacity:1;
 }
 
+/* ── Enhanced Carryover Header ─────────────────────────────── */
+.co-status-line{
+  display:flex;align-items:center;gap:10px;margin-bottom:12px;
+}
+.co-status-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--orange);
+  box-shadow:0 0 8px rgba(255,106,0,0.5);
+  animation:co-dot-pulse 2s ease-in-out infinite;
+}
+@keyframes co-dot-pulse{
+  0%,100%{opacity:0.6;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.3)}
+}
+.co-status-tag{
+  font-family:'Inter',monospace;font-size:9px;font-weight:700;
+  letter-spacing:0.2em;text-transform:uppercase;
+  color:rgba(255,106,0,0.6);
+  padding:3px 10px;border-radius:4px;
+  border:1px solid rgba(255,106,0,0.15);
+  background:rgba(255,106,0,0.04);
+}
+.co-header-scanbar{
+  margin-top:18px;width:100%;max-width:320px;height:2px;
+  background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden;
+}
+.co-header-scanbar-fill{
+  width:0;height:100%;background:var(--orange);border-radius:2px;
+  transition:width 1.2s var(--ease-out-expo);
+}
+.co-section.co-booted .co-header-scanbar-fill{
+  width:100%;
+}
+
 /* ── Responsive ─────────────────────────────────────────── */
 @media(max-width:1200px){
   .co-grid{grid-template-columns:repeat(2,1fr)}
@@ -5861,4 +5876,168 @@ table th{color:var(--orange2)!important;font-weight:900}
   .co-proof-stat{font-size:22px;min-width:auto}
   .co-morph-tooltip{min-width:180px}
   .co-canvas,.co-film-canvas{display:none}
+}
+
+/* ═══ FIELD PROGRESS RAILS — 100-Yard Scroll Engine ═══════ */
+.fpr{
+  position:fixed;top:0;left:0;width:100%;height:100vh;
+  pointer-events:none;z-index:90;
+}
+.fpr-rail{
+  position:absolute;top:0;width:28px;height:100%;
+  background:linear-gradient(180deg, rgba(5,5,5,0.6) 0%, rgba(14,14,16,0.4) 100%);
+  border:none;overflow:hidden;
+}
+.fpr-left{left:0;border-right:1px solid rgba(255,255,255,0.04)}
+.fpr-right{right:0;border-left:1px solid rgba(255,255,255,0.04)}
+
+/* Hash marks */
+.fpr-hash{
+  position:absolute;height:1px;
+  background:rgba(255,255,255,0.12);
+  transition:background .3s ease, box-shadow .3s ease;
+}
+.fpr-left .fpr-hash{right:4px}
+.fpr-right .fpr-hash{left:4px}
+.fpr-hash.fpr-hash--5{background:rgba(255,255,255,0.18)}
+.fpr-hash.fpr-hash--10{background:rgba(255,255,255,0.25);height:1.5px}
+.fpr-hash.fpr-hash--active{
+  background:rgba(255,106,0,0.7);
+  box-shadow:0 0 6px rgba(255,106,0,0.3);
+}
+
+/* Width variations */
+.fpr-hash{width:8px}
+.fpr-hash.fpr-hash--5{width:12px}
+.fpr-hash.fpr-hash--10{width:16px}
+
+/* Yard numbers */
+.fpr-num{
+  position:absolute;
+  font-family:'Inter',sans-serif;font-size:9px;font-weight:800;
+  color:rgba(255,255,255,0.12);letter-spacing:0.05em;
+  transition:color .4s ease, text-shadow .4s ease;
+  line-height:1;
+}
+.fpr-left .fpr-num{right:6px;text-align:right;transform:rotate(-90deg);transform-origin:right center}
+.fpr-right .fpr-num{left:6px;text-align:left;transform:rotate(90deg);transform-origin:left center}
+.fpr-num.fpr-num--active{
+  color:rgba(255,106,0,0.85);
+  text-shadow:0 0 12px rgba(255,106,0,0.3);
+}
+
+/* Moving glow indicator */
+.fpr-glow{
+  position:absolute;left:0;width:100%;height:60px;
+  background:linear-gradient(180deg, 
+    transparent 0%, 
+    rgba(255,106,0,0.06) 20%, 
+    rgba(255,106,0,0.15) 50%, 
+    rgba(255,106,0,0.06) 80%, 
+    transparent 100%);
+  border-left:2px solid rgba(255,106,0,0.4);
+  transition:top .15s cubic-bezier(0.25,1,0.5,1);
+  pointer-events:none;
+}
+.fpr-right .fpr-glow{border-left:none;border-right:2px solid rgba(255,106,0,0.4)}
+
+/* Milestone flash */
+.fpr-rail.fpr-milestone .fpr-glow{
+  background:linear-gradient(180deg,
+    transparent 0%,
+    rgba(255,106,0,0.12) 20%,
+    rgba(255,106,0,0.3) 50%,
+    rgba(255,106,0,0.12) 80%,
+    transparent 100%);
+}
+.fpr-rail.fpr-midfield .fpr-glow{
+  box-shadow:0 0 20px rgba(255,106,0,0.2);
+}
+.fpr-rail.fpr-redzone .fpr-glow{
+  border-color:rgba(255,106,0,0.6);
+  background:linear-gradient(180deg,
+    transparent 0%,
+    rgba(255,106,0,0.1) 15%,
+    rgba(255,106,0,0.22) 50%,
+    rgba(255,106,0,0.1) 85%,
+    transparent 100%);
+}
+
+/* Field-position badge */
+.fpr-badge{
+  position:fixed;bottom:24px;left:36px;
+  padding:6px 14px;border-radius:6px;
+  background:rgba(10,10,12,0.85);
+  border:1px solid rgba(255,106,0,0.15);
+  font-family:'Inter',monospace;font-size:10px;font-weight:700;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:rgba(255,255,255,0.5);
+  backdrop-filter:blur(8px);
+  opacity:0;transform:translateY(8px);
+  transition:opacity .4s ease, transform .4s ease, color .4s ease, border-color .4s ease;
+  z-index:91;
+}
+.fpr-badge.fpr-badge--visible{
+  opacity:1;transform:translateY(0);
+}
+.fpr-badge.fpr-badge--midfield{
+  color:rgba(255,106,0,0.9);border-color:rgba(255,106,0,0.3);
+}
+.fpr-badge.fpr-badge--redzone{
+  color:rgba(255,106,0,1);border-color:rgba(255,106,0,0.5);
+  text-shadow:0 0 8px rgba(255,106,0,0.3);
+}
+.fpr-badge.fpr-badge--goal{
+  color:#fff;border-color:rgba(255,106,0,0.7);
+  background:rgba(255,106,0,0.15);
+  text-shadow:0 0 12px rgba(255,106,0,0.5);
+}
+
+/* Section checkpoint dots */
+.fpr-checkpoint{
+  position:absolute;width:4px;height:4px;border-radius:50%;
+  background:rgba(255,255,255,0.1);
+  transition:all .5s ease;
+}
+.fpr-left .fpr-checkpoint{right:12px}
+.fpr-right .fpr-checkpoint{left:12px}
+.fpr-checkpoint.fpr-checkpoint--active{
+  background:rgba(255,106,0,0.8);
+  box-shadow:0 0 8px rgba(255,106,0,0.4);
+  transform:scale(1.5);
+}
+
+/* Ambient scan effect */
+@keyframes fpr-scan{
+  0%{top:-100px;opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{top:calc(100% + 100px);opacity:0}
+}
+.fpr-scan{
+  position:absolute;left:0;width:100%;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(255,106,0,0.15), transparent);
+  animation:fpr-scan 8s linear infinite;
+  pointer-events:none;
+}
+
+/* Goal line sweep */
+@keyframes fpr-goal-sweep{
+  0%{width:0;opacity:0}
+  30%{opacity:1}
+  100%{width:100%;opacity:0}
+}
+.fpr-goal-sweep{
+  position:fixed;bottom:0;left:0;height:2px;
+  background:linear-gradient(90deg, transparent, var(--orange), transparent);
+  z-index:92;pointer-events:none;
+}
+
+/* Responsive */
+@media(max-width:768px){
+  .fpr-rail{display:none}
+  .fpr-badge{left:12px;bottom:12px;font-size:9px;padding:4px 10px}
+}
+@media(max-width:480px){
+  .fpr{display:none}
 }
