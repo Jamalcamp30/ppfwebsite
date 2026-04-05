@@ -7322,9 +7322,24 @@ document.addEventListener('keydown', function(e){
   /* ── Scroll calculation ────────────────────────────────────── */
   var lastBadgeText = '';
   var lastMilestoneZone = '';
+  var lastYard = -1;
   var glowLeft  = leftRail.querySelector('.fpr-glow');
   var glowRight = rightRail.querySelector('.fpr-glow');
   var ticking = false;
+
+  /* Cache DOM queries for scroll perf — these never change */
+  var cachedHashes = Array.prototype.slice.call(fpr.querySelectorAll('.fpr-hash'));
+  var cachedNums   = Array.prototype.slice.call(fpr.querySelectorAll('.fpr-num'));
+  var cachedCPs    = Array.prototype.slice.call(fpr.querySelectorAll('.fpr-checkpoint'));
+
+  /* Pre-parse yard values from dataset */
+  cachedHashes.forEach(function(h){ h._yard = parseInt(h.dataset.yard, 10); });
+  cachedNums.forEach(function(n){ n._yard = parseInt(n.dataset.yard, 10); });
+  cachedCPs.forEach(function(cp){
+    var secId = cp.dataset.section;
+    cp._yard = 0;
+    sectionYards.forEach(function(s){ if(s.id === secId) cp._yard = s.yard; });
+  });
 
   function getScrollProgress(){
     var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -7360,74 +7375,77 @@ document.addEventListener('keydown', function(e){
     var yard = progressToYard(progress);
     var pct = progress * 100;
 
+    /* Move glow indicators */
     var glowTop = Math.max(0, pct - 3);
     if(glowLeft) glowLeft.style.top = glowTop + '%';
     if(glowRight) glowRight.style.top = glowTop + '%';
 
-    var allHashes = fpr.querySelectorAll('.fpr-hash');
-    allHashes.forEach(function(h){
-      var hy = parseInt(h.dataset.yard, 10);
-      if(Math.abs(hy - yard) <= 3){
-        h.classList.add('fpr-hash--active');
-      } else {
-        h.classList.remove('fpr-hash--active');
-      }
-    });
+    /* Skip DOM updates if yard hasn't changed */
+    if(yard !== lastYard){
+      lastYard = yard;
 
-    var allNums = fpr.querySelectorAll('.fpr-num');
-    allNums.forEach(function(n){
-      var ny = parseInt(n.dataset.yard, 10);
-      if(Math.abs(ny - yard) <= 8){
-        n.classList.add('fpr-num--active');
-      } else {
-        n.classList.remove('fpr-num--active');
-      }
-    });
+      /* Update active hash marks (highlight nearby) */
+      cachedHashes.forEach(function(h){
+        if(Math.abs(h._yard - yard) <= 3){
+          h.classList.add('fpr-hash--active');
+        } else {
+          h.classList.remove('fpr-hash--active');
+        }
+      });
 
-    var allCPs = fpr.querySelectorAll('.fpr-checkpoint');
-    allCPs.forEach(function(cp){
-      var secId = cp.dataset.section;
-      var secYard = 0;
-      sectionYards.forEach(function(s){ if(s.id === secId) secYard = s.yard; });
-      if(yard >= secYard - 3){
-        cp.classList.add('fpr-checkpoint--active');
-      } else {
-        cp.classList.remove('fpr-checkpoint--active');
-      }
-    });
+      /* Update active yard numbers */
+      cachedNums.forEach(function(n){
+        if(Math.abs(n._yard - yard) <= 8){
+          n.classList.add('fpr-num--active');
+        } else {
+          n.classList.remove('fpr-num--active');
+        }
+      });
 
-    var badgeText = getBadgeText(yard);
-    if(badgeText !== lastBadgeText){
-      lastBadgeText = badgeText;
-      if(badge){
-        badge.textContent = badgeText;
-        badge.classList.add('fpr-badge--visible');
-      }
-    }
+      /* Update checkpoints */
+      cachedCPs.forEach(function(cp){
+        if(yard >= cp._yard - 3){
+          cp.classList.add('fpr-checkpoint--active');
+        } else {
+          cp.classList.remove('fpr-checkpoint--active');
+        }
+      });
 
-    var zone = getMilestoneZone(yard);
-    if(zone !== lastMilestoneZone){
-      leftRail.classList.remove('fpr-milestone','fpr-midfield','fpr-redzone');
-      rightRail.classList.remove('fpr-milestone','fpr-midfield','fpr-redzone');
-      if(badge){
-        badge.classList.remove('fpr-badge--midfield','fpr-badge--redzone','fpr-badge--goal');
+      /* Update badge */
+      var badgeText = getBadgeText(yard);
+      if(badgeText !== lastBadgeText){
+        lastBadgeText = badgeText;
+        if(badge){
+          badge.textContent = badgeText;
+          badge.classList.add('fpr-badge--visible');
+        }
       }
 
-      if(zone === 'midfield'){
-        leftRail.classList.add('fpr-midfield');
-        rightRail.classList.add('fpr-midfield');
-        if(badge) badge.classList.add('fpr-badge--midfield');
-      } else if(zone === 'redzone'){
-        leftRail.classList.add('fpr-redzone');
-        rightRail.classList.add('fpr-redzone');
-        if(badge) badge.classList.add('fpr-badge--redzone');
-      } else if(zone === 'goal'){
-        leftRail.classList.add('fpr-milestone');
-        rightRail.classList.add('fpr-milestone');
-        if(badge) badge.classList.add('fpr-badge--goal');
-      }
+      /* Milestone zone classes */
+      var zone = getMilestoneZone(yard);
+      if(zone !== lastMilestoneZone){
+        leftRail.classList.remove('fpr-milestone','fpr-midfield','fpr-redzone');
+        rightRail.classList.remove('fpr-milestone','fpr-midfield','fpr-redzone');
+        if(badge){
+          badge.classList.remove('fpr-badge--midfield','fpr-badge--redzone','fpr-badge--goal');
+        }
 
-      lastMilestoneZone = zone;
+        if(zone === 'midfield'){
+          leftRail.classList.add('fpr-midfield');
+          rightRail.classList.add('fpr-midfield');
+          if(badge) badge.classList.add('fpr-badge--midfield');
+        } else if(zone === 'redzone'){
+          leftRail.classList.add('fpr-redzone');
+          rightRail.classList.add('fpr-redzone');
+          if(badge) badge.classList.add('fpr-badge--redzone');
+        } else if(zone === 'goal'){
+          leftRail.classList.add('fpr-milestone');
+          rightRail.classList.add('fpr-milestone');
+          if(badge) badge.classList.add('fpr-badge--goal');
+        }
+
+        lastMilestoneZone = zone;
+      }
     }
 
     ticking = false;
