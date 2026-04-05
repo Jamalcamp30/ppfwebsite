@@ -60,12 +60,11 @@
       ctx.stroke();
     }
 
-    /* Radar sweep */
+    /* Radar sweep line */
     sweepAngle += 0.015;
     ctx.save();
     ctx.translate(cx, cy);
     ctx.rotate(sweepAngle);
-    var grad = ctx.createConicalGradient ? null : null;
     ctx.strokeStyle = 'rgba(255,106,0,0.12)';
     ctx.lineWidth = 2;
     ctx.beginPath();
