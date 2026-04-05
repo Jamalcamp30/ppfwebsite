@@ -108,6 +108,7 @@
 <a href="#draft-board">Draft Board</a>
 <a href="#ras-board">RAS</a>
 <a href="#ras-simulator">Performance Lab</a>
+<a href="#carryover">Carryover</a>
 <a href="#draft-room">Draft Room</a>
 <a href="#measurables">Measurables</a>
 <a href="#coach">Coaches</a>
@@ -1077,6 +1078,200 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ═══ CARRYOVER ═══════════════════════════════════════════════ -->
+<section class="section co-section" id="carryover">
+  <div class="co-bg-grid"></div>
+  <div class="co-scanlines"></div>
+  <canvas class="co-canvas" id="coCanvas"></canvas>
+
+  <div class="container">
+    <!-- Header -->
+    <div class="co-header reveal">
+      <span class="eyebrow co-eyebrow">Next-Level Carryover</span>
+      <h2 class="section-title co-title">Tested here. Felt everywhere.</h2>
+      <p class="section-sub co-sub">The work should still look right after the testing cycle.</p>
+    </div>
+
+    <!-- Body copy -->
+    <div class="co-body reveal">
+      <p>The best profile is not just timed well. It moves right, holds up, and shows up when football gets fast. At PPF, speed work, jump output, strength development, body composition, and recovery are built to carry into position movement, camp readiness, and real on-field value.</p>
+    </div>
+
+    <!-- 4 Transfer Blocks – split-screen "test → field" -->
+    <div class="co-grid reveal">
+
+      <div class="co-card" data-co="speed">
+        <div class="co-card-inner">
+          <!-- Front: Test side -->
+          <div class="co-card-front">
+            <div class="co-card-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><circle cx="24" cy="24" r="20"/><polyline points="24,12 24,24 32,28"/></svg>
+            </div>
+            <h3 class="co-card-title">Speed Transfer</h3>
+            <span class="co-card-tag">WHAT WE TRAINED</span>
+            <p class="co-card-text">40-yard dash precision, acceleration mechanics, stride frequency drills, resisted sprint loading.</p>
+            <div class="co-connector">
+              <span class="co-dot"></span>
+              <span class="co-line"></span>
+              <span class="co-dot"></span>
+            </div>
+          </div>
+          <!-- Back: Field side -->
+          <div class="co-card-back">
+            <span class="co-card-tag co-tag-field">WHERE IT SHOWS UP</span>
+            <p class="co-card-text">Usable acceleration, stride efficiency, and transition speed on the field.</p>
+            <div class="co-field-labels">
+              <span class="co-label" data-num="4.29">Acceleration</span>
+              <span class="co-label" data-num="1.48">Stride Efficiency</span>
+              <span class="co-label" data-num="21.8">Transition Speed</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="co-card" data-co="power">
+        <div class="co-card-inner">
+          <div class="co-card-front">
+            <div class="co-card-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><path d="M24 4 L28 20 L44 24 L28 28 L24 44 L20 28 L4 24 L20 20 Z"/></svg>
+            </div>
+            <h3 class="co-card-title">Power Transfer</h3>
+            <span class="co-card-tag">WHAT WE TRAINED</span>
+            <p class="co-card-text">Vertical and broad jump mechanics, force development, trap-bar pulls, depth drops, reactive power.</p>
+            <div class="co-connector">
+              <span class="co-dot"></span>
+              <span class="co-line"></span>
+              <span class="co-dot"></span>
+            </div>
+          </div>
+          <div class="co-card-back">
+            <span class="co-card-tag co-tag-field">WHERE IT SHOWS UP</span>
+            <p class="co-card-text">Explosion, projection, and lower-half output under full-speed football conditions.</p>
+            <div class="co-field-labels">
+              <span class="co-label" data-num="39.5">Projection</span>
+              <span class="co-label" data-num="126">Explosion</span>
+              <span class="co-label" data-num="30+">Lower-Half Output</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="co-card" data-co="position">
+        <div class="co-card-inner">
+          <div class="co-card-front">
+            <div class="co-card-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><rect x="8" y="8" width="32" height="32" rx="4"/><path d="M16 16 L32 32 M32 16 L16 32"/></svg>
+            </div>
+            <h3 class="co-card-title">Position Transfer</h3>
+            <span class="co-card-tag">WHAT WE TRAINED</span>
+            <p class="co-card-text">Position-specific footwork, COD drills, route mechanics, leverage training, body-control sequences.</p>
+            <div class="co-connector">
+              <span class="co-dot"></span>
+              <span class="co-line"></span>
+              <span class="co-dot"></span>
+            </div>
+          </div>
+          <div class="co-card-back">
+            <span class="co-card-tag co-tag-field">WHERE IT SHOWS UP</span>
+            <p class="co-card-text">Breaks, leverage, redirection, and football-specific body control under game pressure.</p>
+            <div class="co-field-labels">
+              <span class="co-label" data-num="6.82">Redirection</span>
+              <span class="co-label" data-num="4.12">Leverage</span>
+              <span class="co-label" data-num="3.98">Body Control</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="co-card" data-co="camp">
+        <div class="co-card-inner">
+          <div class="co-card-front">
+            <div class="co-card-icon">
+              <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 36 Q24 4 36 36"/><line x1="8" y1="36" x2="40" y2="36"/><circle cx="24" cy="16" r="3"/></svg>
+            </div>
+            <h3 class="co-card-title">Camp Transfer</h3>
+            <span class="co-card-tag">WHAT WE TRAINED</span>
+            <p class="co-card-text">Recovery protocols, work capacity building, body composition management, repeated-effort conditioning.</p>
+            <div class="co-connector">
+              <span class="co-dot"></span>
+              <span class="co-line"></span>
+              <span class="co-dot"></span>
+            </div>
+          </div>
+          <div class="co-card-back">
+            <span class="co-card-tag co-tag-field">WHERE IT SHOWS UP</span>
+            <p class="co-card-text">Holding up through repeated high-demand days — camp readiness and sustained performance.</p>
+            <div class="co-field-labels">
+              <span class="co-label" data-num="5+">Repeatability</span>
+              <span class="co-label" data-num="96%">Readiness</span>
+              <span class="co-label" data-num="3-Day">Sustained Output</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scroll sequence: numbers morph into movement labels -->
+    <div class="co-scroll-sequence reveal">
+      <div class="co-scroll-track" id="coScrollTrack">
+        <div class="co-morph-item" data-from="4.29" data-to="Acceleration">
+          <span class="co-morph-num">4.29</span>
+          <span class="co-morph-label">Acceleration</span>
+        </div>
+        <div class="co-morph-item" data-from="39.5&quot;" data-to="Projection">
+          <span class="co-morph-num">39.5&quot;</span>
+          <span class="co-morph-label">Projection</span>
+        </div>
+        <div class="co-morph-item" data-from="6.82" data-to="Redirection">
+          <span class="co-morph-num">6.82</span>
+          <span class="co-morph-label">Redirection</span>
+        </div>
+        <div class="co-morph-item" data-from="30+" data-to="Repeatability">
+          <span class="co-morph-num">30+</span>
+          <span class="co-morph-label">Repeatability</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Film-room overlay -->
+    <div class="co-film-room reveal">
+      <div class="co-film-header">
+        <span class="co-film-rec">● REC</span>
+        <span class="co-film-title">MOVEMENT CARRYOVER ANALYSIS</span>
+        <span class="co-film-timecode">00:00:00</span>
+      </div>
+      <div class="co-film-viewport">
+        <div class="co-film-grid-overlay"></div>
+        <div class="co-film-tags">
+          <div class="co-film-tag" style="top:20%;left:15%">
+            <span class="co-tag-dot"></span>
+            <span class="co-tag-line">Acceleration Phase</span>
+          </div>
+          <div class="co-film-tag" style="top:35%;left:55%">
+            <span class="co-tag-dot"></span>
+            <span class="co-tag-line">Force Vector — Projection</span>
+          </div>
+          <div class="co-film-tag" style="top:60%;left:30%">
+            <span class="co-tag-dot"></span>
+            <span class="co-tag-line">Redirection &amp; Leverage</span>
+          </div>
+          <div class="co-film-tag" style="top:75%;left:65%">
+            <span class="co-tag-dot"></span>
+            <span class="co-tag-line">Camp Readiness Hold</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Closing line -->
+    <div class="co-closer reveal">
+      <p class="co-closer-line">Measured for testing. Built for what comes after.</p>
+    </div>
+
   </div>
 </section>
 
