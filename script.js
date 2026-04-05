@@ -3,32 +3,136 @@
    script.js
    ═══════════════════════════════════════════════════════════ */
 
-/* ── Cinematic Intro ──────────────────────────────────────── */
+/* ── Cinematic Intro — 3-Phase Sequence ────────────────── */
 (function(){
-  const intro = document.querySelector('.cinematic-intro');
-  const bar = document.querySelector('.intro-bar span');
+  var intro = document.querySelector('.cinematic-intro');
+  var bar   = document.querySelector('.intro-bar span');
+  var cvs   = document.getElementById('intro-system-canvas');
   if(!intro) return;
-  let done = false;
+
+  var done = false;
+  var ctx  = cvs ? cvs.getContext('2d') : null;
+  var W, H, rafId;
+
+  /* Resize canvas */
+  function sizeCanvas(){
+    if(!cvs) return;
+    W = cvs.width  = window.innerWidth;
+    H = cvs.height = window.innerHeight;
+  }
+  sizeCanvas();
+  window.addEventListener('resize', sizeCanvas);
+
+  /* Phase 2 — system wake-up canvas: yard lines, radar sweep, measurement ticks */
+  var sweepAngle = 0;
+  function drawSystem(){
+    if(!ctx) return;
+    ctx.clearRect(0,0,W,H);
+    var cx = W/2, cy = H/2;
+    ctx.strokeStyle = 'rgba(255,106,0,0.06)';
+    ctx.lineWidth = 1;
+
+    /* Yard-line hash marks */
+    for(var i=0;i<20;i++){
+      var y = (H/20)*i;
+      ctx.beginPath();
+      ctx.moveTo(cx-60, y);
+      ctx.lineTo(cx+60, y);
+      ctx.stroke();
+      /* Small hash ticks */
+      ctx.beginPath();
+      ctx.moveTo(cx-120, y);
+      ctx.lineTo(cx-100, y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx+100, y);
+      ctx.lineTo(cx+120, y);
+      ctx.stroke();
+    }
+
+    /* Vertical reference ticks (jump markers) */
+    ctx.strokeStyle = 'rgba(255,106,0,0.04)';
+    for(var j=0;j<10;j++){
+      var vy = H - (H/10)*j;
+      ctx.beginPath();
+      ctx.moveTo(cx+160, vy);
+      ctx.lineTo(cx+180, vy);
+      ctx.stroke();
+    }
+
+    /* Radar sweep */
+    sweepAngle += 0.015;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(sweepAngle);
+    var grad = ctx.createConicalGradient ? null : null;
+    ctx.strokeStyle = 'rgba(255,106,0,0.12)';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.lineTo(Math.min(W,H)*0.35, 0);
+    ctx.stroke();
+    /* Radar arc */
+    ctx.strokeStyle = 'rgba(255,106,0,0.04)';
+    ctx.lineWidth = 1;
+    for(var r=1;r<=3;r++){
+      ctx.beginPath();
+      ctx.arc(0,0,r*60,0,Math.PI*2);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    /* Velocity arcs */
+    ctx.strokeStyle = 'rgba(255,106,0,0.05)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx-200, cy+100);
+    ctx.quadraticCurveTo(cx, cy-80, cx+200, cy+100);
+    ctx.stroke();
+
+    /* Split timer marks along bottom */
+    ctx.fillStyle = 'rgba(255,106,0,0.08)';
+    ctx.font = '10px Inter, monospace';
+    var splits = ['0.00','1.48','2.52','3.18','4.29'];
+    for(var s=0;s<splits.length;s++){
+      ctx.fillText(splits[s], cx - 100 + s*50, H - 40);
+    }
+
+    rafId = requestAnimationFrame(drawSystem);
+  }
+
+  /* Trigger Phase 2 after words appear */
+  setTimeout(function(){
+    intro.classList.add('phase2');
+    drawSystem();
+  }, 2800);
+
   function finish(){
     if(done) return;
     done = true;
     if(bar) bar.style.width = '100%';
+    if(rafId) cancelAnimationFrame(rafId);
     setTimeout(function(){
       intro.classList.add('done');
-      /* Remove from stacking context after transition */
       setTimeout(function(){ intro.style.display = 'none'; }, 1000);
     }, 600);
   }
-  let progress = 0;
-  const tick = setInterval(function(){
-    progress += Math.random()*12 + 5;
+
+  /* Progress bar */
+  var progress = 0;
+  var tick = setInterval(function(){
+    progress += Math.random()*8 + 3;
     if(progress > 100) progress = 100;
     if(bar) bar.style.width = progress + '%';
     if(progress >= 100){ clearInterval(tick); finish(); }
-  }, 120);
-  window.addEventListener('load', finish);
-  /* Absolute max: never block more than 2.5 s */
-  setTimeout(finish, 2500);
+  }, 100);
+
+  window.addEventListener('load', function(){
+    /* Let the intro play at least 3.8s for Phase 1+2 feel */
+    setTimeout(finish, 800);
+  });
+  /* Absolute max: never block more than 5s */
+  setTimeout(finish, 5000);
 })();
 
 /* ── Scroll Progress Bar ─────────────────────────────────── */
@@ -2376,8 +2480,8 @@ var draftData = [
   if(window.matchMedia('(pointer: coarse)').matches) return;
   var hero = document.querySelector('.hero');
   var heroTitle = document.querySelector('.hero-title');
-  var heroCard = document.querySelector('.hero-card');
-  var statsGrid = document.querySelector('.stats-grid');
+  var heroSystem = document.querySelector('.hero-system-lane');
+  var proofBar = document.querySelector('.hero-proof-bar');
   if(!hero) return;
 
   var ticking = false;
@@ -2387,8 +2491,8 @@ var draftData = [
         var y = window.scrollY;
         if(y < window.innerHeight * 1.2){
           if(heroTitle) heroTitle.style.transform = 'translateY(' + y * 0.04 + 'px)';
-          if(heroCard) heroCard.style.transform = 'translateY(' + y * -0.02 + 'px)';
-          if(statsGrid) statsGrid.style.transform = 'translateY(' + y * 0.015 + 'px)';
+          if(heroSystem) heroSystem.style.transform = 'translateY(' + y * -0.02 + 'px)';
+          if(proofBar) proofBar.style.transform = 'translateY(' + y * 0.015 + 'px)';
         }
         ticking = false;
       });
@@ -3019,13 +3123,13 @@ var draftData = [
       }
       if(ha){
         ha.innerHTML =
-          '<a class="btn primary" href="' + cfg.cta1.href + '">' + cfg.cta1.text + '</a>' +
-          '<a class="btn secondary" href="' + cfg.cta2.href + '">' + cfg.cta2.text + '</a>';
+          '<a class="btn primary hero-cta-primary" href="' + cfg.cta1.href + '" data-hover="Begin profile build">' + cfg.cta1.text + '</a>' +
+          '<div class="hero-cta-wrap"><a class="btn secondary" href="' + cfg.cta2.href + '">' + cfg.cta2.text + '</a><span class="cta-preview">Verified speed, jumps, strength, and RAS markers</span></div>';
       }
       if(hst){
         hst.innerHTML = cfg.stats.map(function(s){
           var display = s.val + (s.suf||'');
-          return '<div class="stat"><strong data-count="' + s.val + '" data-suffix="' + (s.suf||'') + '">' + display + '</strong><span>' + s.desc + '</span></div>';
+          return '<div class="stat proof-in"><strong data-count="' + s.val + '" data-suffix="' + (s.suf||'') + '">' + display + '</strong><span>' + (s.shortLabel || s.desc) + '</span></div>';
         }).join('');
         /* Re-trigger counter animation for new elements */
         setTimeout(function(){
@@ -6222,4 +6326,346 @@ document.addEventListener('keydown', function(e){
     }, {threshold:0.12});
     proofEls.forEach(function(el){ proofObs.observe(el); });
   }
+})();
+
+/* ══════════════════════════════════════════════════════════
+   HERO ENGINE — Profile Build, Canvases, Proof Bar, Scroll Transition
+   ══════════════════════════════════════════════════════════ */
+(function(){
+  var hero = document.querySelector('.hero');
+  if(!hero) return;
+
+  /* ── Profile Build — Staggered Pill Activation ────────── */
+  var pillRow = document.getElementById('hero-pills');
+  var profileBuildDone = false;
+
+  function runProfileBuild(){
+    if(profileBuildDone) return;
+    profileBuildDone = true;
+    var pills = pillRow ? pillRow.querySelectorAll('.pill') : [];
+    if(!pills.length) return;
+
+    pills.forEach(function(pill, i){
+      /* Activate each pill sequentially */
+      setTimeout(function(){
+        pill.classList.add('pb-active');
+        /* After active highlight, settle to done state */
+        setTimeout(function(){
+          pill.classList.remove('pb-active');
+          pill.classList.add('pb-done');
+        }, 600);
+      }, i * 450);
+    });
+  }
+
+  /* Trigger Profile Build after intro completes (~5.5s) */
+  setTimeout(function(){
+    runProfileBuild();
+  }, 5800);
+
+  /* ── Proof Bar — Mechanical Precision Animation ────────── */
+  var proofBarEl = document.querySelector('.hero-proof-bar');
+  var proofAnimDone = false;
+
+  function animateProofBarItems(){
+    if(proofAnimDone || !proofBarEl) return;
+    proofAnimDone = true;
+    var items = proofBarEl.querySelectorAll('.stat');
+    items.forEach(function(item, i){
+      setTimeout(function(){
+        item.classList.add('proof-in');
+      }, i * 150);
+    });
+  }
+
+  /* Trigger proof bar after pills */
+  setTimeout(animateProofBarItems, 7200);
+
+  /* Also trigger on scroll if user scrolls early */
+  if(proofBarEl){
+    var pBarObs = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){
+        animateProofBarItems();
+        pBarObs.disconnect();
+      }
+    }, {threshold:0.3});
+    pBarObs.observe(proofBarEl);
+  }
+
+  /* ── Scroll Transition — Turf-to-Data Merge ───────────── */
+  var scrollTrans = document.querySelector('.hero-scroll-transition');
+  if(scrollTrans){
+    var stObs = new IntersectionObserver(function(entries){
+      if(entries[0].isIntersecting){
+        scrollTrans.classList.add('st-visible');
+        stObs.disconnect();
+      }
+    }, {threshold:0.5});
+    stObs.observe(scrollTrans);
+  }
+
+  /* ── Hero Measurement Grid Canvas (mouse-reactive) ────── */
+  var measureCanvas = document.getElementById('hero-measure-canvas');
+  if(measureCanvas && !window.matchMedia('(pointer: coarse)').matches){
+    var mCtx = measureCanvas.getContext('2d');
+    var mW, mH;
+    var mouseX = 0, mouseY = 0;
+    var targetX = 0, targetY = 0;
+
+    function sizeMeasure(){
+      mW = measureCanvas.width  = hero.offsetWidth;
+      mH = measureCanvas.height = hero.offsetHeight;
+    }
+    sizeMeasure();
+    window.addEventListener('resize', sizeMeasure);
+
+    hero.addEventListener('mousemove', function(e){
+      var rect = hero.getBoundingClientRect();
+      targetX = e.clientX - rect.left;
+      targetY = e.clientY - rect.top;
+    });
+
+    function drawMeasureGrid(){
+      mouseX += (targetX - mouseX) * 0.08;
+      mouseY += (targetY - mouseY) * 0.08;
+
+      mCtx.clearRect(0,0,mW,mH);
+
+      /* Subtle grid lines that shift with cursor */
+      var offsetX = (mouseX - mW/2) * 0.015;
+      var offsetY = (mouseY - mH/2) * 0.015;
+
+      mCtx.strokeStyle = 'rgba(255,106,0,0.03)';
+      mCtx.lineWidth = 0.5;
+
+      /* Horizontal yard-line marks */
+      var spacing = 60;
+      for(var y = offsetY % spacing; y < mH; y += spacing){
+        mCtx.beginPath();
+        mCtx.moveTo(0, y);
+        mCtx.lineTo(mW, y);
+        mCtx.stroke();
+      }
+
+      /* Vertical reference lines */
+      for(var x = offsetX % spacing; x < mW; x += spacing){
+        mCtx.beginPath();
+        mCtx.moveTo(x, 0);
+        mCtx.lineTo(x, mH);
+        mCtx.stroke();
+      }
+
+      /* Orange tracking line near cursor */
+      if(targetX > 0 && targetY > 0){
+        mCtx.strokeStyle = 'rgba(255,106,0,0.08)';
+        mCtx.lineWidth = 1;
+
+        /* Horizontal tracking line */
+        mCtx.beginPath();
+        mCtx.moveTo(mouseX - 40, mouseY);
+        mCtx.lineTo(mouseX + 40, mouseY);
+        mCtx.stroke();
+
+        /* Vertical tracking line */
+        mCtx.beginPath();
+        mCtx.moveTo(mouseX, mouseY - 40);
+        mCtx.lineTo(mouseX, mouseY + 40);
+        mCtx.stroke();
+
+        /* Small crosshair glow */
+        mCtx.fillStyle = 'rgba(255,106,0,0.04)';
+        mCtx.beginPath();
+        mCtx.arc(mouseX, mouseY, 3, 0, Math.PI*2);
+        mCtx.fill();
+      }
+
+      requestAnimationFrame(drawMeasureGrid);
+    }
+    requestAnimationFrame(drawMeasureGrid);
+  }
+
+  /* ── Athlete Silhouette Canvas (right lane) ───────────── */
+  var athleteCanvas = document.getElementById('hero-athlete-canvas');
+  if(athleteCanvas){
+    var aCtx = athleteCanvas.getContext('2d');
+    var aW, aH;
+    var aPhase = 0;
+    var aStarted = false;
+
+    function sizeAthlete(){
+      var parent = athleteCanvas.parentElement;
+      aW = athleteCanvas.width  = parent.offsetWidth;
+      aH = athleteCanvas.height = parent.offsetHeight;
+    }
+    sizeAthlete();
+    window.addEventListener('resize', sizeAthlete);
+
+    /* Metric categories that build the athlete */
+    var buildMetrics = [
+      {label:'SPEED',     color:'rgba(255,106,0,0.5)', delay:0},
+      {label:'POWER',     color:'rgba(255,140,50,0.4)', delay:0.8},
+      {label:'POSITION',  color:'rgba(255,170,80,0.35)', delay:1.6},
+      {label:'READINESS', color:'rgba(100,200,180,0.3)', delay:2.4},
+      {label:'PROFILE',   color:'rgba(255,106,0,0.6)', delay:3.2}
+    ];
+
+    function drawAthlete(timestamp){
+      if(!aStarted) return;
+      aCtx.clearRect(0,0,aW,aH);
+
+      var cx = aW * 0.5;
+      var cy = aH * 0.42;
+      var scale = Math.min(aW, aH) * 0.003;
+      var elapsed = (timestamp - aPhase) / 1000;
+
+      /* Draw athlete wireframe silhouette */
+      aCtx.save();
+      aCtx.translate(cx, cy);
+
+      /* Head */
+      aCtx.strokeStyle = 'rgba(255,106,0,0.15)';
+      aCtx.lineWidth = 1.5;
+      aCtx.beginPath();
+      aCtx.arc(0, -70*scale, 16*scale, 0, Math.PI*2);
+      aCtx.stroke();
+
+      /* Torso */
+      aCtx.beginPath();
+      aCtx.moveTo(0, -54*scale);
+      aCtx.lineTo(0, 20*scale);
+      aCtx.stroke();
+
+      /* Shoulders */
+      aCtx.beginPath();
+      aCtx.moveTo(-35*scale, -40*scale);
+      aCtx.lineTo(35*scale, -40*scale);
+      aCtx.stroke();
+
+      /* Arms */
+      aCtx.beginPath();
+      aCtx.moveTo(-35*scale, -40*scale);
+      aCtx.lineTo(-50*scale, 10*scale);
+      aCtx.stroke();
+      aCtx.beginPath();
+      aCtx.moveTo(35*scale, -40*scale);
+      aCtx.lineTo(50*scale, 10*scale);
+      aCtx.stroke();
+
+      /* Legs */
+      aCtx.beginPath();
+      aCtx.moveTo(0, 20*scale);
+      aCtx.lineTo(-25*scale, 80*scale);
+      aCtx.stroke();
+      aCtx.beginPath();
+      aCtx.moveTo(0, 20*scale);
+      aCtx.lineTo(25*scale, 80*scale);
+      aCtx.stroke();
+
+      aCtx.restore();
+
+      /* Draw metric layers building up */
+      buildMetrics.forEach(function(m){
+        var metricElapsed = elapsed - m.delay;
+        if(metricElapsed < 0) return;
+        var alpha = Math.min(metricElapsed / 0.6, 1);
+
+        aCtx.save();
+        aCtx.globalAlpha = alpha;
+        aCtx.translate(cx, cy);
+
+        /* Each metric draws a different overlay element */
+        if(m.label === 'SPEED'){
+          /* Acceleration lane markers */
+          aCtx.strokeStyle = m.color;
+          aCtx.lineWidth = 1;
+          for(var i=0;i<5;i++){
+            var lx = -80*scale + i * 40*scale;
+            aCtx.beginPath();
+            aCtx.moveTo(lx, 85*scale);
+            aCtx.lineTo(lx + 20*scale, 85*scale);
+            aCtx.stroke();
+          }
+          /* Split time text */
+          aCtx.fillStyle = m.color;
+          aCtx.font = (9*scale) + 'px Inter, monospace';
+          aCtx.fillText('10yd 1.48s', -70*scale, 100*scale);
+        }
+        if(m.label === 'POWER'){
+          /* Force vectors rising from ground */
+          aCtx.strokeStyle = m.color;
+          aCtx.lineWidth = 1.5;
+          for(var j=-1;j<=1;j++){
+            aCtx.beginPath();
+            aCtx.moveTo(j*20*scale, 80*scale);
+            aCtx.lineTo(j*15*scale, 40*scale);
+            aCtx.stroke();
+            /* Arrowhead */
+            aCtx.beginPath();
+            aCtx.moveTo(j*15*scale - 4*scale, 48*scale);
+            aCtx.lineTo(j*15*scale, 40*scale);
+            aCtx.lineTo(j*15*scale + 4*scale, 48*scale);
+            aCtx.stroke();
+          }
+          aCtx.fillStyle = m.color;
+          aCtx.font = (9*scale) + 'px Inter, monospace';
+          aCtx.fillText('39.5" VERT', 40*scale, 30*scale);
+        }
+        if(m.label === 'POSITION'){
+          /* COD movement arcs */
+          aCtx.strokeStyle = m.color;
+          aCtx.lineWidth = 1;
+          aCtx.beginPath();
+          aCtx.moveTo(-60*scale, 50*scale);
+          aCtx.quadraticCurveTo(-30*scale, 20*scale, 0, 50*scale);
+          aCtx.quadraticCurveTo(30*scale, 80*scale, 60*scale, 50*scale);
+          aCtx.stroke();
+          /* Position tag */
+          aCtx.fillStyle = m.color;
+          aCtx.font = (9*scale) + 'px Inter, monospace';
+          aCtx.fillText('WR/DB ROUTES', -75*scale, -60*scale);
+        }
+        if(m.label === 'READINESS'){
+          /* Cooling/stability markers */
+          aCtx.strokeStyle = 'rgba(100,200,180,0.25)';
+          aCtx.lineWidth = 1;
+          /* Pulse rings */
+          for(var r=1;r<=3;r++){
+            aCtx.beginPath();
+            aCtx.arc(0, -20*scale, r*25*scale, 0, Math.PI*2);
+            aCtx.stroke();
+          }
+          aCtx.fillStyle = 'rgba(100,200,180,0.3)';
+          aCtx.font = (9*scale) + 'px Inter, monospace';
+          aCtx.fillText('RECOVERY OK', -50*scale, -110*scale);
+        }
+        if(m.label === 'PROFILE'){
+          /* Final draft-ready border */
+          aCtx.strokeStyle = m.color;
+          aCtx.lineWidth = 2;
+          aCtx.setLineDash([4,4]);
+          var bw = 90*scale, bh = 110*scale;
+          aCtx.strokeRect(-bw, -bh, bw*2, bh + 90*scale);
+          aCtx.setLineDash([]);
+          /* DRAFT READY label */
+          aCtx.fillStyle = 'rgba(255,106,0,0.7)';
+          aCtx.font = 'bold ' + (11*scale) + 'px Inter, sans-serif';
+          aCtx.textAlign = 'center';
+          aCtx.fillText('DRAFT READY', 0, -bh - 8*scale);
+          aCtx.textAlign = 'start';
+        }
+
+        aCtx.restore();
+      });
+
+      requestAnimationFrame(drawAthlete);
+    }
+
+    /* Start athlete build after intro + headline */
+    setTimeout(function(){
+      aStarted = true;
+      aPhase = performance.now();
+      requestAnimationFrame(drawAthlete);
+    }, 5200);
+  }
+
 })();
