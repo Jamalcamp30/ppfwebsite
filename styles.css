@@ -2471,6 +2471,40 @@ textarea{min-height:140px;resize:vertical}
 #carryover,#ppf-process,#system,#draft-board,#measurables,#ras-board,#coach,#media,#recovery,#draft-room,#facility-gallery{scroll-margin-top:136px}
 #recovery{scroll-margin-top:148px}
 #contact{scroll-margin-top:136px}
+#method,#proof,#support,#apply{scroll-margin-top:136px}
+
+/* ── Proof Sub-Navigation ───────────────────────────────── */
+.proof-subnav{
+  position:sticky;top:calc(var(--nav-h) + var(--ticker-h));z-index:90;
+  background:rgba(5,5,5,.92);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--glass-border);
+  padding:0;
+  transition:opacity .3s ease,transform .3s ease;
+}
+.proof-subnav-wrap{
+  display:flex;gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.proof-subnav-wrap::-webkit-scrollbar{display:none}
+.proof-tab{
+  -webkit-appearance:none;appearance:none;
+  background:none;border:none;
+  color:var(--muted);
+  font:600 .78rem/1 'Inter',sans-serif;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:14px 22px;white-space:nowrap;cursor:pointer;
+  position:relative;
+  transition:color .25s ease;
+}
+.proof-tab:hover,.proof-tab:focus-visible{color:var(--text)}
+.proof-tab.active{color:var(--orange)}
+.proof-tab::after{
+  content:'';position:absolute;bottom:0;left:22px;right:22px;height:2px;
+  background:var(--orange);border-radius:2px;
+  transform:scaleX(0);transition:transform .3s var(--ease-out-expo);
+}
+.proof-tab.active::after{transform:scaleX(1)}
 
 /* ── Custom Scrollbar ────────────────────────────────────── */
 html{scrollbar-color:rgba(255,106,0,.35) #0a0a0a;scrollbar-width:thin}
@@ -4004,6 +4038,9 @@ table th{color:var(--orange2)!important;font-weight:900}
   .brand span small{font-size:10px}
   #carryover,#ppf-process,#system,#draft-board,#measurables,#ras-board,#coach,#media,#recovery{scroll-margin-top:118px}
   #contact{scroll-margin-top:118px}
+  #method,#proof,#support,#apply{scroll-margin-top:118px}
+  .proof-subnav{top:calc(72px + var(--ticker-h))}
+  .proof-tab{padding:12px 14px;font-size:.72rem}
   .draft-ticker{top:72px}
   .hero{padding-top:176px}
   .hero h1,.section-title{font-size:clamp(30px,8vw,52px)}
