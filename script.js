@@ -7256,7 +7256,6 @@ document.addEventListener('keydown', function(e){
     { id:'coach',            yard:75 },
     { id:'media',            yard:82 },
     { id:'recovery',         yard:90 },
-    { id:'find-path',        yard:95 },
     { id:'contact',          yard:100}
   ];
 
