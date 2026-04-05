@@ -61,6 +61,13 @@
 </head>
 <body>
 
+<!-- 100-Yard Scroll Engine — Field Progress Rails -->
+<div class="fpr" id="fpr" aria-hidden="true">
+  <div class="fpr-rail fpr-left" id="fpr-left"></div>
+  <div class="fpr-rail fpr-right" id="fpr-right"></div>
+  <div class="fpr-badge" id="fpr-badge"></div>
+</div>
+
 <!-- Cursor Glow -->
 <div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
 
@@ -208,9 +215,16 @@
   <div class="container">
     <!-- Header -->
     <div class="co-header reveal">
-      <span class="eyebrow co-eyebrow">Next-Level Carryover</span>
+      <div class="co-status-line">
+        <span class="co-status-dot"></span>
+        <span class="eyebrow co-eyebrow">Next-Level Carryover</span>
+        <span class="co-status-tag">MOVEMENT TRANSFER ACTIVE</span>
+      </div>
       <h2 class="section-title co-title">Tested here. Felt everywhere.</h2>
       <p class="section-sub co-sub">The work should still look right after the testing cycle.</p>
+      <div class="co-header-scanbar">
+        <div class="co-header-scanbar-fill"></div>
+      </div>
     </div>
 
     <!-- Body copy -->
