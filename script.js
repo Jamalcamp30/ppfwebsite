@@ -3021,7 +3021,7 @@ var draftData = [
       card.classList.add('selected');
       var path = card.getAttribute('data-path');
       if(result && messages[path]){
-        result.innerHTML = '<div class="path-message">' + messages[path] + ' <a href="#contact" class="btn primary" style="margin-top:16px;display:inline-flex">Start Your Application</a></div>';
+        result.innerHTML = '<div class="path-message">' + messages[path] + ' <a href="#contact" class="btn primary" style="margin-top:16px;display:inline-flex">Start Your Profile</a></div>';
       }
     });
   });
@@ -6165,7 +6165,7 @@ document.addEventListener('keydown', function(e){
       resultEl.innerHTML = '<div class="rc-stack-recommendation">' +
         '<div class="rc-stack-rec-title">Your Recommended Recovery Stack</div>' +
         '<div class="rc-stack-rec-items">' + modalHTML + '</div>' +
-        '<div class="rc-stack-rec-cta"><a href="#contact" class="btn primary">Build My Support Plan</a></div>' +
+        '<div class="rc-stack-rec-cta"><a href="#contact" class="btn primary">Book Recovery</a></div>' +
         '</div>';
     }
   }
