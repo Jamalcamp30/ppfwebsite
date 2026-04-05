@@ -300,6 +300,7 @@
     });
   }
 
+  let rafId;
   function draw(){
     ctx.clearRect(0,0,w,h);
     for(const p of particles){
@@ -329,9 +330,13 @@
         }
       }
     }
-    requestAnimationFrame(draw);
+    rafId = requestAnimationFrame(draw);
   }
   draw();
+  document.addEventListener('visibilitychange', function(){
+    if(document.hidden){ cancelAnimationFrame(rafId); }
+    else { draw(); }
+  });
 })();
 
 /* ── Nav Scroll Effect ───────────────────────────────────── */
@@ -990,7 +995,8 @@ document.querySelectorAll('.tab-btn').forEach(function(btn){
     btn.classList.add('active');
     var tab = btn.dataset.tab;
     document.querySelectorAll('.tab-panel').forEach(function(panel){ panel.classList.add('hidden'); });
-    document.getElementById('tab-' + tab).classList.remove('hidden');
+    var tabEl = document.getElementById('tab-' + tab);
+    if(tabEl) tabEl.classList.remove('hidden');
   });
 });
 
@@ -1820,7 +1826,8 @@ var draftData = [
     lockContent.innerHTML = html;
     lockOverlay.classList.add('active');
     document.body.style.overflow = 'hidden';
-    lockContent.querySelector('.dc-lock-close').addEventListener('click', closeBoardLock);
+    var lockCloseBtn = lockContent.querySelector('.dc-lock-close');
+    if(lockCloseBtn) lockCloseBtn.addEventListener('click', closeBoardLock);
     lockOverlay.addEventListener('click', function handler(e){
       if(e.target === lockOverlay){ closeBoardLock(); lockOverlay.removeEventListener('click', handler); }
     });
@@ -2189,36 +2196,43 @@ var draftData = [
       /* Show position context strip */
       var data = positionData[pos];
       if(data){
-        document.getElementById('ccPosIcon').textContent = data.icon;
-        document.getElementById('ccPosLabel').textContent = data.label;
-        document.getElementById('ccPosCopy').textContent = data.copy;
+        var iconEl = document.getElementById('ccPosIcon');
+        var labelEl = document.getElementById('ccPosLabel');
+        var copyEl = document.getElementById('ccPosCopy');
+        if(iconEl) iconEl.textContent = data.icon;
+        if(labelEl) labelEl.textContent = data.label;
+        if(copyEl) copyEl.textContent = data.copy;
         /* Trait chips */
         var traitsEl = document.getElementById('ccPosTraits');
-        traitsEl.innerHTML = '';
-        data.traits.forEach(function(t,i){
-          var chip = document.createElement('span');
-          chip.className = 'cc-pos-trait';
-          chip.textContent = t;
-          chip.style.animationDelay = (i * 60) + 'ms';
-          traitsEl.appendChild(chip);
-        });
+        if(traitsEl){
+          traitsEl.innerHTML = '';
+          data.traits.forEach(function(t,i){
+            var chip = document.createElement('span');
+            chip.className = 'cc-pos-trait';
+            chip.textContent = t;
+            chip.style.animationDelay = (i * 60) + 'ms';
+            traitsEl.appendChild(chip);
+          });
+        }
         /* Profile build lane */
         var laneSteps = document.getElementById('ccPosLaneSteps');
-        laneSteps.innerHTML = '';
-        data.lane.forEach(function(step,i){
-          if(i > 0){
-            var arrow = document.createElement('span');
-            arrow.className = 'cc-pos-lane-arrow';
-            arrow.textContent = '→';
-            arrow.style.animationDelay = (i * 80) + 'ms';
-            laneSteps.appendChild(arrow);
-          }
-          var el = document.createElement('span');
-          el.className = 'cc-pos-lane-step';
-          el.textContent = step;
-          el.style.animationDelay = (i * 80) + 'ms';
-          laneSteps.appendChild(el);
-        });
+        if(laneSteps){
+          laneSteps.innerHTML = '';
+          data.lane.forEach(function(step,i){
+            if(i > 0){
+              var arrow = document.createElement('span');
+              arrow.className = 'cc-pos-lane-arrow';
+              arrow.textContent = '→';
+              arrow.style.animationDelay = (i * 80) + 'ms';
+              laneSteps.appendChild(arrow);
+            }
+            var el = document.createElement('span');
+            el.className = 'cc-pos-lane-step';
+            el.textContent = step;
+            el.style.animationDelay = (i * 80) + 'ms';
+            laneSteps.appendChild(el);
+          });
+        }
         posContext.classList.add('cc-pos-active');
       }
 
@@ -2387,36 +2401,46 @@ var draftData = [
     var data = coachOutcomes[coachId];
     if(!data || !outOverlay) return;
 
-    document.getElementById('ccOutImg').src = data.img;
-    document.getElementById('ccOutImg').alt = data.name;
-    document.getElementById('ccOutName').textContent = data.name;
-    document.getElementById('ccOutRole').textContent = data.role;
-    document.getElementById('ccOutSig').textContent = '"' + data.sig + '"';
+    var outImg = document.getElementById('ccOutImg');
+    var outName = document.getElementById('ccOutName');
+    var outRole = document.getElementById('ccOutRole');
+    var outSig = document.getElementById('ccOutSig');
+    if(outImg){ outImg.src = data.img; outImg.alt = data.name; }
+    if(outName) outName.textContent = data.name;
+    if(outRole) outRole.textContent = data.role;
+    if(outSig) outSig.textContent = '"' + data.sig + '"';
 
     /* Specialty chips */
     var specEl = document.getElementById('ccOutSpecialty');
-    specEl.innerHTML = '';
-    data.specialty.forEach(function(s,i){
-      var chip = document.createElement('span');
-      chip.className = 'cc-chip';
-      chip.textContent = s;
-      chip.style.animationDelay = (i * 60) + 'ms';
-      specEl.appendChild(chip);
-    });
+    if(specEl){
+      specEl.innerHTML = '';
+      data.specialty.forEach(function(s,i){
+        var chip = document.createElement('span');
+        chip.className = 'cc-chip';
+        chip.textContent = s;
+        chip.style.animationDelay = (i * 60) + 'ms';
+        specEl.appendChild(chip);
+      });
+    }
 
-    document.getElementById('ccOutCorrects').textContent = data.corrects;
-    document.getElementById('ccOutImproves').textContent = data.improves;
-    document.getElementById('ccOutScouts').textContent = data.scouts;
+    var outCorrects = document.getElementById('ccOutCorrects');
+    var outImproves = document.getElementById('ccOutImproves');
+    var outScouts = document.getElementById('ccOutScouts');
+    if(outCorrects) outCorrects.textContent = data.corrects;
+    if(outImproves) outImproves.textContent = data.improves;
+    if(outScouts) outScouts.textContent = data.scouts;
 
     /* Athlete outcomes */
     var athEl = document.getElementById('ccOutAthletes');
-    athEl.innerHTML = '';
-    data.athletes.forEach(function(a){
-      var div = document.createElement('div');
-      div.className = 'cc-outcomes-athlete';
-      div.innerHTML = '<strong>' + a.name + '</strong>' + a.detail + '<span>' + a.outcome + '</span>';
-      athEl.appendChild(div);
-    });
+    if(athEl){
+      athEl.innerHTML = '';
+      data.athletes.forEach(function(a){
+        var div = document.createElement('div');
+        div.className = 'cc-outcomes-athlete';
+        div.innerHTML = '<strong>' + a.name + '</strong>' + a.detail + '<span>' + a.outcome + '</span>';
+        athEl.appendChild(div);
+      });
+    }
 
     outOverlay.classList.add('cc-outcomes-open');
     outOverlay.setAttribute('aria-hidden','false');
@@ -3031,7 +3055,7 @@ var draftData = [
 (function(){
   var calcBtn = document.getElementById('lab-calculate');
   var resultEl = document.getElementById('lab-results');
-  if(!calcBtn) return;
+  if(!calcBtn || !resultEl) return;
 
   var selectedPos = 'WR';
 
@@ -3104,19 +3128,21 @@ var draftData = [
     return Math.max(0, Math.min(10, raw * 10));
   }
 
+  function getInputVal(id){ var el = document.getElementById(id); return el ? (parseFloat(el.value) || 0) : 0; }
+
   calcBtn.addEventListener('click', function(){
-    var htFt = parseFloat(document.getElementById('lab-height-ft').value) || 0;
-    var htIn = parseFloat(document.getElementById('lab-height-in').value) || 0;
+    var htFt = getInputVal('lab-height-ft');
+    var htIn = getInputVal('lab-height-in');
     var height = htFt * 12 + htIn;
-    var weight = parseFloat(document.getElementById('lab-weight').value) || 0;
-    var forty = parseFloat(document.getElementById('lab-forty').value) || 0;
-    var twenty = parseFloat(document.getElementById('lab-twenty').value) || 0;
-    var ten = parseFloat(document.getElementById('lab-ten').value) || 0;
-    var bench = parseFloat(document.getElementById('lab-bench').value) || 0;
-    var vert = parseFloat(document.getElementById('lab-vert').value) || 0;
-    var broad = parseFloat(document.getElementById('lab-broad').value) || 0;
-    var shuttle = parseFloat(document.getElementById('lab-shuttle').value) || 0;
-    var cone = parseFloat(document.getElementById('lab-cone').value) || 0;
+    var weight = getInputVal('lab-weight');
+    var forty = getInputVal('lab-forty');
+    var twenty = getInputVal('lab-twenty');
+    var ten = getInputVal('lab-ten');
+    var bench = getInputVal('lab-bench');
+    var vert = getInputVal('lab-vert');
+    var broad = getInputVal('lab-broad');
+    var shuttle = getInputVal('lab-shuttle');
+    var cone = getInputVal('lab-cone');
 
     var inputs = {height:height,weight:weight,forty:forty,twenty:twenty,ten:ten,bench:bench,vert:vert,broad:broad,shuttle:shuttle,cone:cone};
     var scores = {};
@@ -3534,11 +3560,16 @@ if(exitBtn) exitBtn.addEventListener('click', exitDraftRoom);
 
 /* ── Filtering ────────────────────────────────────────────── */
 function getFilteredData(){
-  var fortyMax = parseFloat(document.getElementById('dr-forty-range').value);
-  var vertMin  = parseFloat(document.getElementById('dr-vert-range').value);
-  var benchMin = parseInt(document.getElementById('dr-bench-range').value);
-  var weightMin= parseInt(document.getElementById('dr-weight-range').value);
-  var rasMin   = parseFloat(document.getElementById('dr-ras-range').value);
+  var fortyEl = document.getElementById('dr-forty-range');
+  var vertEl  = document.getElementById('dr-vert-range');
+  var benchEl = document.getElementById('dr-bench-range');
+  var weightEl= document.getElementById('dr-weight-range');
+  var rasEl   = document.getElementById('dr-ras-range');
+  var fortyMax = fortyEl ? parseFloat(fortyEl.value) : 99;
+  var vertMin  = vertEl ? parseFloat(vertEl.value) : 0;
+  var benchMin = benchEl ? parseInt(benchEl.value) : 0;
+  var weightMin= weightEl ? parseInt(weightEl.value) : 0;
+  var rasMin   = rasEl ? parseFloat(rasEl.value) : 0;
 
   return draftData.filter(function(a){
     if(currentFilter !== 'all' && a.pos !== currentFilter) return false;
