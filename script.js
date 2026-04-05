@@ -2630,7 +2630,7 @@ var draftData = [
 /* ── Enhanced 3D Card Tilt ──────────────────────────────── */
 (function(){
   if(window.matchMedia('(pointer: coarse)').matches) return;
-  var cards = document.querySelectorAll('.athlete-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card, .pos-guide-card, .dr-card, .facility-card, .rc-partner-card, .rc-lab-module, .rc-outcome-card, .rc-cta-card, .path-card, .sys-proof-card, .sys-combine-note');
+  var cards = document.querySelectorAll('.athlete-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card, .pos-guide-card, .dr-card, .facility-card, .rc-partner-card, .rc-lab-module, .rc-outcome-card, .rc-cta-card, .sys-proof-card, .sys-combine-note, .ow-card, .pt-cadence-item');
   cards.forEach(function(card){
     card.addEventListener('mousemove', function(e){
       var rect = card.getBoundingClientRect();
@@ -7464,5 +7464,211 @@ document.addEventListener('keydown', function(e){
   setTimeout(function(){
     if(badge) badge.classList.add('fpr-badge--visible');
   }, 6000);
+
+})();
+
+/* ══════════════════════════════════════════════════════════
+   PREMIUM DECISION ARCHITECTURE — Interactive Engine
+   ══════════════════════════════════════════════════════════ */
+(function(){
+  'use strict';
+
+  /* ── Audience Rail — Tab Switching ─────────────────────── */
+  var arTabs = document.querySelectorAll('.ar-tab');
+  var arPanels = document.querySelectorAll('.ar-panel');
+  var arStats = document.querySelectorAll('.ar-stat');
+  var currentAudience = 'agent';
+
+  function switchAudience(audience){
+    currentAudience = audience;
+
+    arTabs.forEach(function(t){
+      var isActive = t.getAttribute('data-audience') === audience;
+      t.classList.toggle('ar-tab-active', isActive);
+      t.setAttribute('aria-selected', isActive ? 'true' : 'false');
+    });
+
+    arPanels.forEach(function(p){
+      var id = p.id.replace('ar-panel-','');
+      var isActive = id === audience;
+      p.classList.toggle('ar-panel-active', isActive);
+      p.hidden = !isActive;
+    });
+
+    arStats.forEach(function(s){
+      var show = s.getAttribute('data-' + audience) === 'true';
+      s.hidden = !show;
+    });
+
+    if(history.replaceState){
+      history.replaceState(null, null, '#audience-' + audience);
+    }
+
+    syncLens(audience);
+  }
+
+  arTabs.forEach(function(tab){
+    tab.addEventListener('click', function(){
+      switchAudience(tab.getAttribute('data-audience'));
+    });
+  });
+
+  var hashAudience = window.location.hash.replace('#audience-','');
+  if(['agent','family','player','pro'].indexOf(hashAudience) !== -1){
+    switchAudience(hashAudience);
+  }
+
+  /* ── Decision Lens — Site-Wide Audience Adaptation ─────── */
+  var lensButtons = document.querySelectorAll('.dl-lens-btn');
+
+  function syncLens(audience){
+    lensButtons.forEach(function(btn){
+      btn.classList.toggle('dl-lens-active', btn.getAttribute('data-lens') === audience);
+    });
+  }
+
+  lensButtons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var lens = btn.getAttribute('data-lens');
+      switchAudience(lens);
+
+      var rail = document.getElementById('audience-rail');
+      if(rail){
+        var rect = rail.getBoundingClientRect();
+        if(rect.top < -200 || rect.bottom > window.innerHeight + 200){
+          rail.scrollIntoView({behavior:'smooth',block:'start'});
+        }
+      }
+
+      filterFAQ(lens);
+      filterOutcomeWall(lens);
+    });
+  });
+
+  /* ── Process Timeline — Scroll Animation + Expand ──────── */
+  var ptNodes = document.querySelectorAll('.pt-node');
+  var ptPulse = document.getElementById('pt-pulse');
+
+  function checkTimelineVisibility(){
+    var windowH = window.innerHeight;
+    ptNodes.forEach(function(node){
+      var rect = node.getBoundingClientRect();
+      if(rect.top < windowH * 0.8){
+        node.classList.add('pt-visible');
+      }
+    });
+
+    if(ptPulse){
+      var section = document.getElementById('ppf-process');
+      if(section){
+        var sRect = section.getBoundingClientRect();
+        var progress = Math.max(0, Math.min(1,
+          (-sRect.top) / (sRect.height - windowH)
+        ));
+        ptPulse.style.height = (progress * 100) + '%';
+      }
+    }
+  }
+
+  ptNodes.forEach(function(node){
+    var content = node.querySelector('.pt-node-content');
+    var detail = node.querySelector('.pt-node-detail');
+    if(content && detail){
+      content.addEventListener('click', function(){
+        var isOpen = !detail.hidden;
+        ptNodes.forEach(function(n){
+          var d = n.querySelector('.pt-node-detail');
+          if(d) d.hidden = true;
+          n.classList.remove('pt-active');
+        });
+        if(!isOpen){
+          detail.hidden = false;
+          node.classList.add('pt-active');
+        }
+      });
+    }
+  });
+
+  window.addEventListener('scroll', checkTimelineVisibility, {passive:true});
+  checkTimelineVisibility();
+
+  /* ── Outcome Wall — Expand Cards + Audience Filtering ──── */
+  var owCards = document.querySelectorAll('.ow-card');
+
+  owCards.forEach(function(card){
+    card.addEventListener('click', function(){
+      var isExpanded = card.classList.contains('ow-expanded');
+      owCards.forEach(function(c){ c.classList.remove('ow-expanded'); });
+      if(!isExpanded){
+        card.classList.add('ow-expanded');
+      }
+    });
+  });
+
+  function filterOutcomeWall(audience){
+    owCards.forEach(function(card){
+      var audiences = (card.getAttribute('data-audience') || '').split(',');
+      var isRelevant = audiences.indexOf(audience) !== -1;
+      card.style.order = isRelevant ? '0' : '1';
+      card.style.opacity = isRelevant ? '1' : '0.5';
+    });
+  }
+
+  /* ── Decision-Maker FAQ — Role Filtering + Priority Sort ── */
+  var fqFilterBtns = document.querySelectorAll('.fq-filter-btn');
+  var fqItems = document.querySelectorAll('.fq-item');
+
+  function filterFAQ(role){
+    fqFilterBtns.forEach(function(btn){
+      var btnRole = btn.getAttribute('data-role');
+      btn.classList.toggle('fq-filter-active', btnRole === role || (btnRole === 'all' && role === 'all'));
+    });
+
+    if(role === 'all'){
+      fqItems.forEach(function(item){
+        item.hidden = false;
+        item.style.order = '0';
+      });
+      return;
+    }
+
+    fqItems.forEach(function(item){
+      var roles = (item.getAttribute('data-roles') || '').split(',');
+      var isRelevant = roles.indexOf(role) !== -1;
+      item.hidden = !isRelevant;
+
+      if(isRelevant){
+        var priority = item.getAttribute('data-priority-' + role) || '99';
+        item.style.order = priority;
+      }
+    });
+  }
+
+  fqFilterBtns.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var role = btn.getAttribute('data-role');
+      filterFAQ(role);
+
+      if(role !== 'all'){
+        switchAudience(role);
+      }
+    });
+  });
+
+  /* ── Reveal animation for new sections ─────────────────── */
+  var revealEls = document.querySelectorAll('.ar-section .reveal, .pt-section .reveal, .ow-section .reveal, .fq-section .reveal');
+  if('IntersectionObserver' in window){
+    var revealObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          revealObs.unobserve(entry.target);
+        }
+      });
+    },{threshold:0.1});
+    revealEls.forEach(function(el){ revealObs.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in-view'); });
+  }
 
 })();
