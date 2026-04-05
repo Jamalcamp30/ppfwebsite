@@ -23,10 +23,13 @@
   sizeCanvas();
   window.addEventListener('resize', sizeCanvas);
 
-  /* Phase 2 — system wake-up canvas: yard lines, radar sweep, measurement ticks */
+  /* Phase 2 — system wake-up canvas: yard lines, radar sweep, measurement ticks, silhouette */
   var sweepAngle = 0;
-  function drawSystem(){
+  var phase2Start = 0;
+  function drawSystem(ts){
     if(!ctx) return;
+    if(!phase2Start) phase2Start = ts || performance.now();
+    var elapsed = ((ts || performance.now()) - phase2Start) / 1000;
     ctx.clearRect(0,0,W,H);
     var cx = W/2, cy = H/2;
     ctx.strokeStyle = 'rgba(255,106,0,0.06)';
@@ -50,7 +53,50 @@
       ctx.stroke();
     }
 
-    /* Vertical reference ticks (jump markers) */
+    /* Vertical jump height markers (left side) — fade in over first 2s */
+    var tickAlpha = Math.min(elapsed / 2, 1) * 0.14;
+    var jumpHeights = ['28"','30"','32"','34"','36"','38"','40"','42"'];
+    ctx.font = '9px Inter, monospace';
+    ctx.textAlign = 'right';
+    for(var jh=0;jh<jumpHeights.length;jh++){
+      var jAlpha = Math.min(elapsed - jh * 0.15, 1);
+      if(jAlpha <= 0) continue;
+      var jy = H - 60 - jh * ((H - 120) / (jumpHeights.length - 1));
+      ctx.strokeStyle = 'rgba(255,106,0,' + (jAlpha * 0.08).toFixed(3) + ')';
+      ctx.fillStyle = 'rgba(255,106,0,' + (jAlpha * tickAlpha).toFixed(3) + ')';
+      ctx.lineWidth = 0.5;
+      /* Tick mark */
+      ctx.beginPath();
+      ctx.moveTo(30, jy);
+      ctx.lineTo(48, jy);
+      ctx.stroke();
+      /* Label */
+      ctx.fillText(jumpHeights[jh], 68, jy + 3);
+    }
+    ctx.textAlign = 'left';
+
+    /* 40-yard split time ticks along bottom — fade in */
+    var splits = ['0.00','1.48','2.52','3.18','4.29'];
+    var splitSpread = Math.min(W * 0.55, 400);
+    var splitStart  = cx - splitSpread / 2;
+    var splitStep   = splitSpread / (splits.length - 1);
+    ctx.font = '10px Inter, monospace';
+    for(var s=0;s<splits.length;s++){
+      var sAlpha = Math.min(elapsed - s * 0.2, 1);
+      if(sAlpha <= 0) continue;
+      var sx = splitStart + s * splitStep;
+      ctx.fillStyle = 'rgba(255,106,0,' + (sAlpha * 0.12).toFixed(3) + ')';
+      ctx.fillText(splits[s], sx, H - 30);
+      /* Tick above text */
+      ctx.strokeStyle = 'rgba(255,106,0,' + (sAlpha * 0.08).toFixed(3) + ')';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(sx + 10, H - 42);
+      ctx.lineTo(sx + 10, H - 36);
+      ctx.stroke();
+    }
+
+    /* Vertical reference ticks (jump markers — original) */
     ctx.strokeStyle = 'rgba(255,106,0,0.04)';
     for(var j=0;j<10;j++){
       var vy = H - (H/10)*j;
@@ -60,18 +106,36 @@
       ctx.stroke();
     }
 
-    /* Radar sweep line */
+    /* Enhanced radar sweep line — thicker with trailing gradient fade */
     sweepAngle += 0.015;
+    var sweepLen = Math.min(W,H)*0.35;
     ctx.save();
     ctx.translate(cx, cy);
+    /* Trailing fade arc (drawn before sweep so sweep is on top) */
+    for(var tr=1;tr<=8;tr++){
+      var trAngle = sweepAngle - tr * 0.04;
+      var trAlpha = (0.1 * (1 - tr/8)).toFixed(3);
+      ctx.strokeStyle = 'rgba(255,106,0,' + trAlpha + ')';
+      ctx.lineWidth = 3 - tr * 0.3;
+      ctx.beginPath();
+      ctx.moveTo(0,0);
+      ctx.lineTo(Math.cos(trAngle)*sweepLen, Math.sin(trAngle)*sweepLen);
+      ctx.stroke();
+    }
+    /* Main sweep line — thicker */
     ctx.rotate(sweepAngle);
-    ctx.strokeStyle = 'rgba(255,106,0,0.12)';
-    ctx.lineWidth = 2;
+    ctx.strokeStyle = 'rgba(255,106,0,0.18)';
+    ctx.lineWidth = 3;
     ctx.beginPath();
     ctx.moveTo(0,0);
-    ctx.lineTo(Math.min(W,H)*0.35, 0);
+    ctx.lineTo(sweepLen, 0);
     ctx.stroke();
-    /* Radar arc */
+    /* Bright tip dot */
+    ctx.fillStyle = 'rgba(255,106,0,0.25)';
+    ctx.beginPath();
+    ctx.arc(sweepLen, 0, 3, 0, Math.PI*2);
+    ctx.fill();
+    /* Radar arcs */
     ctx.strokeStyle = 'rgba(255,106,0,0.04)';
     ctx.lineWidth = 1;
     for(var r=1;r<=3;r++){
@@ -89,15 +153,72 @@
     ctx.quadraticCurveTo(cx, cy-80, cx+200, cy+100);
     ctx.stroke();
 
-    /* Split timer marks along bottom — scaled to viewport */
-    ctx.fillStyle = 'rgba(255,106,0,0.08)';
-    ctx.font = '10px Inter, monospace';
-    var splits = ['0.00','1.48','2.52','3.18','4.29'];
-    var splitSpread = Math.min(W * 0.4, 300);
-    var splitStart  = cx - splitSpread / 2;
-    var splitStep   = splitSpread / (splits.length - 1);
-    for(var s=0;s<splits.length;s++){
-      ctx.fillText(splits[s], splitStart + s * splitStep, H - 40);
+    /* Athlete silhouette wireframe — assembles piece by piece */
+    var sScale = Math.min(W, H) * 0.0018;
+    var sCx = W * 0.78;
+    var sCy = H * 0.45;
+    ctx.lineWidth = 1;
+
+    /* Head — appears at 0.3s */
+    var headA = Math.max(0, Math.min((elapsed - 0.3) / 0.4, 1));
+    if(headA > 0){
+      ctx.strokeStyle = 'rgba(255,106,0,' + (headA * 0.12).toFixed(3) + ')';
+      ctx.beginPath();
+      ctx.arc(sCx, sCy - 70*sScale, 14*sScale, 0, Math.PI*2 * headA);
+      ctx.stroke();
+    }
+    /* Torso — appears at 0.6s */
+    var torsoA = Math.max(0, Math.min((elapsed - 0.6) / 0.3, 1));
+    if(torsoA > 0){
+      ctx.strokeStyle = 'rgba(255,106,0,' + (torsoA * 0.1).toFixed(3) + ')';
+      ctx.beginPath();
+      ctx.moveTo(sCx, sCy - 54*sScale);
+      ctx.lineTo(sCx, sCy - 54*sScale + 74*sScale*torsoA);
+      ctx.stroke();
+    }
+    /* Shoulders — appears at 0.8s */
+    var shoulderA = Math.max(0, Math.min((elapsed - 0.8) / 0.3, 1));
+    if(shoulderA > 0){
+      ctx.strokeStyle = 'rgba(255,106,0,' + (shoulderA * 0.1).toFixed(3) + ')';
+      ctx.beginPath();
+      ctx.moveTo(sCx - 32*sScale*shoulderA, sCy - 40*sScale);
+      ctx.lineTo(sCx + 32*sScale*shoulderA, sCy - 40*sScale);
+      ctx.stroke();
+    }
+    /* Arms — appears at 1.0s */
+    var armA = Math.max(0, Math.min((elapsed - 1.0) / 0.4, 1));
+    if(armA > 0){
+      ctx.strokeStyle = 'rgba(255,106,0,' + (armA * 0.09).toFixed(3) + ')';
+      ctx.beginPath();
+      ctx.moveTo(sCx - 32*sScale, sCy - 40*sScale);
+      ctx.lineTo(sCx - 32*sScale - 15*sScale*armA, sCy - 40*sScale + 50*sScale*armA);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(sCx + 32*sScale, sCy - 40*sScale);
+      ctx.lineTo(sCx + 32*sScale + 15*sScale*armA, sCy - 40*sScale + 50*sScale*armA);
+      ctx.stroke();
+    }
+    /* Legs — appears at 1.3s */
+    var legA = Math.max(0, Math.min((elapsed - 1.3) / 0.4, 1));
+    if(legA > 0){
+      ctx.strokeStyle = 'rgba(255,106,0,' + (legA * 0.09).toFixed(3) + ')';
+      ctx.beginPath();
+      ctx.moveTo(sCx, sCy + 20*sScale);
+      ctx.lineTo(sCx - 22*sScale*legA, sCy + 20*sScale + 60*sScale*legA);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(sCx, sCy + 20*sScale);
+      ctx.lineTo(sCx + 22*sScale*legA, sCy + 20*sScale + 60*sScale*legA);
+      ctx.stroke();
+    }
+    /* Faint "SCANNING" label below silhouette */
+    var scanLblA = Math.max(0, Math.min((elapsed - 1.6) / 0.5, 1));
+    if(scanLblA > 0){
+      ctx.fillStyle = 'rgba(255,106,0,' + (scanLblA * 0.08).toFixed(3) + ')';
+      ctx.font = '8px Inter, monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('SCANNING', sCx, sCy + 100*sScale);
+      ctx.textAlign = 'left';
     }
 
     rafId = requestAnimationFrame(drawSystem);
@@ -6084,20 +6205,47 @@ document.addEventListener('keydown', function(e){
   var pillRow = document.getElementById('hero-pills');
   var profileBuildDone = false;
 
+  /* Create connecting line and draft-ready elements */
+  if(pillRow){
+    var connectLine = document.createElement('div');
+    connectLine.className = 'pill-connect-line';
+    pillRow.appendChild(connectLine);
+    var draftReady = document.createElement('span');
+    draftReady.className = 'draft-ready-flash';
+    draftReady.textContent = 'DRAFT READY';
+    pillRow.appendChild(draftReady);
+  }
+
   function runProfileBuild(){
     if(profileBuildDone) return;
     profileBuildDone = true;
     var pills = pillRow ? pillRow.querySelectorAll('.pill') : [];
     if(!pills.length) return;
 
+    /* Measure total pill row width for connecting line */
+    var cLine = pillRow ? pillRow.querySelector('.pill-connect-line') : null;
+    var drFlash = pillRow ? pillRow.querySelector('.draft-ready-flash') : null;
+
     pills.forEach(function(pill, i){
       /* Activate each pill sequentially with longer hold */
       setTimeout(function(){
         pill.classList.add('pb-active');
+        /* Update connecting line width */
+        if(cLine){
+          cLine.classList.add('active');
+          var pct = ((i + 1) / pills.length) * 100;
+          cLine.style.width = pct + '%';
+        }
         /* After active highlight, settle to done state */
         setTimeout(function(){
           pill.classList.remove('pb-active');
           pill.classList.add('pb-done');
+          /* Flash DRAFT READY after last pill */
+          if(i === pills.length - 1 && drFlash){
+            setTimeout(function(){
+              drFlash.classList.add('visible');
+            }, 200);
+          }
         }, 700);
       }, i * 500);
     });
@@ -6119,6 +6267,32 @@ document.addEventListener('keydown', function(e){
     items.forEach(function(item, i){
       setTimeout(function(){
         item.classList.add('proof-in');
+        /* Count-up micro-animation on numeric stats */
+        var strong = item.querySelector('strong');
+        if(!strong) return;
+        var rawCount = strong.getAttribute('data-count');
+        if(!rawCount) return;
+        var target = parseFloat(rawCount);
+        if(isNaN(target)) return;
+        var suffix = strong.getAttribute('data-suffix') || '';
+        var hasComma = target >= 1000;
+        var isDecimal = rawCount.indexOf('.') !== -1;
+        var decimals = isDecimal ? (rawCount.split('.')[1] || '').length : 0;
+        var duration = 400;
+        var startTime = performance.now();
+        function countUp(now){
+          var progress = Math.min((now - startTime) / duration, 1);
+          /* Ease out quad */
+          var ease = 1 - (1 - progress) * (1 - progress);
+          var current = ease * target;
+          var display = isDecimal ? current.toFixed(decimals) : Math.round(current).toString();
+          if(hasComma && !isDecimal){
+            display = Math.round(current).toLocaleString();
+          }
+          strong.textContent = display + suffix;
+          if(progress < 1) requestAnimationFrame(countUp);
+        }
+        requestAnimationFrame(countUp);
       }, i * 180);
     });
   }
@@ -6126,17 +6300,20 @@ document.addEventListener('keydown', function(e){
   /* Trigger proof bar after pills */
   setTimeout(animateProofBarItems, 7200);
 
-  /* ── Title Impact Flash — subtle glow when headline lands ── */
-  /* Title slam starts at 5s with .55s duration; flash fires just after */
-  var titleSlamEnd = 5000 + 550;
+  /* ── Title Impact Flash — aggressive lock-on glow when headline lands ── */
+  /* Title slam starts at 5s with .45s duration; flash fires just after */
+  var titleSlamEnd = 5000 + 450;
   var heroTitle = document.getElementById('hero-title');
   if(heroTitle){
     setTimeout(function(){
-      heroTitle.style.textShadow = '0 0 40px rgba(255,106,0,.2), 0 0 80px rgba(255,106,0,.08)';
+      heroTitle.style.textShadow = '0 0 60px rgba(255,255,255,.15), 0 0 40px rgba(255,106,0,.25), 0 0 80px rgba(255,106,0,.1)';
       setTimeout(function(){
-        heroTitle.style.transition = 'text-shadow 1.2s ease-out';
-        heroTitle.style.textShadow = 'none';
-      }, 200);
+        heroTitle.style.textShadow = '0 0 30px rgba(255,106,0,.18), 0 0 60px rgba(255,106,0,.06)';
+        setTimeout(function(){
+          heroTitle.style.transition = 'text-shadow 1.2s ease-out';
+          heroTitle.style.textShadow = 'none';
+        }, 120);
+      }, 100);
     }, titleSlamEnd);
   }
 

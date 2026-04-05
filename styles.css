@@ -248,14 +248,45 @@ ul,ol{list-style:none}
 .hero-title{
   margin:18px 0 18px;font-size:clamp(44px,8.2vw,106px);
   line-height:.88;letter-spacing:-.055em;max-width:860px;
-  opacity:0;transform:translateY(28px) scale(.96);
-  animation:hero-title-slam .55s var(--ease-out-expo) 5s forwards;
+  position:relative;overflow:hidden;
+  opacity:0;transform:translateY(28px) scale(.92);
+  animation:hero-title-slam .45s cubic-bezier(.16,1,.3,1) 5s forwards;
 }
 @keyframes hero-title-slam{
-  0%{opacity:0;transform:translateY(28px) scale(.96)}
-  50%{opacity:1;transform:translateY(-4px) scale(1.008)}
-  75%{transform:translateY(1px) scale(1)}
-  100%{opacity:1;transform:translateY(0) scale(1)}
+  0%{opacity:0;transform:translateY(28px) scale(.92);filter:brightness(1)}
+  40%{opacity:1;transform:translateY(-6px) scale(1.012);filter:brightness(1.8)}
+  55%{transform:translateY(2px) scale(1.003);filter:brightness(1.3)}
+  70%{transform:translateY(-1px) scale(1);filter:brightness(1)}
+  100%{opacity:1;transform:translateY(0) scale(1);filter:brightness(1)}
+}
+/* Scan line sweeps across title on slam */
+.hero-title::before{
+  content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.12) 45%,rgba(255,255,255,.2) 50%,rgba(255,255,255,.12) 55%,transparent 100%);
+  pointer-events:none;z-index:1;
+  animation:hero-title-scanline .5s linear 5.38s forwards;
+  opacity:0;
+}
+@keyframes hero-title-scanline{
+  0%{left:-100%;opacity:1}
+  100%{left:100%;opacity:0}
+}
+/* White flash flicker on title land */
+.hero-title::after{
+  content:"";position:absolute;inset:0;
+  background:rgba(255,255,255,.15);
+  pointer-events:none;z-index:1;
+  opacity:0;
+  animation:hero-title-flicker .35s steps(4) 5.3s forwards;
+}
+@keyframes hero-title-flicker{
+  0%{opacity:0}
+  15%{opacity:.18}
+  30%{opacity:0}
+  50%{opacity:.12}
+  70%{opacity:0}
+  85%{opacity:.06}
+  100%{opacity:0}
 }
 
 .hero-sub{max-width:760px;color:var(--muted);font-size:19px;line-height:1.85;margin:0;
@@ -294,7 +325,60 @@ ul,ol{list-style:none}
 .pill.pb-active::after{width:100%}
 .pill.pb-done:hover{border-color:rgba(255,106,0,.3);background:rgba(255,106,0,.08);transform:translateY(-1px)}
 .hero-profile-build .pill{cursor:default}
-.hero-profile-build{animation:hero-fade-up .6s var(--ease-out-expo) 5.6s both}
+/* Measurement icon flash inside pill during pb-active */
+.hero-profile-build .pill::before{
+  position:absolute;top:50%;left:8px;transform:translateY(-50%);
+  font-size:11px;line-height:1;
+  color:var(--orange);opacity:0;
+  pointer-events:none;z-index:2;
+  transition:opacity .15s ease;
+}
+.hero-profile-build .pill.pb-active::before{
+  animation:pill-icon-flash .5s ease forwards;
+}
+@keyframes pill-icon-flash{
+  0%{opacity:0;transform:translateY(-50%) scale(.5)}
+  30%{opacity:.85;transform:translateY(-50%) scale(1.1)}
+  70%{opacity:.5;transform:translateY(-50%) scale(1)}
+  100%{opacity:0;transform:translateY(-50%) scale(.8)}
+}
+.hero-profile-build .pill[data-metric="speed"]::before{content:"⏱"}
+.hero-profile-build .pill[data-metric="jump"]::before{content:"↕"}
+.hero-profile-build .pill[data-metric="movement"]::before{content:"↗"}
+.hero-profile-build .pill[data-metric="body"]::before{content:"◉"}
+.hero-profile-build .pill[data-metric="recovery"]::before{content:"♻"}
+/* Connecting line between pills */
+.hero-profile-build{
+  animation:hero-fade-up .6s var(--ease-out-expo) 5.6s both;
+  position:relative;
+}
+.hero-profile-build .pill-connect-line{
+  position:absolute;bottom:-6px;left:0;height:2px;
+  background:linear-gradient(90deg,var(--orange),var(--orange2));
+  border-radius:2px;opacity:0;
+  transition:width .4s var(--ease-out-expo),opacity .3s ease;
+  width:0;pointer-events:none;
+}
+.hero-profile-build .pill-connect-line.active{opacity:.35}
+/* Draft Ready status flash */
+.hero-profile-build .draft-ready-flash{
+  display:block;width:100%;text-align:center;
+  margin-top:10px;
+  font-size:10px;font-weight:900;letter-spacing:.4em;text-transform:uppercase;
+  color:var(--orange);opacity:0;pointer-events:none;
+  text-shadow:0 0 18px rgba(255,106,0,.3);
+}
+.hero-profile-build .draft-ready-flash.visible{
+  animation:draft-ready-blink .9s ease forwards;
+}
+@keyframes draft-ready-blink{
+  0%{opacity:0;transform:translateY(4px)}
+  15%{opacity:.9;transform:translateY(0)}
+  30%{opacity:.3}
+  45%{opacity:.85}
+  70%{opacity:.7;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-2px)}
+}
 .chip{
   padding:9px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.1);
   background:rgba(255,255,255,.04);font-size:12px;font-weight:700;color:#eceff3;
