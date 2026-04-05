@@ -2466,8 +2466,9 @@ textarea{min-height:140px;resize:vertical}
 }
 
 /* ── Scroll Anchor Offsets ───────────────────────────────── */
-#carryover,#ppf-process,#system,#draft-board,#measurables,#ras-board,#coach,#media,#recovery,#contact,#draft-room,#facility-gallery{scroll-margin-top:136px}
+#carryover,#ppf-process,#system,#draft-board,#measurables,#ras-board,#coach,#media,#recovery,#draft-room,#facility-gallery{scroll-margin-top:136px}
 #recovery{scroll-margin-top:148px}
+#contact{scroll-margin-top:136px}
 
 /* ── Custom Scrollbar ────────────────────────────────────── */
 html{scrollbar-color:rgba(255,106,0,.35) #0a0a0a;scrollbar-width:thin}
@@ -3999,7 +4000,8 @@ table th{color:var(--orange2)!important;font-weight:900}
   .brand{gap:10px;min-width:0}
   .brand span strong{font-size:15px}
   .brand span small{font-size:10px}
-  #carryover,#ppf-process,#system,#draft-board,#measurables,#ras-board,#coach,#media,#recovery,#contact{scroll-margin-top:118px}
+  #carryover,#ppf-process,#system,#draft-board,#measurables,#ras-board,#coach,#media,#recovery{scroll-margin-top:118px}
+  #contact{scroll-margin-top:118px}
   .draft-ticker{top:72px}
   .hero{padding-top:176px}
   .hero h1,.section-title{font-size:clamp(30px,8vw,52px)}
@@ -4614,8 +4616,8 @@ table th{color:var(--orange2)!important;font-weight:900}
 
 /* ── CTA Row ─────────────────────────────────────────── */
 .rc-cta-row{
-  display:grid;grid-template-columns:repeat(2,1fr);gap:14px;
-  margin-bottom:56px;max-width:520px;margin-left:auto;margin-right:auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;
+  margin-bottom:56px;max-width:680px;margin-left:auto;margin-right:auto;
 }
 .rc-cta-card{
   display:flex;flex-direction:column;align-items:center;gap:10px;
@@ -4656,6 +4658,13 @@ table th{color:var(--orange2)!important;font-weight:900}
   color:var(--orange2);
 }
 
+/* ── Apply Block (merged intake form) ─────────────────── */
+.rc-apply-block{
+  margin-top:72px;padding-top:56px;
+  border-top:1px solid rgba(255,255,255,.06);
+  scroll-margin-top:136px;
+}
+
 /* ── Recovery Section Responsive ─────────────────────── */
 @media(max-width:980px){
   .rc-partners-grid{grid-template-columns:1fr}
@@ -4676,6 +4685,7 @@ table th{color:var(--orange2)!important;font-weight:900}
   .rc-journey-connector{margin-left:42px;height:16px}
   .rc-stack-builder{padding:24px}
   .rc-closing{padding:28px}
+  .rc-apply-block{margin-top:48px;padding-top:36px}
 }
 
 /* ══════════════════════════════════════════════════════════
