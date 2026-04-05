@@ -6201,6 +6201,24 @@ document.addEventListener('keydown', function(e){
   var hero = document.querySelector('.hero');
   if(!hero) return;
 
+  var heroVisible = true;
+  var heroMeasureRafId = null;
+  var heroAthleteRafId = null;
+  var heroMeasureDraw = null;
+  var heroAthleteDraw = null;
+  var heroVisObs = new IntersectionObserver(function(entries){
+    heroVisible = entries[0].isIntersecting;
+    if(heroVisible){
+      if(!heroMeasureRafId && heroMeasureDraw){
+        heroMeasureRafId = requestAnimationFrame(heroMeasureDraw);
+      }
+      if(!heroAthleteRafId && heroAthleteDraw){
+        heroAthleteRafId = requestAnimationFrame(heroAthleteDraw);
+      }
+    }
+  },{threshold:0.01});
+  heroVisObs.observe(hero);
+
   /* ── Profile Build — Staggered Pill Activation ────────── */
   var pillRow = document.getElementById('hero-pills');
   var profileBuildDone = false;
@@ -6362,6 +6380,7 @@ document.addEventListener('keydown', function(e){
     });
 
     function drawMeasureGrid(){
+      if(!heroVisible){ heroMeasureRafId = null; return; }
       mouseX += (targetX - mouseX) * 0.08;
       mouseY += (targetY - mouseY) * 0.08;
 
@@ -6415,9 +6434,10 @@ document.addEventListener('keydown', function(e){
         mCtx.fill();
       }
 
-      requestAnimationFrame(drawMeasureGrid);
+      heroMeasureRafId = requestAnimationFrame(drawMeasureGrid);
     }
-    requestAnimationFrame(drawMeasureGrid);
+    heroMeasureDraw = drawMeasureGrid;
+    heroMeasureRafId = requestAnimationFrame(drawMeasureGrid);
   }
 
   /* ── Athlete Silhouette Canvas (right lane) ───────────── */
@@ -6446,7 +6466,8 @@ document.addEventListener('keydown', function(e){
     ];
 
     function drawAthlete(timestamp){
-      if(!aStarted) return;
+      if(!aStarted){ return; }
+      if(!heroVisible){ heroAthleteRafId = null; return; }
       aCtx.clearRect(0,0,aW,aH);
 
       var cx = aW * 0.5;
@@ -6596,14 +6617,15 @@ document.addEventListener('keydown', function(e){
         aCtx.restore();
       });
 
-      requestAnimationFrame(drawAthlete);
+      heroAthleteRafId = requestAnimationFrame(drawAthlete);
     }
 
     /* Start athlete build after intro + headline */
+    heroAthleteDraw = drawAthlete;
     setTimeout(function(){
       aStarted = true;
       aPhase = performance.now();
-      requestAnimationFrame(drawAthlete);
+      heroAthleteRafId = requestAnimationFrame(drawAthlete);
     }, 5200);
   }
 
@@ -7017,6 +7039,12 @@ document.addEventListener('keydown', function(e){
     card.addEventListener('click', function(){
       var phase = this.getAttribute('data-phase');
       if(phase) setPhase(phase);
+    });
+    card.addEventListener('keydown', function(e){
+      if(e.key === 'Enter' || e.key === ' '){
+        e.preventDefault();
+        this.click();
+      }
     });
   });
 

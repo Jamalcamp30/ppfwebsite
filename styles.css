@@ -4380,7 +4380,7 @@ table th{color:var(--orange2)!important;font-weight:900}
   .hero-video{display:none}
   .cursor-glow{display:none}
   #particle-canvas{display:none}
-  .hero-measure-canvas,.hero-athlete-canvas,.intro-system-canvas{display:none}
+  .hero-measure-canvas,.hero-athlete-canvas,.intro-system-canvas,.co-canvas,.co-film-canvas{display:none}
   .reveal{opacity:1!important;transform:none!important}
   .hero-title,.hero-sub,.hero-phrase,.hero-actions,.pill{opacity:1!important;transform:none!important}
   .hero-proof-bar .stat{opacity:1!important;transform:none!important}
@@ -5477,6 +5477,10 @@ table th{color:var(--orange2)!important;font-weight:900}
   border-color:rgba(255,106,0,.25);
   background:rgba(255,106,0,.04);
 }
+.co-card:focus-visible{
+  outline:2px solid var(--orange);
+  outline-offset:2px;
+}
 
 /* Card icon */
 .co-card-icon{
@@ -5856,4 +5860,5 @@ table th{color:var(--orange2)!important;font-weight:900}
   .co-proof-row{flex-wrap:wrap;gap:8px;justify-content:center;text-align:center}
   .co-proof-stat{font-size:22px;min-width:auto}
   .co-morph-tooltip{min-width:180px}
+  .co-canvas,.co-film-canvas{display:none}
 }
