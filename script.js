@@ -2630,7 +2630,7 @@ var draftData = [
 /* ── Enhanced 3D Card Tilt ──────────────────────────────── */
 (function(){
   if(window.matchMedia('(pointer: coarse)').matches) return;
-  var cards = document.querySelectorAll('.athlete-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card, .pos-guide-card, .dr-card, .facility-card, .rc-partner-card, .rc-lab-module, .rc-outcome-card, .rc-cta-card, .sys-proof-card, .sys-combine-note, .ow-card, .pt-cadence-item');
+  var cards = document.querySelectorAll('.athlete-card, .metric-card, .quote-card, .stat, .service-card, .combine-note, .leader-card, .pos-guide-card, .dr-card, .facility-card, .rc-partner-card, .rc-lab-module, .rc-outcome-card, .rc-cta-card, .sys-proof-card, .sys-combine-note, .pt-cadence-item');
   cards.forEach(function(card){
     card.addEventListener('mousemove', function(e){
       var rect = card.getBoundingClientRect();
@@ -7593,26 +7593,139 @@ document.addEventListener('keydown', function(e){
   checkTimelineVisibility();
 
   /* ── Outcome Wall — Expand Cards + Audience Filtering ──── */
-  var owCards = document.querySelectorAll('.ow-card');
+  /* ═══════════════════════════════════════════════════════════
+     BUILT BY POSITION — Interactive Engine
+     ═══════════════════════════════════════════════════════════ */
+  (function(){
+    var owSection = document.querySelector('.ow-section');
+    var owCards = document.querySelectorAll('.ow-card');
+    if(!owSection || !owCards.length) return;
 
-  owCards.forEach(function(card){
-    card.addEventListener('click', function(){
-      var isExpanded = card.classList.contains('ow-expanded');
-      owCards.forEach(function(c){ c.classList.remove('ow-expanded'); });
-      if(!isExpanded){
-        card.classList.add('ow-expanded');
-      }
-    });
-  });
+    /* ── Intersection observer — entrance stagger ──────────── */
+    var owObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          owSection.classList.add('ow-visible');
+          owObs.disconnect();
+        }
+      });
+    },{threshold:0.15});
+    owObs.observe(owSection);
 
-  function filterOutcomeWall(audience){
+    /* ── 3D tilt on hover (mouse-position reactive) ────────── */
     owCards.forEach(function(card){
-      var audiences = (card.getAttribute('data-audience') || '').split(',');
-      var isRelevant = audiences.indexOf(audience) !== -1;
-      card.style.order = isRelevant ? '0' : '1';
-      card.style.opacity = isRelevant ? '1' : '0.5';
+      var inner = card.querySelector('.ow-card-inner');
+      if(!inner) return;
+
+      card.addEventListener('mousemove',function(e){
+        var rect = card.getBoundingClientRect();
+        var x = (e.clientX - rect.left) / rect.width;
+        var y = (e.clientY - rect.top) / rect.height;
+        var rx = (y - 0.5) * -5;  /* max ±2.5 deg */
+        var ry = (x - 0.5) * 5;
+        inner.style.setProperty('--rx', rx + 'deg');
+        inner.style.setProperty('--ry', ry + 'deg');
+      });
+
+      card.addEventListener('mouseleave',function(){
+        inner.style.setProperty('--rx','0deg');
+        inner.style.setProperty('--ry','0deg');
+      });
     });
-  }
+
+    /* ── Turf pellet burst on hover ────────────────────────── */
+    function spawnPellets(card){
+      var rect = card.getBoundingClientRect();
+      var count = 6 + Math.floor(Math.random() * 5); /* 6–10 pellets */
+      for(var i = 0; i < count; i++){
+        var pel = document.createElement('span');
+        pel.className = 'ow-pellet';
+        /* Random position along bottom edge */
+        var startX = Math.random() * rect.width;
+        var side = Math.random() > 0.5 ? 1 : -1;
+        var dx = (8 + Math.random() * 18) * side;
+        var dy = -(5 + Math.random() * 22);
+        var dur = 0.4 + Math.random() * 0.35;
+        pel.style.left = startX + 'px';
+        pel.style.bottom = '0';
+        pel.style.setProperty('--pel-x', dx + 'px');
+        pel.style.setProperty('--pel-y', dy + 'px');
+        pel.style.setProperty('--pel-dur', dur + 's');
+        pel.style.width = (2 + Math.random() * 2) + 'px';
+        pel.style.height = pel.style.width;
+        card.appendChild(pel);
+        (function(el){
+          setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, dur * 1000 + 50);
+        })(pel);
+      }
+    }
+
+    /* ── Grass blade burst on hover ────────────────────────── */
+    function spawnGrass(card){
+      var rect = card.getBoundingClientRect();
+      var count = 3 + Math.floor(Math.random() * 4); /* 3–6 blades */
+      for(var i = 0; i < count; i++){
+        var grass = document.createElement('span');
+        grass.className = 'ow-grass';
+        var startX = Math.random() * rect.width;
+        var side = Math.random() > 0.5 ? 1 : -1;
+        var dx = (5 + Math.random() * 14) * side;
+        var dy = -(10 + Math.random() * 25);
+        var dr = (30 + Math.random() * 60) * side;
+        var dur = 0.5 + Math.random() * 0.3;
+        grass.style.left = startX + 'px';
+        grass.style.bottom = '0';
+        grass.style.height = (6 + Math.random() * 6) + 'px';
+        grass.style.setProperty('--gr-x', dx + 'px');
+        grass.style.setProperty('--gr-y', dy + 'px');
+        grass.style.setProperty('--gr-r', dr + 'deg');
+        grass.style.setProperty('--gr-dur', dur + 's');
+        card.appendChild(grass);
+        (function(el){
+          setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, dur * 1000 + 50);
+        })(grass);
+      }
+    }
+
+    /* ── Hover — trigger particles + action trail reset ────── */
+    owCards.forEach(function(card){
+      var trail = card.querySelector('.ow-action-trail');
+      card.addEventListener('mouseenter',function(){
+        spawnPellets(card);
+        spawnGrass(card);
+        /* Reset action trail animation on each hover */
+        if(trail){
+          trail.style.animation = 'none';
+          /* Force DOM reflow so the browser restarts CSS animations */
+          void trail.offsetWidth;
+          trail.style.animation = '';
+        }
+      });
+    });
+
+    /* ── Click — expand scouting panel ─────────────────────── */
+    owCards.forEach(function(card){
+      card.addEventListener('click',function(e){
+        var wasActive = card.classList.contains('ow-active');
+        /* Close all others */
+        owCards.forEach(function(c){ c.classList.remove('ow-active'); });
+        if(!wasActive){
+          card.classList.add('ow-active');
+          /* Smooth scroll if card is partially out of view */
+          setTimeout(function(){
+            var rect = card.getBoundingClientRect();
+            if(rect.top < 80){
+              card.scrollIntoView({behavior:'smooth',block:'start'});
+            }
+          },100);
+        }
+      });
+    });
+
+    /* ── Legacy audience filter — position board is universal ─ */
+    window.filterOutcomeWall = function(){ /* no-op: position board shows all positions */ };
+
+  })();
 
   /* ── Decision-Maker FAQ — Role Filtering + Priority Sort ── */
   var fqFilterBtns = document.querySelectorAll('.fq-filter-btn');
