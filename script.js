@@ -6460,7 +6460,7 @@ document.addEventListener('keydown', function(e){
         /* Small measurement labels near cursor */
         gCtx.fillStyle = 'rgba(255,106,0,0.08)';
         gCtx.font = '9px Inter, monospace';
-        var xLabel = Math.round(mouseX / gW * 100) + 'yd';
+        var xLabel = Math.round(mouseX / gW * 100) + '%';
         gCtx.fillText(xLabel, mouseX + 8, mouseY - 8);
       }
 
