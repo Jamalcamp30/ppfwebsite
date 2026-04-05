@@ -6407,7 +6407,7 @@ table th{color:var(--orange2)!important;font-weight:900}
   letter-spacing:.15em;text-align:center;
 }
 .ow-yard-line::after{
-  content:attr(style);content:none;
+  content:none;
 }
 
 /* ── Header ───────────────────────────────────────────── */

@@ -7621,7 +7621,7 @@ document.addEventListener('keydown', function(e){
         var rect = card.getBoundingClientRect();
         var x = (e.clientX - rect.left) / rect.width;
         var y = (e.clientY - rect.top) / rect.height;
-        var rx = (y - 0.5) * -5;  /* max 2.5 deg */
+        var rx = (y - 0.5) * -5;  /* max ±2.5 deg */
         var ry = (x - 0.5) * 5;
         inner.style.setProperty('--rx', rx + 'deg');
         inner.style.setProperty('--ry', ry + 'deg');
@@ -7696,7 +7696,7 @@ document.addEventListener('keydown', function(e){
         /* Reset action trail animation on each hover */
         if(trail){
           trail.style.animation = 'none';
-          /* Force reflow */
+          /* Force DOM reflow so the browser restarts CSS animations */
           void trail.offsetWidth;
           trail.style.animation = '';
         }
