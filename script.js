@@ -7811,6 +7811,7 @@ document.addEventListener('keydown', function(e){
   var tabs = document.querySelectorAll('.proof-tab');
   if(!tabs.length) return;
   var nav = document.querySelector('.nav');
+  var subnav = document.querySelector('.proof-subnav');
 
   /* Click handler: smooth scroll to sub-section */
   tabs.forEach(function(btn){
@@ -7819,7 +7820,7 @@ document.addEventListener('keydown', function(e){
       var target = document.getElementById(targetId);
       if(!target) return;
       var navH = nav ? nav.getBoundingClientRect().height : 0;
-      var subnavH = document.querySelector('.proof-subnav').offsetHeight || 0;
+      var subnavH = subnav ? subnav.offsetHeight : 0;
       var top = target.getBoundingClientRect().top + window.scrollY - navH - subnavH - 8;
       window.scrollTo({ top: top, behavior: 'smooth' });
       tabs.forEach(function(t){ t.classList.remove('active'); });
@@ -7834,7 +7835,7 @@ document.addEventListener('keydown', function(e){
 
   function updateProofActive(){
     var navH = nav ? nav.getBoundingClientRect().height : 0;
-    var subnavH = document.querySelector('.proof-subnav').offsetHeight || 0;
+    var subnavH = subnav ? subnav.offsetHeight : 0;
     var probeY = window.scrollY + navH + subnavH + 40;
     var current = null;
     proofSections.forEach(function(item){
