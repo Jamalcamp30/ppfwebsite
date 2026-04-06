@@ -1649,6 +1649,8 @@ ul,ol{list-style:none}
 .cc-card-portrait{position:relative;height:320px;overflow:hidden;background:#0a0a0a}
 .cc-card-portrait img{width:100%;height:100%;object-fit:cover;object-position:center 25%;display:block;
   transition:transform .7s var(--ease-out-expo),filter .7s var(--ease-out-expo)}
+.cc-card[data-coach="ben-grubbs"] .cc-card-portrait img,
+.cc-card[data-coach="coach-allen"] .cc-card-portrait img{object-position:center center}
 .cc-card:hover .cc-card-portrait img{transform:scale(1.06);filter:brightness(1.06)}
 
 /* Animated route/path lines behind coach portraits */
