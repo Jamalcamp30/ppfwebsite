@@ -2662,7 +2662,7 @@ var draftData = [
       var id = this.getAttribute('href').slice(1);
       var target = document.getElementById(id);
       if(target){
-        var offset = navHeight() + 16;
+        var offset = navHeight() + 24;
         var top = target.getBoundingClientRect().top + window.scrollY - offset;
         window.scrollTo({ top: top, behavior: 'smooth' });
       }
