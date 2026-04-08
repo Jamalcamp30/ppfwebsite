@@ -1760,8 +1760,8 @@ ul,ol{list-style:none}
 
 /* ── Coached Outcomes Overlay ──── */
 .cc-outcomes-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;transition:opacity .4s ease}
-.cc-outcomes-overlay.cc-outcomes-open{opacity:1;pointer-events:auto}
+  opacity:0;visibility:hidden;pointer-events:none;transition:opacity .4s ease,visibility .4s ease}
+.cc-outcomes-overlay.cc-outcomes-open{opacity:1;visibility:visible;pointer-events:auto}
 .cc-outcomes-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .cc-outcomes-panel{position:relative;width:90%;max-width:680px;max-height:85vh;overflow-y:auto;
   border-radius:var(--radius);background:linear-gradient(180deg,#111115 0%,#0a0a0c 100%);
