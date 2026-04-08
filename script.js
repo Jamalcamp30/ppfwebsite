@@ -7844,7 +7844,9 @@ document.addEventListener('keydown', function(e){
 (function(){
   var tracks = document.querySelectorAll('.ts-ticker-track, .pos-ticker-track');
   tracks.forEach(function(track){
-    var clone = track.innerHTML;
-    track.innerHTML += clone;
+    var children = Array.from(track.childNodes);
+    children.forEach(function(node){
+      track.appendChild(node.cloneNode(true));
+    });
   });
 })();
