@@ -2930,7 +2930,6 @@ var draftData = [
     var name = document.getElementById('form-name');
     var email = document.getElementById('form-email');
     var phone = document.getElementById('form-phone');
-    var level = document.getElementById('form-level');
     var focus = document.getElementById('form-focus');
     var msg = document.getElementById('form-message');
     summary.innerHTML =
@@ -2938,7 +2937,6 @@ var draftData = [
       '<div class="review-row"><strong>Name</strong><span>' + (name ? name.value : '') + '</span></div>' +
       '<div class="review-row"><strong>Email</strong><span>' + (email ? email.value : '') + '</span></div>' +
       '<div class="review-row"><strong>Phone</strong><span>' + (phone ? phone.value : '—') + '</span></div>' +
-      '<div class="review-row"><strong>Level</strong><span>' + (level ? level.value : '') + '</span></div>' +
       '<div class="review-row"><strong>Focus</strong><span>' + (focus ? focus.value : '—') + '</span></div>' +
       '<div class="review-row"><strong>Message</strong><span>' + (msg ? msg.value : '') + '</span></div>';
   }
@@ -2976,15 +2974,6 @@ var draftData = [
       var val = pathBtn.getAttribute('data-value');
       var pathHidden = document.getElementById('form-selected-path');
       if(pathHidden) pathHidden.value = val;
-      var levelSelect = document.getElementById('form-level');
-      if(levelSelect){
-        for(var i=0;i<levelSelect.options.length;i++){
-          if(levelSelect.options[i].text === val){
-            levelSelect.selectedIndex = i;
-            break;
-          }
-        }
-      }
       var nextBtn = form.querySelector('#form-step-1 .form-next');
       if(nextBtn) nextBtn.disabled = false;
     }
@@ -7849,4 +7838,13 @@ document.addEventListener('keydown', function(e){
   }
   window.addEventListener('scroll', updateProofActive, {passive:true});
   updateProofActive();
+})();
+
+/* ── Seamless ticker cloning — duplicate track content for infinite scroll ── */
+(function(){
+  var tracks = document.querySelectorAll('.ts-ticker-track, .pos-ticker-track');
+  tracks.forEach(function(track){
+    var clone = track.innerHTML;
+    track.innerHTML += clone;
+  });
 })();
