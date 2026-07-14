@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PPF Athletics | 2027 Combine, Pro Day & Draft Prep</title>
+  <meta name="description" content="PPF Athletics 2027 Combine, Pro Day and NFL Draft preparation in Cumming, Georgia. Speed, power, position work, recovery and verified athlete development for serious prospects.">
+  <meta name="theme-color" content="#070707">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="PPF Athletics | 2027 Combine, Pro Day & Draft Prep">
+  <meta property="og:description" content="Build a draft-ready profile before the room ever questions it.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/Jamalcamp30/ppfwebsite/main/Jalen.Camp.Texans.featured.latest.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#070707;--panel:#101010;--panel-2:#151515;--ink:#f4f2ed;--muted:#aaa7a0;
+      --line:rgba(255,255,255,.13);--orange:#ff6500;--orange-soft:#ff9b5a;
+      --max:1320px;--header:78px;--ease:cubic-bezier(.16,1,.3,1)
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--bg)}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;overflow-x:hidden}
+    body.menu-open{overflow:hidden}
+    a{color:inherit;text-decoration:none}
+    button,input,select,textarea{font:inherit}
+    img,video{display:block;max-width:100%}
+    .skip{position:fixed;left:16px;top:-80px;z-index:1000;background:#fff;color:#000;padding:12px 18px}
+    .skip:focus{top:16px}
+    .progress{position:fixed;left:0;top:0;z-index:1000;width:100%;height:3px;background:rgba(255,255,255,.08)}
+    .progress span{display:block;width:0;height:100%;background:var(--orange)}
+    .site-header{position:fixed;inset:3px 0 auto;z-index:100;min-height:var(--header);display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:28px;padding:0 max(24px,calc((100vw - var(--max))/2));border-bottom:1px solid transparent;transition:.35s var(--ease)}
+    .site-header.scrolled{background:rgba(7,7,7,.94);border-color:var(--line);backdrop-filter:blur(16px)}
+    .brand{display:flex;align-items:center;gap:12px;min-width:max-content}
+    .brand img{width:74px;height:50px;object-fit:contain}
+    .brand span{font-size:10px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:#d6d2ca}
+    .nav{display:flex;align-items:center;justify-content:center;gap:30px}
+    .nav a{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#d5d2cb;transition:.2s ease}
+    .nav a:hover,.nav a:focus-visible{color:#fff}
+    .header-actions{display:flex;align-items:center;gap:14px}
+    .back-link{font-size:11px;font-weight:700;color:#bebbb4}
+    .header-cta,.button{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:1px solid transparent;padding:15px 20px;font-size:12px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;transition:.25s var(--ease);cursor:pointer}
+    .header-cta,.button-primary{background:var(--orange);color:#080808}
+    .header-cta:hover,.button-primary:hover{transform:translateY(-2px);background:#ff7b24}
+    .button-outline{border-color:rgba(255,255,255,.32);background:transparent;color:#fff}
+    .button-outline:hover{border-color:var(--orange);color:var(--orange)}
+    .menu-toggle{display:none;border:0;background:transparent;width:48px;height:48px;padding:12px}
+    .menu-toggle span{display:block;height:2px;background:#fff;margin:7px 0;transition:.25s ease}
+    main{position:relative}
+    .chapter{position:relative;isolation:isolate}
+    .chapter-number{position:absolute;right:max(24px,calc((100vw - var(--max))/2));top:105px;font-family:"Archivo Black",sans-serif;font-size:11px;letter-spacing:.22em;color:#72706a;z-index:3}
+    .eyebrow{margin:0 0 20px;color:var(--orange-soft);font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+    h1,h2,h3,p{margin-top:0}
+    h1,h2,h3{font-family:"Archivo Black",Impact,sans-serif;text-transform:uppercase;font-weight:400}
+    h1{font-size:clamp(58px,8.7vw,142px);line-height:.82;letter-spacing:-.055em;margin-bottom:28px;max-width:1100px}
+    h1 span,h2 span{color:var(--orange)}
+    h2{font-size:clamp(44px,6vw,96px);line-height:.9;letter-spacing:-.045em;margin-bottom:28px}
+    h3{font-size:clamp(25px,3vw,44px);line-height:.95;letter-spacing:-.03em}
+    p{color:var(--muted);line-height:1.75}
+    .hero{min-height:100svh;display:grid;align-items:end;padding:calc(var(--header) + 90px) max(24px,calc((100vw - var(--max))/2)) 52px;overflow:hidden}
+    .hero-media{position:absolute;inset:0;z-index:-3;overflow:hidden;background:#111}
+    .hero-media video,.hero-media img{position:absolute;inset:-5%;width:110%;height:110%;object-fit:cover;object-position:center 35%;transform:scale(var(--hero-scale,1.02));transition:transform .08s linear}
+    .hero-media img{z-index:-2}
+    .hero-shade{position:absolute;inset:0;background:rgba(0,0,0,.58);z-index:-2}
+    .hero-side-shade{position:absolute;inset:0 48% 0 0;background:rgba(0,0,0,.36);z-index:-1}
+    .hero-copy{align-self:end;max-width:1120px;padding-top:8vh}
+    .hero-copy .lead{max-width:690px;font-size:clamp(17px,1.6vw,23px);color:#ddd9d1;line-height:1.65}
+    .hero-actions{display:flex;align-items:center;gap:24px;flex-wrap:wrap;margin-top:34px}
+    .hero-actions .plain{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+    .hero-proof{margin-top:56px;display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));border-top:1px solid rgba(255,255,255,.28);max-width:920px}
+    .hero-proof div{padding:22px 24px 8px 0;border-right:1px solid rgba(255,255,255,.18)}
+    .hero-proof div:last-child{border-right:0}
+    .hero-proof strong{display:block;font-family:"Archivo Black";font-size:clamp(28px,4vw,54px);line-height:1;color:#fff}
+    .hero-proof span{display:block;margin-top:8px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#bdb9b1}
+    .scroll-cue{position:absolute;right:max(24px,calc((100vw - var(--max))/2));bottom:52px;display:flex;align-items:center;gap:12px;color:#bdb9b1;font-size:10px;letter-spacing:.16em;text-transform:uppercase;writing-mode:vertical-rl}
+    .scroll-cue::before{content:"";width:1px;height:64px;background:var(--orange);animation:scrollPulse 1.8s ease-in-out infinite}
+    @keyframes scrollPulse{0%,100%{transform:scaleY(.45);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+    .statement{min-height:92svh;display:grid;place-items:center;padding:140px 24px;border-top:1px solid var(--line)}
+    .statement-inner{max-width:1160px;text-align:center}
+    .statement-inner h2{font-size:clamp(48px,8vw,126px)}
+    .statement-inner p:last-child{max-width:760px;margin:0 auto;font-size:19px}
+    .ticker{position:absolute;bottom:0;left:0;width:100%;overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);white-space:nowrap}
+    .ticker div{display:inline-block;padding:16px 0;font-family:"Archivo Black";font-size:15px;letter-spacing:.1em;color:#8a8781;animation:ticker 24s linear infinite}
+    @keyframes ticker{to{transform:translateX(-50%)}}
+    .architecture{display:grid;grid-template-columns:minmax(300px,.72fr) minmax(380px,1.28fr);gap:10vw;padding:150px max(24px,calc((100vw - var(--max))/2));border-top:1px solid var(--line)}
+    .architecture-intro{position:sticky;top:130px;align-self:start}
+    .architecture-intro p{font-size:18px;max-width:520px}
+    .architecture-line{height:2px;background:#242424;margin-top:38px;overflow:hidden}
+    .architecture-line span{display:block;width:25%;height:100%;background:var(--orange);transform-origin:left}
+    .steps{display:grid;gap:0}
+    .step{min-height:54svh;padding:64px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:90px 1fr;gap:24px;align-content:center}
+    .step:first-child{border-top:0}
+    .step-index{font-family:"Archivo Black";font-size:18px;color:var(--orange)}
+    .step p{max-width:630px;font-size:17px}
+    .proof{display:grid;grid-template-columns:1.05fr .95fr;min-height:100svh;border-top:1px solid var(--line);background:#0d0d0d}
+    .proof-image{min-height:680px;position:relative;overflow:hidden;background:#121212}
+    .proof-image img{width:100%;height:100%;object-fit:contain;padding:5vw}
+    .proof-copy{display:flex;flex-direction:column;justify-content:center;padding:120px clamp(30px,6vw,100px)}
+    .proof-copy>p{font-size:18px}
+    .proof-stats{display:grid;grid-template-columns:repeat(2,1fr);margin:40px 0;border-top:1px solid var(--line)}
+    .proof-stats div{padding:24px 20px 24px 0;border-bottom:1px solid var(--line)}
+    .proof-stats strong{display:block;font-family:"Archivo Black";font-size:36px;color:#fff}
+    .proof-stats span{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#8f8c86}
+    .board{padding:150px max(24px,calc((100vw - var(--max))/2));border-top:1px solid var(--line)}
+    .section-head{display:grid;grid-template-columns:1fr minmax(260px,430px);gap:60px;align-items:end;margin-bottom:58px}
+    .section-head p:last-child{font-size:17px}
+    .filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:34px}
+    .filter{border:1px solid var(--line);background:transparent;color:#c4c0b8;padding:11px 16px;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;cursor:pointer}
+    .filter.active,.filter:hover{background:var(--orange);border-color:var(--orange);color:#080808}
+    .athlete-grid{display:grid;grid-template-columns:repeat(4,1fr);border-left:1px solid var(--line);border-top:1px solid var(--line)}
+    .athlete-card{position:relative;min-height:330px;padding:28px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:#0b0b0b;transition:.35s var(--ease)}
+    .athlete-card:hover{background:#141414;transform:translateY(-6px);z-index:2}
+    .athlete-card.hidden{display:none}
+    .athlete-rank{position:absolute;right:22px;top:20px;font-family:"Archivo Black";font-size:34px;color:#272727}
+    .athlete-card>p{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange-soft);margin-bottom:52px}
+    .athlete-card h3{font-size:31px;max-width:220px;min-height:60px;margin-bottom:30px}
+    dl{margin:0;display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+    dl div{border-top:1px solid var(--line);padding-top:12px}
+    dt{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#77746e}
+    dd{margin:5px 0 0;font-size:16px;font-weight:800;color:#fff}
+    .timeline{padding:150px max(24px,calc((100vw - var(--max))/2));border-top:1px solid var(--line);background:#0c0c0c}
+    .timeline-list{margin-top:64px;border-top:1px solid var(--line)}
+    .timeline-row{display:grid;grid-template-columns:100px 1fr 1fr;gap:40px;padding:34px 0;border-bottom:1px solid var(--line);align-items:start}
+    .timeline-row>span{font-family:"Archivo Black";color:var(--orange)}
+    .timeline-row h3{font-size:29px;margin:0}
+    .timeline-row p{margin:0}
+    .coach{display:grid;grid-template-columns:1fr 1fr;min-height:100svh;border-top:1px solid var(--line)}
+    .coach-image{position:relative;overflow:hidden;min-height:680px;background:#111}
+    .coach-image img{width:100%;height:100%;object-fit:cover;object-position:center top;filter:grayscale(1);transition:1s var(--ease)}
+    .coach-image:hover img{filter:grayscale(.15);transform:scale(1.025)}
+    .coach-image span{position:absolute;left:30px;bottom:30px;background:var(--orange);color:#080808;padding:12px 16px;font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+    .coach-copy{display:flex;flex-direction:column;justify-content:center;padding:100px clamp(30px,7vw,110px)}
+    blockquote{margin:20px 0 32px;padding-left:22px;border-left:3px solid var(--orange);font-family:"Archivo Black";font-size:clamp(25px,3vw,43px);line-height:1.05;text-transform:uppercase}
+    .coach-tags{display:flex;gap:9px;flex-wrap:wrap;margin-top:26px}
+    .coach-tags span{border:1px solid var(--line);padding:10px 12px;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#c7c3bb}
+    .support{padding:150px max(24px,calc((100vw - var(--max))/2));border-top:1px solid var(--line)}
+    .support-grid{display:grid;grid-template-columns:repeat(4,1fr);margin-top:60px;border-left:1px solid var(--line);border-top:1px solid var(--line)}
+    .support-card{padding:34px 28px;min-height:310px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+    .support-card>span{color:var(--orange);font-family:"Archivo Black"}
+    .support-card h3{font-size:25px;margin-top:60px}
+    .apply{display:grid;grid-template-columns:.85fr 1.15fr;gap:9vw;padding:150px max(24px,calc((100vw - var(--max))/2));border-top:1px solid var(--line);background:#0d0d0d}
+    .apply-copy{align-self:start;position:sticky;top:130px}
+    .apply-copy p{font-size:18px}
+    .contact-lines{display:grid;gap:12px;margin-top:32px;font-size:14px;font-weight:700}
+    .application{display:grid;gap:20px}
+    .field-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+    label{display:grid;gap:8px;font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#aba8a1}
+    input,select,textarea{width:100%;border:1px solid var(--line);border-radius:0;background:#080808;color:#fff;padding:16px;outline:none}
+    input:focus,select:focus,textarea:focus{border-color:var(--orange)}
+    textarea{min-height:155px;resize:vertical}
+    .form-note{font-size:12px;color:#7f7c76}
+    footer{display:flex;align-items:center;justify-content:space-between;gap:30px;padding:34px max(24px,calc((100vw - var(--max))/2));border-top:1px solid var(--line);font-size:11px;color:#817e78}
+    .floating-cta{position:fixed;right:22px;bottom:22px;z-index:80;display:none;background:var(--orange);color:#080808;padding:15px 18px;font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 14px 40px rgba(0,0,0,.45)}
+    .reveal{opacity:0;transform:translateY(38px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+    .reveal.visible{opacity:1;transform:none}
+    @media(max-width:1080px){
+      .nav{display:none}.header-actions .back-link{display:none}.menu-toggle{display:block}.site-header{grid-template-columns:auto 1fr auto}.header-actions{justify-self:end}
+      .nav.open{position:fixed;inset:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;background:#080808;padding:12vw;z-index:-1}
+      .nav.open a{font-family:"Archivo Black";font-size:clamp(30px,6vw,64px);letter-spacing:-.03em}
+      .architecture,.apply{grid-template-columns:1fr}.architecture-intro,.apply-copy{position:relative;top:auto}.proof,.coach{grid-template-columns:1fr}.proof-image,.coach-image{min-height:70svh}
+      .athlete-grid{grid-template-columns:repeat(2,1fr)}.support-grid{grid-template-columns:repeat(2,1fr)}
+      .floating-cta{display:block}.header-cta{display:none}
+    }
+    @media(max-width:700px){
+      :root{--header:68px}.site-header{padding:0 18px}.brand span{display:none}.brand img{width:64px}.back-link{display:none}
+      .hero{padding:120px 20px 28px;min-height:100svh}.hero-side-shade{right:0}.hero-media video,.hero-media img{object-position:62% center}.hero-copy{padding-top:15vh}
+      h1{font-size:clamp(51px,16vw,78px)}h2{font-size:clamp(42px,13vw,70px)}.hero-copy .lead{font-size:16px;max-width:92%}.hero-proof{grid-template-columns:repeat(2,1fr);margin-top:38px}.hero-proof div{border-bottom:1px solid rgba(255,255,255,.18)}.scroll-cue{display:none}
+      .statement{min-height:82svh;padding:100px 20px}.architecture,.board,.timeline,.support,.apply{padding:105px 20px}.step{grid-template-columns:52px 1fr;min-height:44svh}.section-head{grid-template-columns:1fr;gap:10px}
+      .proof-copy,.coach-copy{padding:90px 20px}.proof-image,.coach-image{min-height:58svh}.athlete-grid,.support-grid{grid-template-columns:1fr}.athlete-card{min-height:300px}.timeline-row{grid-template-columns:48px 1fr;gap:20px}.timeline-row p{grid-column:2}.field-grid{grid-template-columns:1fr}footer{align-items:flex-start;flex-direction:column;padding:30px 20px}.floating-cta{right:14px;bottom:14px}
+    }
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="progress" aria-hidden="true"><span id="pageProgress"></span></div>
+  <header class="site-header" id="siteHeader">
+    <a class="brand" href="#top" aria-label="PPF Pro Day and Draft Prep home">
+      <img src="https://static.wixstatic.com/media/86a15f_872649b65d214d5f81965bb77a2a2039~mv2.png/v1/fill/w_218%2Ch_131%2Cal_c%2Cq_85%2Cusm_0.66_1.00_0.01%2Cenc_avif%2Cquality_auto/PPF%20logo%20%28dark%20background%29.png" alt="PPF Athletics">
+      <span>2027 Combine + Pro Day Prep</span>
+    </a>
+    <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="siteNav" aria-label="Open page menu"><span></span><span></span></button>
+    <nav class="nav" id="siteNav" aria-label="Pro Day page navigation">
+      <a href="#system">System</a><a href="#proof">Proof</a><a href="#draft-board">Draft Board</a><a href="#timeline">Process</a><a href="#coach">Coaching</a>
+    </nav>
+    <div class="header-actions"><a class="back-link" href="index.html">← Main PPF website</a><a class="header-cta" href="#apply">Start your plan ↗</a></div>
+  </header>
+
+  <main id="main">
+    <section class="hero chapter" id="top">
+      <div class="hero-media" id="heroMedia" aria-hidden="true">
+        <video autoplay muted loop playsinline poster="https://raw.githubusercontent.com/Jamalcamp30/ppfwebsite/main/Jalen.Camp.Texans.featured.latest.jpg"><source src="https://raw.githubusercontent.com/Jamalcamp30/ppfwebsite/main/IMG_0371.MOV" type="video/quicktime"></video>
+        <img src="https://raw.githubusercontent.com/Jamalcamp30/ppfwebsite/main/Jalen.Camp.Texans.featured.latest.jpg" alt="">
+      </div>
+      <div class="hero-shade" aria-hidden="true"></div><div class="hero-side-shade" aria-hidden="true"></div>
+      <div class="chapter-number">00 / EVALUATION SEASON</div>
+      <div class="hero-copy reveal">
+        <p class="eyebrow">PPF Athletics · Cumming, Georgia</p>
+        <h1>Build the profile<br><span>the room trusts.</span></h1>
+        <p class="lead">2027 Combine, Pro Day and NFL Draft preparation built around verified speed, explosive power, position movement, strength, body composition and the details that determine how an athlete is evaluated.</p>
+        <div class="hero-actions"><a class="button button-primary" href="#apply">Start your 2027 plan</a><a class="plain" href="#draft-board">See the athlete board ↓</a></div>
+        <div class="hero-proof" aria-label="Featured PPF performance results">
+          <div><strong data-count="4.29" data-decimals="2">0</strong><span>Featured 40</span></div>
+          <div><strong data-count="39.5" data-decimals="1" data-suffix="″">0</strong><span>Vertical</span></div>
+          <div><strong data-count="30" data-suffix="+">0</strong><span>Bench reps</span></div>
+          <div><strong data-count="12000">0</strong><span>Square feet</span></div>
+        </div>
+      </div>
+      <div class="scroll-cue">Enter the system</div>
+    </section>
+
+    <section class="statement chapter" id="standard">
+      <div class="chapter-number">01 / THE STANDARD</div>
+      <div class="statement-inner reveal"><p class="eyebrow">Preparation before projection</p><h2>Timed. Measured.<br>Coached. <span>Verified.</span></h2><p>Draft preparation cannot be built on random workouts or private confidence. The work must survive the stopwatch, the jump sheet, the position drill, the interview and the eyes of evaluators.</p></div>
+      <div class="ticker" aria-hidden="true"><div>ACCELERATION · MAX VELOCITY · EXPLOSIVE POWER · POSITION TRANSFER · BODY COMPOSITION · RECOVERY READINESS · ACCELERATION · MAX VELOCITY · EXPLOSIVE POWER · POSITION TRANSFER · BODY COMPOSITION · RECOVERY READINESS · </div></div>
+    </section>
+
+    <section class="architecture chapter" id="system">
+      <div class="chapter-number">02 / THE SYSTEM</div>
+      <div class="architecture-intro reveal"><p class="eyebrow">Evaluation architecture</p><h2>Every number has<br>a reason behind it.</h2><p>The PPF system connects each training decision to the profile an athlete needs to present. Movement quality, physical output and testing execution are developed together.</p><div class="architecture-line"><span id="architectureProgress"></span></div></div>
+      <div class="steps" id="architectureSteps">
+        <article class="step reveal"><span class="step-index">01</span><div><h3>Profile assessment</h3><p>Establish the athlete’s current numbers, movement limitations, position demands, body composition, testing calendar and the benchmarks that will change the evaluation.</p></div></article>
+        <article class="step reveal"><span class="step-index">02</span><div><h3>Speed architecture</h3><p>Build acceleration angles, first-step efficiency, split consistency, transition mechanics and top-end velocity without separating technique from usable force.</p></div></article>
+        <article class="step reveal"><span class="step-index">03</span><div><h3>Power conversion</h3><p>Develop strength that transfers into vertical jump, broad jump, starts, change of direction, position movement and repeatable output under pressure.</p></div></article>
+        <article class="step reveal"><span class="step-index">04</span><div><h3>Testing rehearsal</h3><p>Rehearse the order, recovery, commands, setup, pacing and decision-making of the actual evaluation so testing day feels familiar instead of improvised.</p></div></article>
+      </div>
+    </section>
+
+    <section class="proof chapter" id="proof">
+      <div class="chapter-number">03 / VERIFIED PROOF</div>
+      <div class="proof-image reveal"><img src="https://raw.githubusercontent.com/Jamalcamp30/ppfwebsite/main/Jalen.Camp.DraftProof.png" alt="Jalen Camp professional draft and performance profile"></div>
+      <div class="proof-copy reveal"><p class="eyebrow">Proof over promises</p><h2>The work should be visible before it is explained.</h2><p>PPF athletes have carried verified testing, position preparation and physical readiness into pro days, combines, camps, professional rosters and championship opportunities.</p><div class="proof-stats"><div><strong>4.29</strong><span>Featured forty</span></div><div><strong>9.92</strong><span>Elite RAS profile</span></div><div><strong>39.5″</strong><span>Featured vertical</span></div><div><strong>30+</strong><span>Bench benchmark</span></div></div><a class="button button-outline" href="#draft-board">Open the draft board</a></div>
+    </section>
+
+    <section class="board chapter" id="draft-board">
+      <div class="chapter-number">04 / DRAFT BOARD</div>
+      <div class="section-head reveal"><div><p class="eyebrow">PPF athlete command center</p><h2>Measured athletes.<br><span>Visible standards.</span></h2></div><p>Filter the board by position. Each profile highlights testing context and the kind of physical presentation the preparation is designed to create.</p></div>
+      <div class="filters reveal" role="group" aria-label="Filter athletes by position"><button class="filter active" data-filter="all">All</button><button class="filter" data-filter="wr">WR</button><button class="filter" data-filter="dl">DL / DT</button><button class="filter" data-filter="ol">OL</button><button class="filter" data-filter="db">DB</button><button class="filter" data-filter="lb">LB</button></div>
+      <div class="athlete-grid" id="athleteGrid">
+        <article class="athlete-card reveal" data-position="wr"><span class="athlete-rank">01</span><p>WR · Georgia Tech</p><h3>Jalen Camp</h3><dl><div><dt>40</dt><dd>4.39</dd></div><div><dt>Vertical</dt><dd>39.5″</dd></div><div><dt>Bench</dt><dd>30</dd></div><div><dt>RAS</dt><dd>9.78</dd></div></dl></article>
+        <article class="athlete-card reveal" data-position="wr"><span class="athlete-rank">02</span><p>WR · Georgia Tech</p><h3>Ahmarean Brown</h3><dl><div><dt>40</dt><dd>4.29</dd></div><div><dt>Profile</dt><dd>Speed</dd></div><div><dt>Weight</dt><dd>175</dd></div><div><dt>Level</dt><dd>Pro</dd></div></dl></article>
+        <article class="athlete-card reveal" data-position="wr"><span class="athlete-rank">03</span><p>WR · Rutgers</p><h3>Dymere Miller</h3><dl><div><dt>40</dt><dd>4.32</dd></div><div><dt>RAS</dt><dd>9.01</dd></div><div><dt>Weight</dt><dd>190</dd></div><div><dt>Profile</dt><dd>Explosive</dd></div></dl></article>
+        <article class="athlete-card reveal" data-position="dl"><span class="athlete-rank">04</span><p>DL · West Virginia</p><h3>Sean Martin</h3><dl><div><dt>RAS</dt><dd>9.68</dd></div><div><dt>Rank</dt><dd>#20</dd></div><div><dt>Bench</dt><dd>28</dd></div><div><dt>Event</dt><dd>Combine</dd></div></dl></article>
+        <article class="athlete-card reveal" data-position="dl"><span class="athlete-rank">05</span><p>DT · Minnesota</p><h3>Kyler Baugh</h3><dl><div><dt>Bench</dt><dd>34</dd></div><div><dt>Weight</dt><dd>305</dd></div><div><dt>Vertical</dt><dd>33.5″</dd></div><div><dt>RAS</dt><dd>8.56</dd></div></dl></article>
+        <article class="athlete-card reveal" data-position="ol"><span class="athlete-rank">06</span><p>OL · South Carolina</p><h3>Torricelli Simpkins</h3><dl><div><dt>Weight</dt><dd>312</dd></div><div><dt>Vertical</dt><dd>29″</dd></div><div><dt>Event</dt><dd>Combine</dd></div><div><dt>Profile</dt><dd>Power</dd></div></dl></article>
+        <article class="athlete-card reveal" data-position="db"><span class="athlete-rank">07</span><p>FS · NC State</p><h3>DK Kaufman</h3><dl><div><dt>Vertical</dt><dd>38″</dd></div><div><dt>RAS</dt><dd>9.35</dd></div><div><dt>Rank</dt><dd>#79</dd></div><div><dt>Profile</dt><dd>Range</dd></div></dl></article>
+        <article class="athlete-card reveal" data-position="lb"><span class="athlete-rank">08</span><p>LB · Washington / Pitt</p><h3>Cam Bright</h3><dl><div><dt>Bench</dt><dd>33</dd></div><div><dt>RAS</dt><dd>8.45</dd></div><div><dt>Profile</dt><dd>Power</dd></div><div><dt>Level</dt><dd>Pro</dd></div></dl></article>
+      </div>
+    </section>
+
+    <section class="timeline chapter" id="timeline">
+      <div class="chapter-number">05 / PREPARATION CYCLE</div>
+      <div class="section-head reveal"><div><p class="eyebrow">From arrival to evaluation</p><h2>A preparation cycle<br>with no missing phase.</h2></div><p>The calendar changes by athlete, but the logic does not. Establish the profile, build the capacity, rehearse the event and verify readiness before the athlete enters the room.</p></div>
+      <div class="timeline-list">
+        <article class="timeline-row reveal"><span>01</span><h3>Baseline</h3><p>Testing, film context, movement review, body composition, injury history, position demands and target benchmarks.</p></article>
+        <article class="timeline-row reveal"><span>02</span><h3>Build</h3><p>Speed, strength, explosive power, conditioning, mobility and position work developed around the athlete’s profile.</p></article>
+        <article class="timeline-row reveal"><span>03</span><h3>Rehearse</h3><p>Full testing sequences, recovery windows, commands, transitions, position drills and evaluation-day pacing.</p></article>
+        <article class="timeline-row reveal"><span>04</span><h3>Verify</h3><p>Track the numbers, confirm repeatability, adjust the final details and communicate the athlete’s strongest evidence clearly.</p></article>
+        <article class="timeline-row reveal"><span>05</span><h3>Arrive ready</h3><p>The athlete enters Pro Day, camp or private evaluation knowing the sequence, the standards and the profile they are prepared to present.</p></article>
+      </div>
+    </section>
+
+    <section class="coach chapter" id="coach">
+      <div class="chapter-number">06 / COACHING AUTHORITY</div>
+      <div class="coach-image reveal"><img src="https://github.com/user-attachments/assets/f6c079c3-d8a7-4f15-9dde-e737f069c0df" alt="Richard Camp, PPF Athletics performance director"><span>25+ years · CSCS</span></div>
+      <div class="coach-copy reveal"><p class="eyebrow">Performance director</p><h2>Richard Camp</h2><blockquote>“The profile is built long before the stopwatch starts.”</blockquote><p>Former athlete, military veteran, professional bodybuilder and performance coach. Richard’s system connects speed, strength, movement, body composition and accountability instead of treating combine preparation as a collection of disconnected drills.</p><div class="coach-tags"><span>Testing detail</span><span>Position transfer</span><span>Body composition</span><span>Room accountability</span><span>Draft preparation</span></div></div>
+    </section>
+
+    <section class="support chapter" id="support">
+      <div class="chapter-number">07 / ATHLETE SUPPORT</div>
+      <div class="section-head reveal"><div><p class="eyebrow">The total evaluation profile</p><h2>Train hard.<br><span>Present complete.</span></h2></div><p>High-level preparation includes the work between sessions and the communication around the athlete—not only what happens during the rep.</p></div>
+      <div class="support-grid">
+        <article class="support-card reveal"><span>01</span><h3>Performance nutrition</h3><p>Fueling and body-composition structure aligned with training output, recovery and the athlete’s target presentation.</p></article>
+        <article class="support-card reveal"><span>02</span><h3>Recovery readiness</h3><p>Workload management and recovery support designed to protect session quality through the highest-demand phase.</p></article>
+        <article class="support-card reveal"><span>03</span><h3>Position preparation</h3><p>Movement and drill detail matched to the athlete’s position, evaluation environment and next-level expectations.</p></article>
+        <article class="support-card reveal"><span>04</span><h3>Progress reporting</h3><p>Clear benchmarks and meaningful updates for the athlete, family, representation and decision-makers around the process.</p></article>
+      </div>
+    </section>
+
+    <section class="apply chapter" id="apply">
+      <div class="chapter-number">08 / START THE PLAN</div>
+      <div class="apply-copy reveal"><p class="eyebrow">2027 Combine + Pro Day Prep</p><h2>Tell us what the evaluation must see.</h2><p>Share the athlete’s position, timeline, current level and the result that matters most. PPF will review the profile and follow up with the clearest next step.</p><div class="contact-lines"><a href="tel:+16789389668">Call: 678-938-9668</a><a href="mailto:rebecca@ppfathletics.com">rebecca@ppfathletics.com</a><span>7721 Majors Road · Cumming, GA 30041</span></div></div>
+      <form class="application reveal" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="c47bfd11-04c5-44f9-aea3-87f44f87a1c5">
+        <input type="hidden" name="subject" value="New PPF Pro Day and Draft Prep Inquiry">
+        <input type="hidden" name="redirect" value="https://web3forms.com/success">
+        <div class="field-grid"><label>Athlete name<input name="name" autocomplete="name" required></label><label>Email<input name="email" type="email" autocomplete="email" required></label></div>
+        <div class="field-grid"><label>Phone<input name="phone" type="tel" autocomplete="tel"></label><label>Position<input name="position" placeholder="WR, OL, DL, DB..."></label></div>
+        <div class="field-grid"><label>School / current team<input name="school"></label><label>Draft or evaluation year<select name="evaluation_year"><option>2027</option><option>2028</option><option>Current free agent</option><option>Private evaluation / camp</option></select></label></div>
+        <label>Primary focus<input name="primary_focus" placeholder="40-yard dash, position work, body composition, full Pro Day preparation"></label>
+        <label>What does the athlete need?<textarea name="message" required placeholder="Tell us the current numbers, evaluation timeline, injury considerations and the result that matters most."></textarea></label>
+        <button class="button button-primary" type="submit">Submit athlete inquiry ↗</button>
+        <p class="form-note">This form is specifically for Combine, Pro Day, draft preparation and professional athlete evaluation inquiries.</p>
+      </form>
+    </section>
+  </main>
+
+  <footer><span>PPF Athletics · 2027 Combine, Pro Day & Draft Prep</span><a href="index.html">Return to the main PPF Athletics website</a><span>Designed by Jamal Camp</span></footer>
+  <a class="floating-cta" href="#apply">Start your plan ↗</a>
+
+  <script>
+    (()=>{
+      const header=document.getElementById('siteHeader');
+      const progress=document.getElementById('pageProgress');
+      const hero=document.getElementById('heroMedia');
+      const menu=document.getElementById('menuToggle');
+      const nav=document.getElementById('siteNav');
+      const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const onScroll=()=>{
+        const y=window.scrollY;
+        const max=document.documentElement.scrollHeight-window.innerHeight;
+        progress.style.width=(max?y/max*100:0)+'%';
+        header.classList.toggle('scrolled',y>30);
+        if(hero&&!reduce)hero.style.setProperty('--hero-scale',(1.02+Math.min(y/window.innerHeight,.9)*.12).toFixed(3));
+        const steps=document.getElementById('architectureSteps');
+        const bar=document.getElementById('architectureProgress');
+        if(steps&&bar){const r=steps.getBoundingClientRect();const p=Math.max(0,Math.min(1,(window.innerHeight-r.top)/(r.height+window.innerHeight*.2)));bar.style.transform=`scaleX(${p})`;}
+      };
+      window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+      menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');document.body.classList.toggle('menu-open',open);menu.setAttribute('aria-expanded',String(open));});
+      nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');document.body.classList.remove('menu-open');menu.setAttribute('aria-expanded','false');}));
+      const reveal=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');reveal.unobserve(e.target);}}),{threshold:.12});
+      document.querySelectorAll('.reveal').forEach(el=>reveal.observe(el));
+      const counterObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{if(!entry.isIntersecting)return;const el=entry.target;const target=Number(el.dataset.count);const decimals=Number(el.dataset.decimals||0);const suffix=el.dataset.suffix||'';if(reduce){el.textContent=target.toFixed(decimals)+suffix;return;}const start=performance.now();const duration=1300;const tick=now=>{const p=Math.min(1,(now-start)/duration);const eased=1-Math.pow(1-p,3);const value=target*eased;el.textContent=(decimals?value.toFixed(decimals):Math.round(value).toLocaleString())+suffix;if(p<1)requestAnimationFrame(tick);};requestAnimationFrame(tick);counterObserver.unobserve(el);}),{threshold:.55});
+      document.querySelectorAll('[data-count]').forEach(el=>counterObserver.observe(el));
+      const filters=document.querySelectorAll('.filter');const cards=document.querySelectorAll('.athlete-card');
+      filters.forEach(btn=>btn.addEventListener('click',()=>{filters.forEach(b=>b.classList.remove('active'));btn.classList.add('active');const f=btn.dataset.filter;cards.forEach(card=>card.classList.toggle('hidden',f!=='all'&&card.dataset.position!==f));}));
+    })();
+  </script>
+</body>
+</html>
